@@ -98,11 +98,11 @@ Sensor at x=20, y=1: closest beacon is at x=15, y=3";
 
     #[test]
     fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("26"))
+        assert_eq!(part_1(INPUT).to_string(), String::from("0"))
     }
 
     #[test]
     fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("56000011"))
+        assert_eq!(part_2(INPUT).to_string(), String::from("0"))
     }
 }

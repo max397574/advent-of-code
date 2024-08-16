@@ -1,6 +1,8 @@
 #![feature(iter_array_chunks)]
 #![feature(iter_map_windows)]
 #![feature(iter_next_chunk)]
+#![feature(extract_if)]
+#![feature(slice_split_once)]
 use std::{
     env::args,
     time::{Duration, Instant},

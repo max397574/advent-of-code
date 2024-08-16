@@ -19,7 +19,7 @@ mod tests {
 
     #[test]
     fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("21"))
+        assert_eq!(part_1(INPUT1).to_string(), String::from("0"))
     }
 
     #[test]

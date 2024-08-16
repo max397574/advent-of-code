@@ -1,72 +1,123 @@
+use bstr::ByteSlice;
+
 pub fn part_1(input: &str) -> impl std::fmt::Display {
-    let mut bit_1: Vec<usize> = vec![0; input.lines().next().unwrap().len()];
-    let mut total = 0;
-    for line in input.lines() {
-        let bytes = line.bytes();
-        for (index, byte) in bytes.enumerate() {
-            if byte as char == '1' {
-                bit_1[index] += 1;
+    let input = input.as_bytes();
+    let total_amount = input.lines().count();
+    let mut one_counts: Vec<u32> = vec![0; input.lines().next().unwrap().len()];
+    input.lines().for_each(|line| {
+        line.bytes().enumerate().for_each(|(idx, char)| {
+            if char == b'1' {
+                one_counts[idx] += 1;
             }
-        }
-        total += 1;
-    }
+        })
+    });
     let mut gamma = String::new();
     let mut epsilon = String::new();
-    for bit in bit_1.iter() {
-        if bit > &(total / 2) {
+    one_counts.iter().for_each(|count| {
+        if *count > (total_amount / 2) as u32 {
             gamma.push('1');
             epsilon.push('0');
         } else {
             gamma.push('0');
             epsilon.push('1');
         }
-    }
-    let gamma = usize::from_str_radix(gamma.as_str(), 2).unwrap();
-    let epsilon = usize::from_str_radix(epsilon.as_str(), 2).unwrap();
-    gamma * epsilon
+    });
+    u32::from_str_radix(&gamma, 2).unwrap() * u32::from_str_radix(&epsilon, 2).unwrap()
 }
 
 pub fn part_2(input: &str) -> impl std::fmt::Display {
-    let width = input.lines().next().unwrap().len();
-    let nums = input
-        .lines()
-        .map(|l| u32::from_str_radix(l, 2).unwrap())
-        .collect::<Vec<_>>();
-    let oxy = (0..width)
-        .rev()
-        .scan(nums.clone(), |oxy, i| {
-            let one = oxy.iter().filter(|n| *n & 1 << i > 0).count() >= (oxy.len() + 1) / 2;
-            oxy.drain_filter(|n| (*n & 1 << i > 0) != one);
-            oxy.first().copied()
-        })
-        .last()
-        .unwrap();
+    let mut input1 = input
+        .as_bytes()
+        .split(|b| b == &b'\n')
+        .collect::<Vec<_>>()
+        .clone();
+    let mut input2 = input
+        .as_bytes()
+        .split(|b| b == &b'\n')
+        .collect::<Vec<_>>()
+        .clone();
+    if input1.last().unwrap().is_empty() {
+        input1.pop();
+        input2.pop();
+    }
 
-    let co2 = (0..width)
-        .rev()
-        .scan(nums, |co2, i| {
-            let one = co2.iter().filter(|n| *n & 1 << i > 0).count() >= (co2.len() + 1) / 2;
-            co2.drain_filter(|n| (*n & 1 << i > 0) == one);
-            co2.first().copied()
-        })
-        .last()
-        .unwrap();
-    co2 * oxy
+    let len = input1.first().unwrap().len();
+    for i in 0..len {
+        let mut ones = 0;
+        let mut zeros = 0;
+        for line in input1.clone() {
+            if line[i] == b'1' {
+                ones += 1;
+            } else {
+                zeros += 1;
+            }
+        }
+        input1.retain(|line| {
+            if ones > zeros || zeros == ones {
+                line[i] == b'1'
+            } else {
+                line[i] == b'0'
+            }
+        });
+        if input1.len() == 1 {
+            break;
+        }
+    }
+    for i in 0..len {
+        let mut ones = 0;
+        let mut zeros = 0;
+        for line in input2.clone() {
+            if line[i] == b'1' {
+                ones += 1;
+            } else {
+                zeros += 1;
+            }
+        }
+        println!("{zeros}, {ones}");
+        input2.retain(|line| {
+            if ones > zeros || zeros == ones {
+                line[i] == b'0'
+            } else {
+                line[i] == b'1'
+            }
+        });
+        if input2.len() == 1 {
+            break;
+        }
+    }
+    println!(
+        "{}, {}",
+        std::str::from_utf8(input1[0]).unwrap(),
+        std::str::from_utf8(input2[0]).unwrap()
+    );
+
+    return u32::from_str_radix(std::str::from_utf8(input1[0]).unwrap(), 2).unwrap()
+        * u32::from_str_radix(std::str::from_utf8(input2[0]).unwrap(), 2).unwrap();
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    const INPUT1: &str = "";
-    const INPUT2: &str = "";
+    const INPUT: &str = "00100
+11110
+10110
+10111
+10101
+01111
+00111
+11100
+10000
+11001
+00010
+01010";
 
     #[test]
     fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("0"))
+        assert_eq!(part_1(INPUT).to_string(), String::from("198"))
     }
 
     #[test]
     fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("0"))
+        assert_eq!(part_2(INPUT).to_string(), String::from("230"))
     }
 }

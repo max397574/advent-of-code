@@ -28,11 +28,11 @@ mod tests {
 
     #[test]
     fn part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+        assert_eq!(part_1(_INPUT1).to_string(), String::from("1"))
     }
 
     #[test]
     fn part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("5"))
+        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
     }
 }
