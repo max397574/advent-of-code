@@ -46,7 +46,8 @@ fn generator(input: &str) -> Supplies {
     }
 }
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
+    let input = generator(input);
     let mut stacks = input.stacks.to_owned();
     for instruction in input.instructions.iter() {
         for _ in 0..instruction.amount {
@@ -61,23 +62,41 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
     String::from_utf8(top_crates).unwrap()
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
-    0
+pub fn part_2(input: &str) -> impl std::fmt::Display {
+    let input = generator(input);
+    let mut stacks = input.stacks.to_owned();
+    for instruction in input.instructions.iter() {
+        let index = stacks[instruction.from - 1].len() - instruction.amount;
+        let top = stacks[instruction.from - 1].split_off(index);
+        stacks[instruction.to - 1].extend(top);
+    }
+    let mut top_crates = vec![];
+    for stack in stacks.iter_mut() {
+        top_crates.push(stack.pop().unwrap());
+    }
+    String::from_utf8(top_crates).unwrap()
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "    [D]    
+[N] [C]    
+[Z] [M] [P]
+ 1   2   3 
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+move 1 from 2 to 1
+move 3 from 1 to 3
+move 2 from 2 to 1
+move 1 from 1 to 2";
+
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("CMZ"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("MCD"))
     }
 }

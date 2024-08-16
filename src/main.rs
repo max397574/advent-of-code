@@ -1,4 +1,6 @@
 #![feature(iter_array_chunks)]
+#![feature(iter_map_windows)]
+#![feature(iter_next_chunk)]
 use std::{
     env::args,
     time::{Duration, Instant},

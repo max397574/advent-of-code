@@ -44,51 +44,65 @@ fn get_beacon_distances_and_beacons(input: &str) -> (Vec<BeaconDistance>, Vec<(i
 }
 
 pub fn part_1(_input: &str) -> impl std::fmt::Display {
-    let (beacon_distances, mut beacons) = get_beacon_distances_and_beacons(input);
-    beacons.sort();
-    beacons.dedup();
-    let mut covered_fields = Vec::new();
-    for sensor in beacon_distances.iter() {
-        sensor
-            .get_covered_fields_on_row(row_to_check)
-            .iter()
-            .for_each(|field| covered_fields.push(*field))
-    }
-    covered_fields.sort_unstable();
-    covered_fields.dedup();
-    for beacon in beacons.iter() {
-        // just remove one element if beacon lays on the line to check and is covered because it's
-        // about amount and not specific ones
-        if beacon.1 == row_to_check && covered_fields.contains(&beacon.0) {
-            covered_fields.pop();
-        }
-    }
-    covered_fields.len()
+    //let (beacon_distances, mut beacons) = get_beacon_distances_and_beacons(input);
+    //beacons.sort();
+    //beacons.dedup();
+    //let mut covered_fields = Vec::new();
+    //for sensor in beacon_distances.iter() {
+    //    sensor
+    //        .get_covered_fields_on_row(row_to_check)
+    //        .iter()
+    //        .for_each(|field| covered_fields.push(*field))
+    //}
+    //covered_fields.sort_unstable();
+    //covered_fields.dedup();
+    //for beacon in beacons.iter() {
+    //    // just remove one element if beacon lays on the line to check and is covered because it's
+    //    // about amount and not specific ones
+    //    if beacon.1 == row_to_check && covered_fields.contains(&beacon.0) {
+    //        covered_fields.pop();
+    //    }
+    //}
+    //covered_fields.len()
+    0
 }
 
 pub fn part_2(_input: &str) -> impl std::fmt::Display {
-    let (beacon_distances, mut beacons) = get_beacon_distances_and_beacons(input);
-    beacons.sort();
-    beacons.dedup();
-    let mut covered_fields = Vec::new();
-    covered_fields.sort_unstable();
-    covered_fields.dedup();
+    //let (beacon_distances, mut beacons) = get_beacon_distances_and_beacons(input);
+    //beacons.sort();
+    //beacons.dedup();
+    //let mut covered_fields = Vec::new();
+    //covered_fields.sort_unstable();
+    //covered_fields.dedup();
+    0
     // for i in
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "Sensor at x=2, y=18: closest beacon is at x=-2, y=15
+Sensor at x=9, y=16: closest beacon is at x=10, y=16
+Sensor at x=13, y=2: closest beacon is at x=15, y=3
+Sensor at x=12, y=14: closest beacon is at x=10, y=16
+Sensor at x=10, y=20: closest beacon is at x=10, y=16
+Sensor at x=14, y=17: closest beacon is at x=10, y=16
+Sensor at x=8, y=7: closest beacon is at x=2, y=10
+Sensor at x=2, y=0: closest beacon is at x=2, y=10
+Sensor at x=0, y=11: closest beacon is at x=2, y=10
+Sensor at x=20, y=14: closest beacon is at x=25, y=17
+Sensor at x=17, y=20: closest beacon is at x=21, y=22
+Sensor at x=16, y=7: closest beacon is at x=15, y=3
+Sensor at x=14, y=3: closest beacon is at x=15, y=3
+Sensor at x=20, y=1: closest beacon is at x=15, y=3";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("26"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("56000011"))
     }
 }

@@ -1,6 +1,6 @@
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
-    let re = Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
+    let re = regex::Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
     let mut amount = 0;
     for line in lines {
         let captures = re.captures(line).unwrap();
@@ -21,9 +21,9 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
     amount
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part_2(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
-    let re = Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
+    let re = regex::Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
     let mut amount = 0;
     for line in lines {
         let captures = re.captures(line).unwrap();
@@ -42,19 +42,23 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
     amount
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "2-4,6-8
+2-3,4-5
+5-7,7-9
+2-8,3-7
+6-6,4-6
+2-6,4-8";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("2"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("4"))
     }
 }

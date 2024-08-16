@@ -1,4 +1,4 @@
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
     let mut score = 0;
     for line in lines {
@@ -24,7 +24,7 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
     score
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part_2(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
     let mut score = 0;
     for line in lines {
@@ -62,19 +62,20 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
     score
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "A Y
+B X
+C Z";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("15"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("12"))
     }
 }

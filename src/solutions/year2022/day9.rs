@@ -32,7 +32,7 @@ fn catch_up(mut tx: i32, mut ty: i32, hx: i32, hy: i32) -> (i32, i32) {
     (tx, ty)
 }
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
     let mut positions = Vec::new();
     positions.push((0, 0));
     let mut hx: i32 = 0;
@@ -63,7 +63,7 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
     positions.len()
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part_2(input: &str) -> impl std::fmt::Display {
     let mut positions = Vec::new();
     positions.push((0, 0));
     let mut hx: i32;
@@ -91,7 +91,7 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
             for i in 0..9 {
                 (hx, hy) = *tail_positions.get(&i).unwrap();
                 (tx, ty) = *tail_positions.get(&(i + 1)).unwrap();
-                if !((ty - hy).abs().max((tx - hx).abs()) <= 1) {
+                if (ty - hy).abs().max((tx - hx).abs()) > 1 {
                     let new_tail = catch_up(tx, ty, hx, hy);
                     tail_positions.insert(i + 1, new_tail);
                 } else {
@@ -107,19 +107,33 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
     positions.len()
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT1: &str = "R 4
+U 4
+L 3
+D 1
+R 4
+D 1
+L 5
+R 2";
+    const INPUT2: &str = "R 5
+U 8
+L 8
+D 3
+R 17
+D 10
+L 25
+U 20";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT1).to_string(), String::from("13"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT2).to_string(), String::from("36"))
     }
 }

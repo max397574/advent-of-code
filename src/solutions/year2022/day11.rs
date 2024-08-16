@@ -25,7 +25,7 @@ struct Monkey {
     test: usize,
     success: usize,
     failure: usize,
-    inspections: usize,
+    inspections: u128,
 }
 
 fn generator(input: &str) -> Vec<Monkey> {
@@ -92,7 +92,7 @@ fn generator(input: &str) -> Vec<Monkey> {
 fn round(monkeys: &mut [Monkey], callback: impl Fn(&usize) -> usize) {
     for i in 0..monkeys.len() {
         while let Some(item) = monkeys[i].items.pop_front() {
-            let mut monkey = &mut monkeys[i];
+            let monkey = &mut monkeys[i];
             let new = callback(&monkey.operation.apply(item));
             monkey.inspections += 1;
             if new % monkeys[i].test == 0 {
@@ -104,44 +104,71 @@ fn round(monkeys: &mut [Monkey], callback: impl Fn(&usize) -> usize) {
     }
 }
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
+    let mut monkeys = generator(input);
     for _ in 0..20 {
-        round(monkeys, |x| *x / 3);
+        round(&mut monkeys[..], |x| *x / 3);
     }
     let mut inspections = monkeys
         .iter()
         .map(|monkey| monkey.inspections)
-        .collect::<Vec<_>>();
+        .collect::<Vec<u128>>();
     inspections.sort_unstable();
-    inspections[monkeys.len() - 2..].iter().product()
+    inspections[monkeys.len() - 2..].iter().product::<u128>()
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part_2(input: &str) -> impl std::fmt::Display {
+    let mut monkeys = generator(input);
     let lcm = get_lcm(monkeys.iter().map(|monkey| monkey.test).collect::<Vec<_>>());
     for _ in 0..10000 {
-        round(monkeys, |x| x % lcm);
+        round(&mut monkeys, |x| x % lcm);
     }
     let mut inspections = monkeys
         .iter()
         .map(|monkey| monkey.inspections)
         .collect::<Vec<_>>();
     inspections.sort_unstable();
-    inspections[monkeys.len() - 2..].iter().product()
+    inspections[monkeys.len() - 2..].iter().product::<u128>()
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "Monkey 0:
+  Starting items: 79, 98
+  Operation: new = old * 19
+  Test: divisible by 23
+    If true: throw to monkey 2
+    If false: throw to monkey 3
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+Monkey 1:
+  Starting items: 54, 65, 75, 74
+  Operation: new = old + 6
+  Test: divisible by 19
+    If true: throw to monkey 2
+    If false: throw to monkey 0
+
+Monkey 2:
+  Starting items: 79, 60, 97
+  Operation: new = old * old
+  Test: divisible by 13
+    If true: throw to monkey 1
+    If false: throw to monkey 3
+
+Monkey 3:
+  Starting items: 74
+  Operation: new = old + 3
+  Test: divisible by 17
+    If true: throw to monkey 0
+    If false: throw to monkey 1";
+
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("10605"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("2713310158"))
     }
 }

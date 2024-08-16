@@ -96,9 +96,9 @@ fn parse(input: &str) -> Vec<Value> {
         .collect()
 }
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
     let mut count = 0;
-    for (i, values) in input.chunks(2).enumerate() {
+    for (i, values) in parse(input).chunks(2).enumerate() {
         if values[0] < values[1] {
             count += i + 1
         }
@@ -106,8 +106,8 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
     count
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
-    let mut input = input.to_owned();
+pub fn part_2(input: &str) -> impl std::fmt::Display {
+    let mut input = parse(input).to_owned();
     let divider1 = Value::from("[[2]]");
     let divider2 = Value::from("[[6]]");
     input.push(divider1.clone());
@@ -126,19 +126,40 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
     first * second
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "[1,1,3,1,1]
+[1,1,5,1,1]
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+[[1],[2,3,4]]
+[[1],4]
+
+[9]
+[[8,7,6]]
+
+[[4,4],4,4]
+[[4,4],4,4,4]
+
+[7,7,7,7]
+[7,7,7]
+
+[]
+[3]
+
+[[[]]]
+[[]]
+
+[1,[2,[3,[4,[5,6,7]]]],8,9]
+[1,[2,[3,[4,[5,6,0]]]],8,9]";
+
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("13"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("140"))
     }
 }

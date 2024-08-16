@@ -1,5 +1,52 @@
 use std::collections::{HashSet, VecDeque};
 
+#[derive(Debug)]
+struct Step {
+    edges: Vec<usize>,
+    height: u8,
+}
+
+fn get_steps(input: &str) -> Vec<Step> {
+    let grid = aoc::grid(input, |x| {
+        if x == 'E' {
+            return 100;
+        } else if x == 'S' {
+            return 50;
+        }
+        x as u8 - b'a' + 1
+    });
+
+    let width = grid[0].len();
+    let height = grid.len();
+    let mut steps = Vec::with_capacity(width * height);
+    for row in 0..height {
+        for col in 0..width {
+            let value = grid[row][col];
+            let mut adjacent_indices = vec![(row + 1, col), (row, col + 1)];
+            if row > 0 {
+                adjacent_indices.push((row - 1, col));
+            }
+            if col > 0 {
+                adjacent_indices.push((row, col - 1));
+            }
+            let adjacent_indices =
+                adjacent_indices
+                    .into_iter()
+                    .filter(|(row, col)| match grid.get(*row) {
+                        Some(row) => row.get(*col).is_some(),
+                        None => false,
+                    });
+            steps.push(Step {
+                edges: adjacent_indices
+                    .map(|(row, col)| row * width + col)
+                    .collect(),
+                height: value,
+            });
+        }
+    }
+    steps
+}
+
 fn get_distance(parents: &[Option<usize>], index: usize, depth: usize) -> usize {
     match parents[index] {
         Some(parent) => get_distance(parents, parent, depth + 1),
@@ -7,7 +54,8 @@ fn get_distance(parents: &[Option<usize>], index: usize, depth: usize) -> usize 
     }
 }
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
+    let steps = get_steps(input);
     let start = steps.iter().position(|step| step.height == 50).unwrap();
     let mut queue = VecDeque::new();
     let mut explored = HashSet::new();
@@ -40,7 +88,8 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
 }
 
 // Can be solved to search the shortest path to value 1 from `E`
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part_2(input: &str) -> impl std::fmt::Display {
+    let steps = get_steps(input);
     let start = steps.iter().position(|step| step.height == 100).unwrap();
     let mut queue = VecDeque::new();
     let mut explored = HashSet::new();
@@ -72,19 +121,22 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
     0
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "Sabqponm
+abcryxxl
+accszExk
+acctuvwj
+abdefghi";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("31"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("29"))
     }
 }

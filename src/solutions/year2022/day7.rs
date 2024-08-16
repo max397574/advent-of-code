@@ -33,11 +33,15 @@ fn generator(input: &str) -> HashMap<String, usize> {
     dir_sizes
 }
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
-    input.values().filter(|x| x <= &&100000).sum()
+pub fn part_1(input: &str) -> impl std::fmt::Display {
+    generator(input)
+        .values()
+        .filter(|x| x <= &&100000)
+        .sum::<usize>()
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part_2(input: &str) -> impl std::fmt::Display {
+    let input = generator(input);
     let needed = 40000000;
     let cur = input.get("//").unwrap();
     let mut min = 50000000;
@@ -49,19 +53,40 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
     min
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "$ cd /
+$ ls
+dir a
+14848514 b.txt
+8504156 c.dat
+dir d
+$ cd a
+$ ls
+dir e
+29116 f
+2557 g
+62596 h.lst
+$ cd e
+$ ls
+584 i
+$ cd ..
+$ cd ..
+$ cd d
+$ ls
+4060174 j
+8033020 d.log
+5626152 d.ext
+7214296 k";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("95437"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("24933642"))
     }
 }

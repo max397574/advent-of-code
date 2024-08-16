@@ -1,6 +1,3 @@
-#![feature(iter_map_windows)]
-#![feature(iter_next_chunk)]
-
 use std::cmp::max;
 
 /// Returns true if the sand did land
@@ -68,7 +65,7 @@ fn get_grid(input: &str) -> (Box<[[bool; 1000]; 1000]>, usize) {
     (grid, max_y)
 }
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
     let mut sands_dropped = 0;
     let (mut grid, max_y) = get_grid(input);
 
@@ -81,7 +78,7 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
     }
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part_2(input: &str) -> impl std::fmt::Display {
     let mut sands_dropped = 0;
     let (mut grid, max_y) = get_grid(input);
     (0..1000).for_each(|x| {
@@ -96,19 +93,19 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
     }
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "498,4 -> 498,6 -> 496,6
+503,4 -> 502,4 -> 502,9 -> 494,9";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("24"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("93"))
     }
 }

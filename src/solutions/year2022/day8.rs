@@ -4,7 +4,7 @@
 // out which trees are blocked, and pop them from the stack. This way the stack stays in reverse
 // sorted order automatically, without having to sort.
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part_1(input: &str) -> impl std::fmt::Display {
     let cells = aoc::grid(input, |byte| byte.to_digit(10).unwrap() as i16);
     let len = cells.len();
     let row_len = cells[0].len();
@@ -51,7 +51,7 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
     for _ in 0..row_len {
         maximums.push(-1);
     }
-    for j in 0..row_len {
+    (0..row_len).for_each(|j| {
         for i in 0..len {
             if cells[i][j] > maximums[j] {
                 maximums[j] = cells[i][j];
@@ -61,12 +61,12 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
                 }
             }
         }
-    }
+    });
     maximums.clear();
     for _ in 0..row_len {
         maximums.push(-1);
     }
-    for j in 0..row_len {
+    (0..row_len).for_each(|j| {
         for x in 0..len {
             let i = len - x - 1;
             if cells[i][j] > maximums[j] {
@@ -77,11 +77,11 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
                 }
             }
         }
-    }
+    });
     visible
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part_2(input: &str) -> impl std::fmt::Display {
     let cells = input
         .lines()
         .map(|row| {
@@ -146,19 +146,22 @@ pub fn part_2(_input: &str) -> impl std::fmt::Display {
     maximum
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT1: &str = "";
-    const _INPUT2: &str = "";
+    const INPUT: &str = "30373
+25512
+65332
+33549
+35390";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("0"))
+    #[test]
+    fn part1() {
+        assert_eq!(part_1(INPUT).to_string(), String::from("21"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("0"))
+    #[test]
+    fn part2() {
+        assert_eq!(part_2(INPUT).to_string(), String::from("8"))
     }
 }
