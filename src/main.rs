@@ -3,15 +3,17 @@
 #![feature(iter_next_chunk)]
 #![feature(extract_if)]
 #![feature(slice_split_once)]
+#![feature(let_chains)]
 use std::{
     env::args,
     time::{Duration, Instant},
 };
 
-mod aoc_helpers;
 mod utils;
 
 mod solutions;
+
+pub use crate::solutions::year2024::*;
 
 pub fn main() {
     let mut args = args();

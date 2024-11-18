@@ -24,9 +24,9 @@ fn is_symbol(char: u8) -> bool {
 pub fn part_1(input: &str) -> impl std::fmt::Display {
     let mut sum = 0;
     let grid = get_grid(input.as_bytes());
-    for line in grid.iter() {
-        println!("{:?}", line.to_str().unwrap());
-    }
+    //for line in grid.iter() {
+    //    println!("{:?}", line.to_str().unwrap());
+    //}
     for (idx, line) in grid.iter().enumerate().skip(1).rev().skip(1).rev() {
         let mut skip: usize = 0;
         while skip < line.len() {
@@ -37,7 +37,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
             for (col, byte) in line.iter().enumerate().skip(skip) {
                 if !byte.is_ascii_digit() {
                     let num = &line[skip..col];
-                    println!("{:?}", num.to_str().unwrap());
+                    //println!("{:?}", num.to_str().unwrap());
                     if is_symbol(line[skip - 1])
                         || is_symbol(line[col])
                         || grid[idx - 1]

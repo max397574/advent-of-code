@@ -40,6 +40,13 @@ impl<T> Grid<T> {
         self.cells.get(y * self.width + x)
     }
 
+    /// Sets the element at a certain position
+    ///
+    /// * `coords`: (x,y) *0-based* coordinates from top left both increasing
+    pub fn set_at(&mut self, (x, y): (usize, usize), value: T) {
+        self.cells[y * self.width + x] = value;
+    }
+
     /// Gets the element at a certain position
     ///
     /// * `coords`: (x,y) *0-based* coordinates from top left both increasing
@@ -55,12 +62,10 @@ impl<T> Grid<T> {
         self.cells.len() / self.width
     }
 
-    // /// Filters away out of bound values
-    // fn filter_oob(
-    //     iter: impl Iterator<Item = ((usize, usize), &T)>,
-    // ) -> impl Iterator<Item = ((usize, usize), &T)> {
-    // }
-    //
+    pub fn get_dimensions(&self) -> (usize, usize) {
+        (self.width, self.height())
+    }
+
     // /// Gets the direct neighbours of a cell
     // pub fn get_neighbours(
     //     &self,

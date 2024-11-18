@@ -1,4 +1,4 @@
-use crate::aoc_helpers::grid::Grid;
+use crate::utils::grid::Grid;
 
 fn solve(input: &str, mut expansion_factor: usize) -> usize {
     let grid = Grid::from_str(input, |((_, _), c)| c == '#');

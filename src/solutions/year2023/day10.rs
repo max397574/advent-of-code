@@ -1,4 +1,4 @@
-use crate::aoc_helpers::grid::*;
+use crate::utils::grid::*;
 
 fn iterate_loop(grid: &Grid<u8>, mut callback: impl FnMut((usize, usize))) {
     let ((x, y), _) = grid.iter().find(|&((_, _), c)| *c == b'S').unwrap();
@@ -61,8 +61,8 @@ pub fn part_2(input: &str) -> impl std::fmt::Display {
     shoelace(&vertices) - (vertices.len() / 2) as f64 + 1.0
 }
 
-pub fn part_2_rays(input: &str) -> impl std::fmt::Display {
-// pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn _part_2_rays(input: &str) -> impl std::fmt::Display {
+    // pub fn part_2(input: &str) -> impl std::fmt::Display {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut seen = Grid {
         cells: vec![false; grid.cells.len()],
@@ -155,6 +155,14 @@ L7JLJL-JLJLJL--JLJ.L";
     #[test]
     fn part2_with_squeeze() {
         assert_eq!(part_2(INPUT_WITH_SQUEEZE).to_string(), String::from("4"))
+    }
+
+    #[test]
+    fn part2_rays() {
+        assert_eq!(
+            _part_2_rays(INPUT_SPARE_PIPES).to_string(),
+            String::from("10")
+        )
     }
 
     #[test]
