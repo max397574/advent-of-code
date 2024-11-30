@@ -19,12 +19,12 @@ mod tests {
     const _INPUT: &str = \"\";
 
     // #[test]
-    fn _part1() {
+    fn _part_1() {
         assert_eq!(part1(_INPUT).to_string(), String::from(\"0\"))
     }
 
     // #[test]
-    fn _part2() {
+    fn _part_2() {
         assert_eq!(part2(_INPUT).to_string(), String::from(\"0\"))
     }
 }" > "./src/solutions/year$year/day$day.rs"
