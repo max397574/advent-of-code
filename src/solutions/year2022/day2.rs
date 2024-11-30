@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
     let mut score = 0;
     for line in lines {
@@ -24,7 +24,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     score
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
     let mut score = 0;
     for line in lines {
@@ -70,12 +70,12 @@ B X
 C Z";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("15"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("15"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("12"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("12"))
     }
 }

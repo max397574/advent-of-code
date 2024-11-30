@@ -65,7 +65,7 @@ fn get_grid(input: &str) -> (Box<[[bool; 1000]; 1000]>, usize) {
     (grid, max_y)
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut sands_dropped = 0;
     let (mut grid, max_y) = get_grid(input);
 
@@ -78,7 +78,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     }
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut sands_dropped = 0;
     let (mut grid, max_y) = get_grid(input);
     (0..1000).for_each(|x| {
@@ -100,12 +100,12 @@ mod tests {
 503,4 -> 502,4 -> 502,9 -> 494,9";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("24"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("24"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("93"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("93"))
     }
 }

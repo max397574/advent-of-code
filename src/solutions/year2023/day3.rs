@@ -21,7 +21,7 @@ fn is_symbol(char: u8) -> bool {
     char != b'.' && !char.is_ascii_digit()
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut sum = 0;
     let grid = get_grid(input.as_bytes());
     //for line in grid.iter() {
@@ -65,7 +65,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     sum
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut sum = 0;
     let grid = get_grid(input.as_bytes());
     for (idx, line) in grid.iter().enumerate().skip(1).rev().skip(1).rev() {
@@ -140,12 +140,12 @@ mod tests {
 .664.598..";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("4361"))
+    fn part_1() {
+        assert_eq!(part1(_INPUT1).to_string(), String::from("4361"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("467835"))
+    fn part_2() {
+        assert_eq!(part2(_INPUT2).to_string(), String::from("467835"))
     }
 }

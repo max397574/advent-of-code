@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let lines = input.split('\n');
     let mut increments = 0;
     let mut previous = 10000000;
@@ -14,7 +14,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     increments
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut increments = 0;
     let mut previous = 65000;
     for line in input.split('\n').collect::<Vec<&str>>()[..].windows(3) {
@@ -54,12 +54,12 @@ mod tests {
 263";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("7"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("7"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("5"))
+    fn part_2() {
+        assert_eq!(part2(INPUT2).to_string(), String::from("5"))
     }
 }

@@ -1,6 +1,6 @@
 use bstr::ByteSlice;
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut sum: u32 = 0;
     let mut tmp_sum: u32 = 0;
     input
@@ -23,7 +23,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     sum + tmp_sum
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part2(_input: &str) -> impl std::fmt::Display {
     0
 }
 
@@ -33,12 +33,12 @@ mod tests {
     const INPUT: &str = "rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("1320"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("1320"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("0"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("0"))
     }
 }

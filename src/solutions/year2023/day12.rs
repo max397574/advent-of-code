@@ -19,7 +19,7 @@ impl From<u8> for Spring {
     }
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     input
         .as_bytes()
         .lines()
@@ -85,8 +85,8 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
         .sum::<usize>()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
-    part_1(
+pub fn part2(input: &str) -> impl std::fmt::Display {
+    part1(
         &input
             .lines()
             .map(|line| {
@@ -109,12 +109,12 @@ mod tests {
 ?###???????? 3,2,1";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("21"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("21"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("525152"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("525152"))
     }
 }

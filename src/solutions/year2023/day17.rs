@@ -27,7 +27,7 @@ fn filter_oob(coords: Vec<Node>, dimensions: (usize, usize)) -> Vec<Node> {
         .collect()
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     //let grid = Grid::from_str(input, |((_, _), c)| (c as u8 - 48) as usize);
     //let dimensions = grid.get_dimensions();
     //let adjacency = |node: Node| {
@@ -77,7 +77,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     0
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part2(_input: &str) -> impl std::fmt::Display {
     0
 }
 
@@ -99,12 +99,12 @@ mod tests {
 4322674655533";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("102"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("102"))
     }
 
     // #[test]
     fn _part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("0"))
+        assert_eq!(part2(INPUT).to_string(), String::from("0"))
     }
 }

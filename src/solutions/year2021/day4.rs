@@ -46,7 +46,7 @@ impl Game {
     }
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let (numbers, boards) = input.split_once("\n\n").unwrap();
     let numbers = numbers
         .split(',')
@@ -77,7 +77,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     0
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let (numbers, boards) = input.split_once("\n\n").unwrap();
     let numbers = numbers
         .split(',')
@@ -134,12 +134,12 @@ mod tests {
  2  0 12  3  7";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("4512"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("4512"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("1924"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("1924"))
     }
 }

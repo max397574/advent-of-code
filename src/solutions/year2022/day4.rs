@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
     let re = regex::Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
     let mut amount = 0;
@@ -21,7 +21,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     amount
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
     let re = regex::Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
     let mut amount = 0;
@@ -53,12 +53,12 @@ mod tests {
 2-6,4-8";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("2"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("2"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("4"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("4"))
     }
 }

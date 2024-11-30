@@ -32,7 +32,7 @@ fn iterate_loop(grid: &Grid<u8>, mut callback: impl FnMut((usize, usize))) {
     }
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut distance = 0;
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     iterate_loop(&grid, |(_, _)| distance += 1);
@@ -53,16 +53,16 @@ fn shoelace(vertices: &[(i32, i32)]) -> f64 {
     0.5 * (sum as f64).abs()
 }
 
-// pub fn part_2_picks_shoelace(input: &str) -> impl std::fmt::Display {
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+// pub fn part2_picks_shoelace(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut vertices = Vec::new();
     iterate_loop(&grid, |(x, y)| vertices.push((x as i32, y as i32)));
     shoelace(&vertices) - (vertices.len() / 2) as f64 + 1.0
 }
 
-pub fn _part_2_rays(input: &str) -> impl std::fmt::Display {
-    // pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn _part2_rays(input: &str) -> impl std::fmt::Display {
+    // pub fn part2(input: &str) -> impl std::fmt::Display {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut seen = Grid {
         cells: vec![false; grid.cells.len()],
@@ -143,35 +143,35 @@ L.L7LFJ|||||FJL7||LJ
 L7JLJL-JLJLJL--JLJ.L";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("4"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("4"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT_SIMPLE).to_string(), String::from("4"))
+    fn part_2() {
+        assert_eq!(part2(INPUT_SIMPLE).to_string(), String::from("4"))
     }
 
     #[test]
-    fn part2_with_squeeze() {
-        assert_eq!(part_2(INPUT_WITH_SQUEEZE).to_string(), String::from("4"))
+    fn part_2_with_squeeze() {
+        assert_eq!(part2(INPUT_WITH_SQUEEZE).to_string(), String::from("4"))
     }
 
     #[test]
-    fn part2_rays() {
+    fn part_2_rays() {
         assert_eq!(
-            _part_2_rays(INPUT_SPARE_PIPES).to_string(),
+            _part2_rays(INPUT_SPARE_PIPES).to_string(),
             String::from("10")
         )
     }
 
     #[test]
-    fn part2_bigger() {
-        assert_eq!(part_2(INPUT_BIGGER).to_string(), String::from("8"))
+    fn part_2_bigger() {
+        assert_eq!(part2(INPUT_BIGGER).to_string(), String::from("8"))
     }
 
     #[test]
-    fn part2_with_spare_pipes() {
-        assert_eq!(part_2(INPUT_SPARE_PIPES).to_string(), String::from("10"))
+    fn part_2_with_spare_pipes() {
+        assert_eq!(part2(INPUT_SPARE_PIPES).to_string(), String::from("10"))
     }
 }

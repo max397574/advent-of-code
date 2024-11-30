@@ -1,6 +1,6 @@
 use atoi::atoi;
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut sum = 0;
     let mut id = 0;
     // let mut valid = true;
@@ -41,7 +41,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     sum
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut max_red: u32 = 0;
     let mut max_green: u32 = 0;
     let mut max_blue: u32 = 0;
@@ -90,12 +90,12 @@ Game 4: 1 green, 3 red, 6 blue; 3 green, 6 red; 3 green, 15 blue, 14 red
 Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(_INPUT1).to_string(), String::from("8"))
+    fn part_1() {
+        assert_eq!(part1(_INPUT1).to_string(), String::from("8"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(_INPUT2).to_string(), String::from("2286"))
+    fn part_2() {
+        assert_eq!(part2(_INPUT2).to_string(), String::from("2286"))
     }
 }

@@ -104,7 +104,7 @@ fn round(monkeys: &mut [Monkey], callback: impl Fn(&usize) -> usize) {
     }
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut monkeys = generator(input);
     for _ in 0..20 {
         round(&mut monkeys[..], |x| *x / 3);
@@ -117,7 +117,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     inspections[monkeys.len() - 2..].iter().product::<u128>()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut monkeys = generator(input);
     let lcm = get_lcm(monkeys.iter().map(|monkey| monkey.test).collect::<Vec<_>>());
     for _ in 0..10000 {
@@ -163,12 +163,12 @@ Monkey 3:
     If false: throw to monkey 1";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("10605"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("10605"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("2713310158"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("2713310158"))
     }
 }

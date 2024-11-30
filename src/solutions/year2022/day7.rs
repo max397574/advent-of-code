@@ -33,14 +33,14 @@ fn generator(input: &str) -> HashMap<String, usize> {
     dir_sizes
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     generator(input)
         .values()
         .filter(|x| x <= &&100000)
         .sum::<usize>()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let input = generator(input);
     let needed = 40000000;
     let cur = input.get("//").unwrap();
@@ -81,12 +81,12 @@ $ ls
 7214296 k";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("95437"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("95437"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("24933642"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("24933642"))
     }
 }

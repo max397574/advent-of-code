@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use bstr::ByteSlice;
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
     let mut lines = input.lines();
     let instructions = lines.next().unwrap();
@@ -32,7 +32,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     steps
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
     let mut lines = input.lines();
     let instructions = lines.next().unwrap();
@@ -95,12 +95,12 @@ ZZZ = (ZZZ, ZZZ)";
 XXX = (XXX, XXX)";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("6"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("6"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("6"))
+    fn part_2() {
+        assert_eq!(part2(INPUT2).to_string(), String::from("6"))
     }
 }

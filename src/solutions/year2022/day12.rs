@@ -56,7 +56,7 @@ fn get_distance(parents: &[Option<usize>], index: usize, depth: usize) -> usize 
     }
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let steps = get_steps(input);
     let start = steps.iter().position(|step| step.height == 50).unwrap();
     let mut queue = VecDeque::new();
@@ -90,7 +90,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
 }
 
 // Can be solved to search the shortest path to value 1 from `E`
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let steps = get_steps(input);
     let start = steps.iter().position(|step| step.height == 100).unwrap();
     let mut queue = VecDeque::new();
@@ -133,12 +133,12 @@ acctuvwj
 abdefghi";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("31"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("31"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("29"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("29"))
     }
 }

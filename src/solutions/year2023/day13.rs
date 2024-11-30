@@ -86,7 +86,7 @@ fn try_reflect(block: &[u32], allow_smudge: bool) -> usize {
     }
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let blocks = parse(input);
     blocks
         .iter()
@@ -101,7 +101,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
         .sum::<usize>()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let blocks = parse(input);
     blocks
         .iter()
@@ -136,12 +136,12 @@ mod tests {
 #....#..#";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("405"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("405"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("400"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("400"))
     }
 }

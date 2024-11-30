@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut last = vec![];
     let mut count = 0;
     // TODO: rewrite with std::slice::Windows
@@ -23,7 +23,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     count
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut last = vec![];
     let mut count = 0;
     // TODO: rewrite with std::slice::Windows
@@ -55,12 +55,12 @@ mod tests {
     const INPUT2: &str = "zcfzfwzzqfrljwzlrfnpqdbhtmscgvjw";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("10"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("10"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("26"))
+    fn part_2() {
+        assert_eq!(part2(INPUT2).to_string(), String::from("26"))
     }
 }

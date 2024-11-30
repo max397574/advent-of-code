@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut result = 0;
     let mut register = 1;
     let mut cycles = 1;
@@ -31,7 +31,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     result
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut register: i32 = 1;
     let mut cycles: i32 = 1;
     let mut to_add;
@@ -232,14 +232,14 @@ noop
 noop";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("13140"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("13140"))
     }
 
     #[test]
-    fn part2() {
+    fn part_2() {
         assert_eq!(
-            part_2(INPUT).to_string(),
+            part2(INPUT).to_string(),
             String::from(
                 "##..##..##..##..##..##..##..##..##..##..
 ###...###...###...###...###...###...###.

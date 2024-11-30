@@ -24,7 +24,7 @@ impl std::fmt::Display for Type {
     }
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut grid = Grid::from_str(input, |((_, _), c)| match c {
         'O' => Type::Round,
         '#' => Type::Square,
@@ -60,7 +60,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
         .sum::<usize>()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut grid = Grid::from_str(input, |((_, _), c)| match c {
         'O' => Type::Round,
         '#' => Type::Square,
@@ -178,12 +178,12 @@ O.#..O.#.#
 #OO..#....";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("136"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("136"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("64"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("64"))
     }
 }

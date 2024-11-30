@@ -96,7 +96,7 @@ fn parse(input: &str) -> Vec<Value> {
         .collect()
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut count = 0;
     for (i, values) in parse(input).chunks(2).enumerate() {
         if values[0] < values[1] {
@@ -106,7 +106,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     count
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut input = parse(input).to_owned();
     let divider1 = Value::from("[[2]]");
     let divider2 = Value::from("[[6]]");
@@ -154,12 +154,12 @@ mod tests {
 [1,[2,[3,[4,[5,6,0]]]],8,9]";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("13"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("13"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("140"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("140"))
     }
 }

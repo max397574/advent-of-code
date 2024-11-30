@@ -96,7 +96,7 @@ fn compare_hands(a: &(u32, [u8; 5]), b: &(u32, [u8; 5]), jokers: bool) -> Orderi
     Ordering::Equal
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
     let mut hands: Vec<(u32, [u8; 5])> = Vec::new();
     for line in input.lines() {
@@ -110,7 +110,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     score
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
     let mut hands: Vec<(u32, [u8; 5])> = Vec::new();
     for line in input.lines() {
@@ -135,13 +135,13 @@ QQQJA 483";
     const INPUT2: &str = INPUT1;
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("6440"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("6440"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("5905"))
+    fn part_2() {
+        assert_eq!(part2(INPUT2).to_string(), String::from("5905"))
     }
 }
 

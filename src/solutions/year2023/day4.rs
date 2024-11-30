@@ -1,7 +1,7 @@
 use atoi::atoi;
 use bstr::ByteSlice;
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut score = 0;
     let input = input.as_bytes();
     let numbers_per_line = ((input.find_byte(b'\n').unwrap() - 9) / 3) as u32;
@@ -24,7 +24,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     score
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut matching_numbers = Vec::new();
     let input = input.as_bytes();
     let numbers_per_line = ((input.find_byte(b'\n').unwrap() - 9) / 3) as u32;
@@ -73,12 +73,12 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11";
     const INPUT2: &str = INPUT1;
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("13"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("13"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("30"))
+    fn part_2() {
+        assert_eq!(part2(INPUT2).to_string(), String::from("30"))
     }
 }

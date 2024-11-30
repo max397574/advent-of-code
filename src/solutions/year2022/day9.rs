@@ -32,7 +32,7 @@ fn catch_up(mut tx: i32, mut ty: i32, hx: i32, hy: i32) -> (i32, i32) {
     (tx, ty)
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut positions = Vec::new();
     positions.push((0, 0));
     let mut hx: i32 = 0;
@@ -63,7 +63,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     positions.len()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut positions = Vec::new();
     positions.push((0, 0));
     let mut hx: i32;
@@ -128,12 +128,12 @@ L 25
 U 20";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("13"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("13"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("36"))
+    fn part_2() {
+        assert_eq!(part2(INPUT2).to_string(), String::from("36"))
     }
 }

@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut depth = 0;
     let mut horizontal = 0;
     for line in input.lines() {
@@ -20,7 +20,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     depth * horizontal
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut depth = 0;
     let mut horizontal = 0;
     let mut aim = 0;
@@ -55,12 +55,12 @@ down 8
 forward 2";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("150"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("150"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("900"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("900"))
     }
 }

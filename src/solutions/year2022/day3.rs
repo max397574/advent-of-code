@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
     let mut score = 0;
     for line in lines {
@@ -23,7 +23,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     score
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let lines = input.lines();
     let mut score = 0;
     for line in lines.array_chunks::<3>() {
@@ -52,12 +52,12 @@ ttgJtRGJQctTZtZT
 CrZsJsPPZsGzwwsLwLmpwMDw";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("157"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("157"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("70"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("70"))
     }
 }

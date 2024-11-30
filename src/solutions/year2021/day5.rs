@@ -1,8 +1,8 @@
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part1(_input: &str) -> impl std::fmt::Display {
     0
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part2(_input: &str) -> impl std::fmt::Display {
     0
 }
 
@@ -13,12 +13,12 @@ mod tests {
     const INPUT2: &str = "";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("0"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("0"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("0"))
+    fn part_2() {
+        assert_eq!(part2(INPUT2).to_string(), String::from("0"))
     }
 }

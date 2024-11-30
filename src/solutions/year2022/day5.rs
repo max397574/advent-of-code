@@ -46,7 +46,7 @@ fn generator(input: &str) -> Supplies {
     }
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let input = generator(input);
     let mut stacks = input.stacks.to_owned();
     for instruction in input.instructions.iter() {
@@ -62,7 +62,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     String::from_utf8(top_crates).unwrap()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let input = generator(input);
     let mut stacks = input.stacks.to_owned();
     for instruction in input.instructions.iter() {
@@ -91,12 +91,12 @@ move 2 from 2 to 1
 move 1 from 1 to 2";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("CMZ"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("CMZ"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("MCD"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("MCD"))
     }
 }

@@ -1,6 +1,6 @@
 use bstr::ByteSlice;
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
     let total_amount = input.lines().count();
     let mut one_counts: Vec<u32> = vec![0; input.lines().next().unwrap().len()];
@@ -25,7 +25,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     u32::from_str_radix(&gamma, 2).unwrap() * u32::from_str_radix(&epsilon, 2).unwrap()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut input1 = input
         .as_bytes()
         .split(|b| b == &b'\n')
@@ -112,12 +112,12 @@ mod tests {
 01010";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("198"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("198"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("230"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("230"))
     }
 }

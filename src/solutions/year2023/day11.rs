@@ -36,11 +36,11 @@ fn solve(input: &str, mut expansion_factor: usize) -> usize {
         .sum::<usize>()
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     solve(input, 1)
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     solve(input, 1000000)
 }
 
@@ -59,17 +59,17 @@ mod tests {
 #...#.....";
 
     #[test]
-    fn part1() {
+    fn part_1() {
         assert_eq!(solve(INPUT, 1).to_string(), String::from("374"))
     }
 
     #[test]
-    fn part2_factor10() {
+    fn part_2_factor10() {
         assert_eq!(solve(INPUT, 10).to_string(), String::from("1030"))
     }
 
     #[test]
-    fn part2_factor100() {
+    fn part_2_factor100() {
         assert_eq!(solve(INPUT, 100).to_string(), String::from("8410"))
     }
 }

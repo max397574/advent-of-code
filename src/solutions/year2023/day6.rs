@@ -19,7 +19,7 @@ fn find_options(total_time: u64, minimal_distance: u64) -> u64 {
     total_time + 1 - (time_hold * 2)
 }
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
     let mut lines = input.lines();
     let times = lines.next().unwrap()[11..]
@@ -50,7 +50,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     total_options
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
     let mut time = 0;
     let mut i = 10;
@@ -84,12 +84,12 @@ Distance:  9  40  200";
     const INPUT2: &str = INPUT1;
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT1).to_string(), String::from("288"))
+    fn part_1() {
+        assert_eq!(part1(INPUT1).to_string(), String::from("288"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT2).to_string(), String::from("71503"))
+    fn part_2() {
+        assert_eq!(part2(INPUT2).to_string(), String::from("71503"))
     }
 }

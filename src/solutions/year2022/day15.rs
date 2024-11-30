@@ -43,7 +43,7 @@
 //    (beacon_distances, beacons)
 //}
 
-pub fn part_1(_input: &str) -> impl std::fmt::Display {
+pub fn part1(_input: &str) -> impl std::fmt::Display {
     //let (beacon_distances, mut beacons) = get_beacon_distances_and_beacons(input);
     //beacons.sort();
     //beacons.dedup();
@@ -67,7 +67,7 @@ pub fn part_1(_input: &str) -> impl std::fmt::Display {
     0
 }
 
-pub fn part_2(_input: &str) -> impl std::fmt::Display {
+pub fn part2(_input: &str) -> impl std::fmt::Display {
     //let (beacon_distances, mut beacons) = get_beacon_distances_and_beacons(input);
     //beacons.sort();
     //beacons.dedup();
@@ -97,12 +97,12 @@ Sensor at x=14, y=3: closest beacon is at x=15, y=3
 Sensor at x=20, y=1: closest beacon is at x=15, y=3";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("0"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("0"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("0"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("0"))
     }
 }

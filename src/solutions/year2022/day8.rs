@@ -6,7 +6,7 @@
 
 use crate::utils::grid;
 
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     let cells = grid(input, |byte| byte.to_digit(10).unwrap() as i16);
     let len = cells.len();
     let row_len = cells[0].len();
@@ -83,7 +83,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
     visible
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let cells = input
         .lines()
         .map(|row| {
@@ -158,12 +158,12 @@ mod tests {
 35390";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("21"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("21"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("8"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("8"))
     }
 }

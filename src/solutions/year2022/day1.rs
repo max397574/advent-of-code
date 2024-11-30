@@ -1,4 +1,4 @@
-pub fn part_1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display {
     input
         .split("\n\n")
         .map(|set| {
@@ -10,7 +10,7 @@ pub fn part_1(input: &str) -> impl std::fmt::Display {
         .unwrap()
 }
 
-pub fn part_2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display {
     let mut sorted = input
         .split("\n\n")
         .map(|set| {
@@ -30,12 +30,12 @@ mod tests {
     const INPUT: &str = "1000\n2000\n3000\n\n4000\n\n5000\n6000\n\n7000\n8000\n9000\n\n10000";
 
     #[test]
-    fn part1() {
-        assert_eq!(part_1(INPUT).to_string(), String::from("24000"))
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("24000"))
     }
 
     #[test]
-    fn part2() {
-        assert_eq!(part_2(INPUT).to_string(), String::from("45000"))
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("45000"))
     }
 }
