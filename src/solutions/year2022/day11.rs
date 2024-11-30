@@ -1,4 +1,4 @@
-use aoc::get_lcm;
+use crate::utils::get_lcm;
 use std::collections::VecDeque;
 
 #[derive(Clone, Copy, Debug)]

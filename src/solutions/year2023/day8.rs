@@ -1,4 +1,3 @@
-use aoc;
 use std::collections::HashMap;
 
 use bstr::ByteSlice;
@@ -72,7 +71,7 @@ pub fn part_2(input: &str) -> impl std::fmt::Display {
             current_node = nodes.get(&new_node).unwrap();
         }
     }
-    aoc::get_lcm(steps)
+    crate::utils::get_lcm(steps)
 }
 
 #[cfg(test)]

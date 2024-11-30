@@ -1,5 +1,7 @@
 use std::collections::{HashSet, VecDeque};
 
+use crate::utils::grid;
+
 #[derive(Debug)]
 struct Step {
     edges: Vec<usize>,
@@ -7,7 +9,7 @@ struct Step {
 }
 
 fn get_steps(input: &str) -> Vec<Step> {
-    let grid = aoc::grid(input, |x| {
+    let grid = grid(input, |x| {
         if x == 'E' {
             return 100;
         } else if x == 'S' {
