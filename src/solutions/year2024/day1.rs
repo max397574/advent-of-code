@@ -4,8 +4,8 @@ use crate::utils::parsing::ByteParsing;
 
 pub fn part1(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
-    let mut col1: Vec<u16> = Vec::with_capacity(1000);
-    let mut col2: Vec<u16> = Vec::with_capacity(1000);
+    let mut col1: Vec<u32> = Vec::with_capacity(1000);
+    let mut col2: Vec<u32> = Vec::with_capacity(1000);
     let idx1 = unsafe { input.iter().position(|b| *b == b' ').unwrap_unchecked() };
     let idx2 = idx1 + 3;
     let idx3 = idx1 + idx2;
@@ -18,7 +18,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     col1.iter()
         .zip(col2)
         .map(|(val1, val2)| val1.abs_diff(val2))
-        .sum::<u16>()
+        .sum::<u32>()
 }
 
 pub fn part2(input: &str) -> impl std::fmt::Display {
