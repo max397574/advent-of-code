@@ -4,6 +4,7 @@
 #![feature(extract_if)]
 #![feature(slice_split_once)]
 #![feature(let_chains)]
+#![allow(dead_code)]
 use std::{
     env::args,
     time::{Duration, Instant},
