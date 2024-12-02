@@ -2,47 +2,41 @@ use bstr::ByteSlice;
 
 use crate::utils::parsing::ByteParsing;
 
-enum Behavior {
-    Increasing,
-    Decreasing,
-}
-
 pub fn part1(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
     input
-        .lines()
+        .trim()
+        .split(|c| *c == b'\n')
         .map(|line| {
-            let numbers: Vec<u32> = line
-                .split(|c| *c == b' ')
-                .map(|chunk| chunk.as_num())
-                .collect();
-            let behavior = if numbers[0] < numbers[1] {
-                Behavior::Increasing
-            } else {
-                Behavior::Decreasing
-            };
-            if check_if_valid(numbers, behavior) {
-                1
-            } else {
-                0
+            let mut numbers = line.split(|c| *c == b' ').map(|chunk| chunk.as_num());
+            let first: u32 = unsafe { numbers.next().unwrap_unchecked() };
+            let mut second: u32 = unsafe { numbers.next().unwrap_unchecked() };
+            if !matches!(first.abs_diff(second), 1..=3) {
+                return 0;
             }
+            let direction = first.cmp(&second);
+            numbers.all(|num| {
+                let val = (matches!(second.abs_diff(num), 1..=3) && second.cmp(&num) == direction);
+                second = num;
+                val
+            }) as u32
         })
         .sum::<u32>()
 }
 
-fn check_if_valid(numbers: Vec<u32>, behavior: Behavior) -> bool {
-    let mut i = 0;
-    while i < numbers.len() - 1 {
-        if let Behavior::Increasing = behavior {
-            if numbers[i + 1] <= numbers[i] || numbers[i + 1] - numbers[i] > 3 {
-                return false;
-            }
-        } else if numbers[i + 1] >= numbers[i] || numbers[i] - numbers[i + 1] > 3 {
-            return false;
-        }
-        i += 1;
+fn check_line(numbers: &[u32]) -> bool {
+    let mut numbers = numbers.iter().copied();
+    let first: u32 = unsafe { numbers.next().unwrap_unchecked() };
+    let mut second: u32 = unsafe { numbers.next().unwrap_unchecked() };
+    if !matches!(first.abs_diff(second), 1..=3) {
+        return false;
     }
-    true
+    let direction = first.cmp(&second);
+    numbers.all(|num| {
+        let val = (matches!(second.abs_diff(num), 1..=3) && second.cmp(&num) == direction);
+        second = num;
+        val
+    })
 }
 
 pub fn part2(input: &str) -> impl std::fmt::Display {
@@ -50,38 +44,39 @@ pub fn part2(input: &str) -> impl std::fmt::Display {
     input
         .lines()
         .map(|line| {
-            let numbers: Vec<u32> = line
+            let mut numbers: Vec<u32> = line
                 .split(|c| *c == b' ')
                 .map(|chunk| chunk.as_num())
                 .collect();
-            let mut j = 0;
-            let mut any_true = false;
-            while j < numbers.len() {
-                let mut nums = numbers.clone();
-                nums.remove(j);
-                let behavior = if nums[0] < nums[1] {
-                    Behavior::Increasing
-                } else {
-                    Behavior::Decreasing
-                };
-                if check_if_valid(nums, behavior) {
-                    any_true = true;
-                }
-                if any_true {
+            let mut num_it = numbers.iter().copied();
+            let first: u32 = unsafe { num_it.next().unwrap_unchecked() };
+            let mut second: u32 = unsafe { num_it.next().unwrap_unchecked() };
+            let direction = first.cmp(&second);
+            let mut checked: usize = 1;
+            if matches!(first.abs_diff(second), 1..=3)
+                && num_it.all(|num| {
+                    let val =
+                        (matches!(second.abs_diff(num), 1..=3) && second.cmp(&num) == direction);
+                    second = num;
+                    if val {
+                        checked += 1;
+                    }
+                    val
+                })
+            {
+                return 1;
+            }
+            let len = numbers.len();
+            for j in checked.saturating_sub(1)..=checked + 1 {
+                let old = numbers[j];
+                numbers.copy_within(j + 1.., j);
+                if check_line(&numbers[..len - 1]) {
                     return 1;
                 }
-                j += 1;
+                numbers.copy_within(j..len - 2, j + 1);
+                numbers[j] = old;
             }
-            let behavior = if numbers[0] < numbers[1] {
-                Behavior::Increasing
-            } else {
-                Behavior::Decreasing
-            };
-            if check_if_valid(numbers, behavior) {
-                1
-            } else {
-                0
-            }
+            0
         })
         .sum::<u32>()
 }
