@@ -40,6 +40,23 @@ impl<T> Grid<T> {
         self.cells.get(y * self.width + x)
     }
 
+    pub fn get_i(&self, (x, y): (isize, isize)) -> Option<&T> {
+        if x >= self.width as isize || y >= self.height() as isize || x < 0 || y < 0 {
+            None
+        } else {
+            //println!("{},{}", y, self.width);
+            //println!("{}", y as usize * self.width);
+            self.cells.get(y as usize * self.width + x as usize)
+        }
+    }
+    pub fn get(&self, (x, y): (usize, usize)) -> Option<&T> {
+        if x >= self.width || y >= self.height() {
+            None
+        } else {
+            self.cells.get(y * self.width + x)
+        }
+    }
+
     /// Sets the element at a certain position
     ///
     /// * `coords`: (x,y) *0-based* coordinates from top left both increasing
