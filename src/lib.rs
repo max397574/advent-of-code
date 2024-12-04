@@ -4,6 +4,7 @@
 #![feature(extract_if)]
 #![feature(slice_split_once)]
 #![feature(let_chains)]
+#![feature(portable_simd)]
 
 pub mod utils;
 
