@@ -186,8 +186,6 @@ pub fn part2_speedy(input: &str) -> u32 {
     let mut s_prev_prev = [0, 0, 0];
     let mut s_prev_prev_prev = [0, 0, 0];
 
-    //const OVERLAP_MASK: u64 = u64::MAX & !(0b111) & !(0b111 << 61);
-
     input.lines().for_each(|line| {
         let vecs = get_bitvecs_p2(line);
         m_prev_prev_prev = m_prev_prev;
@@ -230,24 +228,6 @@ pub fn part2_speedy(input: &str) -> u32 {
             count +=
                 (s[i] & (m[i] << 2) & (a_prev[i] << 1) & (s_prev_prev[i]) & (m_prev_prev[i] << 2))
                     .count_ones();
-
-            //if i == 1 {
-            //    // up
-            //    count +=
-            //        (x[i] & (m_prev[i]) & (a_prev_prev[i]) & (s_prev_prev_prev[i] & OVERLAP_MASK))
-            //            .count_ones();
-            //    // down
-            //    count +=
-            //        (x_prev_prev_prev[i] & (m_prev_prev[i]) & (a_prev[i]) & (s[i] & OVERLAP_MASK))
-            //            .count_ones();
-            //} else {
-            //    // up
-            //    count +=
-            //        (x[i] & (m_prev[i]) & (a_prev_prev[i]) & (s_prev_prev_prev[i])).count_ones();
-            //    // down
-            //    count +=
-            //        (x_prev_prev_prev[i] & (m_prev_prev[i]) & (a_prev[i]) & (s[i])).count_ones();
-            //}
         });
     });
     count
