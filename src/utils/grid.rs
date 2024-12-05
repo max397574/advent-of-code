@@ -64,14 +64,19 @@ impl<T> Grid<T> {
         self.cells[y * self.width + x] = value;
     }
 
+    pub fn set_at_i(&mut self, (x, y): (isize, isize), value: T) {
+        self.cells[y as usize * self.width + x as usize] = value;
+    }
+
     /// Gets the element at a certain position
     ///
     /// * `coords`: (x,y) *0-based* coordinates from top left both increasing
     pub fn get_at_i(&self, (x, y): (isize, isize)) -> Option<&T> {
         if x < 0 || y < 0 {
-            panic!("Cannot use negative indices");
+            None
+        } else {
+            self.get((x as usize, y as usize))
         }
-        self.get_at((x as usize, y as usize))
     }
 
     /// Gets the hight of the grid
@@ -110,5 +115,18 @@ impl<T> std::ops::Index<(isize, isize)> for Grid<T> {
 impl<T> Default for Grid<T> {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+impl std::fmt::Display for Grid<char> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let mut str = String::new();
+        self.cells.iter().enumerate().for_each(|(idx, val)| {
+            if idx % self.width == 0 {
+                str.push('\n');
+            }
+            str.push(*val);
+        });
+        write!(f, "{str}")
     }
 }

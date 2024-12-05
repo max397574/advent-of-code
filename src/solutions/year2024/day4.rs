@@ -1,4 +1,3 @@
-#![feature(portable_simd)]
 use bstr::ByteSlice;
 use std::simd::{cmp::SimdPartialEq, Simd};
 
