@@ -1,6 +1,6 @@
 #![feature(portable_simd)]
 use bstr::ByteSlice;
-use std::simd::cmp::SimdPartialEq;
+use std::simd::{cmp::SimdPartialEq, Simd};
 
 use crate::utils::grid::Grid;
 
@@ -150,85 +150,33 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     }
 }
 
-fn get_bitvecs_p2(line: &[u8]) -> [[u64; 3]; 3] {
-    let bit_vec1 = std::simd::u8x64::from_slice(&line[0..64]);
-    let m_mask1 = bit_vec1.simd_eq(std::simd::u8x64::splat(b'M')).to_bitmask();
-    let a_mask1 = bit_vec1.simd_eq(std::simd::u8x64::splat(b'A')).to_bitmask();
-    let s_mask1 = bit_vec1.simd_eq(std::simd::u8x64::splat(b'S')).to_bitmask();
-    let bit_vec2 = std::simd::u8x64::from_slice(&line[62..126]);
-    let m_mask2 = bit_vec2.simd_eq(std::simd::u8x64::splat(b'M')).to_bitmask();
-    let a_mask2 = bit_vec2.simd_eq(std::simd::u8x64::splat(b'A')).to_bitmask();
-    let s_mask2 = bit_vec2.simd_eq(std::simd::u8x64::splat(b'S')).to_bitmask();
-    let bit_vec3 = std::simd::u8x64::from_slice(&line[76..]);
-    let m_mask3 = bit_vec3.simd_eq(std::simd::u8x64::splat(b'M')).to_bitmask() >> 48;
-    let a_mask3 = bit_vec3.simd_eq(std::simd::u8x64::splat(b'A')).to_bitmask() >> 48;
-    let s_mask3 = bit_vec3.simd_eq(std::simd::u8x64::splat(b'S')).to_bitmask() >> 48;
-    [
-        [m_mask1, m_mask2, m_mask3],
-        [a_mask1, a_mask2, a_mask3],
-        [s_mask1, s_mask2, s_mask3],
-    ]
+#[inline]
+fn get_simds(input: &[u8], index: usize) -> [Simd<u8, 64>; 5] {
+    let top_left = std::simd::u8x64::from_slice(&input[index * 64..]);
+    let top_right = std::simd::u8x64::from_slice(&input[index * 64 + 2..]);
+    let center = std::simd::u8x64::from_slice(&input[index * 64 + 141 + 1..]);
+    let bottom_left = std::simd::u8x64::from_slice(&input[index * 64 + 141 * 2..]);
+    let bottom_right = std::simd::u8x64::from_slice(&input[index * 64 + 141 * 2 + 2..]);
+    [top_left, top_right, center, bottom_left, bottom_right]
 }
 
 pub fn part2_speedy(input: &str) -> u32 {
     let input = input.as_bytes();
     let mut count = 0;
-    let mut m = [0, 0, 0];
-    let mut m_prev = [0, 0, 0];
-    let mut m_prev_prev = [0, 0, 0];
-    let mut m_prev_prev_prev = [0, 0, 0];
-    let mut a = [0, 0, 0];
-    let mut a_prev = [0, 0, 0];
-    let mut a_prev_prev = [0, 0, 0];
-    let mut a_prev_prev_prev = [0, 0, 0];
-    let mut s = [0, 0, 0];
-    let mut s_prev = [0, 0, 0];
-    let mut s_prev_prev = [0, 0, 0];
-    let mut s_prev_prev_prev = [0, 0, 0];
 
-    input.lines().for_each(|line| {
-        let vecs = get_bitvecs_p2(line);
-        m_prev_prev_prev = m_prev_prev;
-        m_prev_prev = m_prev;
-        m_prev = m;
-        m = vecs[0];
-        a_prev_prev_prev = a_prev_prev;
-        a_prev_prev = a_prev;
-        a_prev = a;
-        a = vecs[1];
-        s_prev_prev_prev = s_prev_prev;
-        s_prev_prev = s_prev;
-        s_prev = s;
-        s = vecs[2];
-        (0..3).for_each(|i| {
-            // M M
-            //  A
-            // S S
-            count +=
-                (s[i] & (s[i] << 2) & (a_prev[i] << 1) & (m_prev_prev[i]) & (m_prev_prev[i] << 2))
-                    .count_ones();
-
-            // M S
-            //  A
-            // M S
-            count +=
-                (m[i] & (s[i] << 2) & (a_prev[i] << 1) & (m_prev_prev[i]) & (s_prev_prev[i] << 2))
-                    .count_ones();
-
-            // S S
-            //  A
-            // M M
-            count +=
-                (m[i] & (m[i] << 2) & (a_prev[i] << 1) & (s_prev_prev[i]) & (s_prev_prev[i] << 2))
-                    .count_ones();
-
-            // S M
-            //  A
-            // S M
-            count +=
-                (s[i] & (m[i] << 2) & (a_prev[i] << 1) & (s_prev_prev[i]) & (m_prev_prev[i] << 2))
-                    .count_ones();
-        });
+    // iterate over groups of 64
+    (0..304).for_each(|i| {
+        let simds = get_simds(input, i);
+        // top left to bottom right
+        let diagonal1 = (simds[0] ^ simds[4])
+            .simd_eq(std::simd::u8x64::splat(b'M' ^ b'S'))
+            .to_bitmask();
+        // top right to bottom left
+        let diagonal2 = (simds[1] ^ simds[3])
+            .simd_eq(std::simd::u8x64::splat(b'M' ^ b'S'))
+            .to_bitmask();
+        let positions_center = simds[2].simd_eq(std::simd::u8x64::splat(b'A')).to_bitmask();
+        count += (diagonal1 & diagonal2 & positions_center).count_ones();
     });
     count
 }
