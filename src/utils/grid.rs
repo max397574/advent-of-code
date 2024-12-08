@@ -68,6 +68,24 @@ impl<T> Grid<T> {
         self.cells[y as usize * self.width + x as usize] = value;
     }
 
+    /// Sets the element at a certain position
+    /// checks whether out-of-bounds or not
+    /// returns bool, whether element was inbound
+    ///
+    /// * `coords`: (x,y) *0-based* coordinates from top left both increasing
+    pub fn set_at_i_checked(&mut self, (x, y): (isize, isize), value: T) -> bool {
+        if !self.is_inbounds_i((x, y)) {
+            false
+        } else {
+            self.cells[y as usize * self.width + x as usize] = value;
+            true
+        }
+    }
+
+    pub fn is_inbounds_i(&self, (x, y): (isize, isize)) -> bool {
+        x >= 0 && y >= 0 && (x as usize) < self.width && (y as usize) < self.height()
+    }
+
     /// Gets the element at a certain position
     ///
     /// * `coords`: (x,y) *0-based* coordinates from top left both increasing
