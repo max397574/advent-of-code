@@ -106,12 +106,19 @@ impl<T> Grid<T> {
         (self.width, self.height())
     }
 
-    // /// Gets the direct neighbours of a cell
-    // pub fn get_neighbours(
-    //     &self,
-    //     (x, y): (usize, usize),
-    // ) -> impl Iterator<Item = ((usize, usize), &T)> {
-    // }
+    /// Gets the direct neighbours of a cell
+    pub fn neighbours(
+        &self,
+        (x, y): (usize, usize),
+    ) -> impl Iterator<Item = (usize, usize)> + use<'_, T> {
+        [(0, -1), (-1, 0), (1, 0), (0, 1)]
+            .into_iter()
+            .map(move |(dx, dy)| (x as isize + dx, y as isize + dy))
+            .filter(move |&(x, y)| {
+                0 <= x && x < self.width as isize && 0 <= y && y < self.height() as isize
+            })
+            .map(move |(x, y)| (x as usize, y as usize))
+    }
 }
 
 impl<T> std::ops::Index<(usize, usize)> for Grid<T> {
