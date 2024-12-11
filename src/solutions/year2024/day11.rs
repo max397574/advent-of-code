@@ -104,7 +104,7 @@ const fn calc_cache(iteration: usize, num: usize, lut: &[[u64; 1000]; 76]) -> u6
 
 const CACHE_SIZE: usize = 1000;
 const CACHE_DEPTH: usize = 76;
-static CACHE: [[u64; CACHE_SIZE]; CACHE_DEPTH] = {
+const CACHE: [[u64; CACHE_SIZE]; CACHE_DEPTH] = {
     let mut cache = [[0; CACHE_SIZE]; CACHE_DEPTH];
     let mut num = 0;
     while num < 1000 {
