@@ -5,6 +5,7 @@
 #![feature(slice_split_once)]
 #![feature(let_chains)]
 #![feature(portable_simd)]
+#![feature(if_let_guard)]
 
 pub mod utils;
 
