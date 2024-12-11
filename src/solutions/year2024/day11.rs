@@ -28,33 +28,6 @@ pub fn part1_slower(input: &str) -> u64 {
     nums.len() as u64
 }
 
-#[inline(always)]
-pub fn fast_solution(input: &str, runs: u8) -> u64 {
-    let nums: Vec<u64> = input
-        .split_ascii_whitespace()
-        .map(|num| (num.as_bytes()).as_num())
-        .collect();
-
-    fn rec(num: u64, iteration: u8) -> u64 {
-        if num < 1000 {
-            return CACHE[iteration as usize][num as usize];
-        }
-        if iteration == 0 {
-            1
-        } else if num == 0 {
-            rec(1, iteration - 1)
-        } else if (num.ilog10() + 1) % 2 == 0 {
-            let first = num % 10_u64.pow((num.ilog10() + 1) / 2);
-            let second = num / 10_u64.pow((num.ilog10() + 1) / 2);
-            rec(first, iteration - 1) + rec(second, iteration - 1)
-        } else {
-            rec(num * 2024, iteration - 1)
-        }
-    }
-
-    nums.iter().map(|&num| rec(num, runs)).sum::<u64>()
-}
-
 pub fn part2_slower(input: &str) -> u64 {
     let nums: Vec<u64> = input
         .split_ascii_whitespace()
@@ -85,6 +58,55 @@ pub fn part2_slower(input: &str) -> u64 {
     nums.iter()
         .map(|&num| rec(num, 75, &mut cache))
         .sum::<u64>()
+}
+
+pub fn part2(input: &str) -> u64 {
+    //part2_slower(input)
+    fast_solution(input, 75)
+}
+
+pub fn part1(input: &str) -> u64 {
+    //part1_slower(input)
+    fast_solution(input, 25)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    const INPUT: &str = "125 17";
+
+    #[test]
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("55312"))
+    }
+}
+
+fn rec(num: u64, iteration: u8) -> u64 {
+    if iteration == 0 {
+        1
+    } else if num < 1000 {
+        return CACHE[iteration as usize][num as usize];
+    } else if num == 0 {
+        rec(1, iteration - 1)
+    } else if (num.ilog10() + 1) % 2 == 0 {
+        let first = num % 10_u64.pow((num.ilog10() + 1) / 2);
+        let second = num / 10_u64.pow((num.ilog10() + 1) / 2);
+        rec(first, iteration - 1) + rec(second, iteration - 1)
+    } else {
+        rec(num * 2024, iteration - 1)
+    }
+}
+
+#[inline(always)]
+pub fn fast_solution(input: &str, runs: u8) -> u64 {
+    let input = input.trim().as_bytes();
+    let mut sum = 0;
+
+    input.split(|&c| c == b' ').for_each(|num| {
+        sum += rec(num.as_num(), runs);
+    });
+
+    sum
 }
 
 const fn calc_cache(iteration: usize, num: usize, lut: &[[u64; 1000]; 76]) -> u64 {
@@ -131,29 +153,3 @@ const CACHE: [[u64; CACHE_SIZE]; CACHE_DEPTH] = {
     }
     cache
 };
-
-pub fn part2(input: &str) -> u64 {
-    //part2_slower(input)
-    fast_solution(input, 75)
-}
-
-pub fn part1(input: &str) -> u64 {
-    //part1_slower(input)
-    fast_solution(input, 25)
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    const INPUT: &str = "125 17";
-
-    #[test]
-    fn part_1() {
-        assert_eq!(part1(INPUT).to_string(), String::from("55312"))
-    }
-
-    // #[test]
-    fn _part2() {
-        assert_eq!(part2(INPUT).to_string(), String::from(""))
-    }
-}
