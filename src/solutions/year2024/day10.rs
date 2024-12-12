@@ -11,7 +11,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
             reachable.insert(pos);
             for level in b'1'..=b'9' {
                 for reachable_pos in std::mem::take(&mut reachable) {
-                    for neighbour in grid.neighbours(reachable_pos) {
+                    for neighbour in grid.plus_neighbours(reachable_pos) {
                         if grid[neighbour] == level {
                             reachable.insert(neighbour);
                         }
@@ -33,7 +33,7 @@ pub fn part2(input: &str) -> impl std::fmt::Display {
             reachable.insert(pos, 1);
             for level in b'1'..=b'9' {
                 for (reachable_pos, ways_to_reach) in std::mem::take(&mut reachable) {
-                    for neighbour in grid.neighbours(reachable_pos) {
+                    for neighbour in grid.plus_neighbours(reachable_pos) {
                         if grid[neighbour] == level {
                             *reachable.entry(neighbour).or_insert(0) += ways_to_reach;
                         }

@@ -107,7 +107,7 @@ impl<T> Grid<T> {
     }
 
     /// Gets the direct neighbours of a cell
-    pub fn neighbours(
+    pub fn plus_neighbours(
         &self,
         (x, y): (usize, usize),
     ) -> impl Iterator<Item = (usize, usize)> + use<'_, T> {
