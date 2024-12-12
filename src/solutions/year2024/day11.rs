@@ -44,12 +44,16 @@ pub fn part2_slower(input: &str) -> u64 {
             1
         } else if num == 0 {
             rec(1, iteration - 1, cache)
-        } else if (num.ilog10() + 1) % 2 == 0 {
-            let first = num % 10_u64.pow((num.ilog10() + 1) / 2);
-            let second = num / 10_u64.pow((num.ilog10() + 1) / 2);
-            rec(first, iteration - 1, cache) + rec(second, iteration - 1, cache)
         } else {
-            rec(num * 2024, iteration - 1, cache)
+            let digits = num.ilog10() + 1;
+            if digits % 2 == 0 {
+                let pow = 10_u64.pow(digits / 2);
+                let first = num % pow;
+                let second = num / pow;
+                rec(first, iteration - 1, cache) + rec(second, iteration - 1, cache)
+            } else {
+                rec(num * 2024, iteration - 1, cache)
+            }
         };
         cache.insert((num, iteration), result);
         result
@@ -81,29 +85,13 @@ mod tests {
     }
 }
 
-fn rec(num: u64, iteration: u8) -> u64 {
-    if iteration == 0 {
-        1
-    } else if num < 1000 {
-        return CACHE[iteration as usize][num as usize];
-    } else if num == 0 {
-        rec(1, iteration - 1)
-    } else if (num.ilog10() + 1) % 2 == 0 {
-        let first = num % 10_u64.pow((num.ilog10() + 1) / 2);
-        let second = num / 10_u64.pow((num.ilog10() + 1) / 2);
-        rec(first, iteration - 1) + rec(second, iteration - 1)
-    } else {
-        rec(num * 2024, iteration - 1)
-    }
-}
-
 #[inline(always)]
-pub fn fast_solution(input: &str, runs: u8) -> u64 {
+pub fn fast_solution(input: &str, runs: usize) -> u64 {
     let input = input.trim().as_bytes();
     let mut sum = 0;
-
     input.split(|&c| c == b' ').for_each(|num| {
-        sum += rec(num.as_num(), runs);
+        //sum += rec(num.as_num(), runs);
+        sum += calc_cache(runs, num.as_num(), &CACHE);
     });
 
     sum
@@ -116,11 +104,15 @@ const fn calc_cache(iteration: usize, num: usize, lut: &[[u64; 1000]; 76]) -> u6
         lut[iteration][num]
     } else if num == 0 {
         lut[iteration - 1][1]
-    } else if num.ilog10() % 2 == 1 {
-        let pow10 = 10usize.pow((num.ilog10() + 1) / 2);
-        calc_cache(iteration - 1, num / pow10, lut) + calc_cache(iteration - 1, num % pow10, lut)
     } else {
-        calc_cache(iteration - 1, num * 2024, lut)
+        let digits = num.ilog10() + 1;
+        if digits % 2 == 0 {
+            let pow10 = 10usize.pow(digits / 2);
+            calc_cache(iteration - 1, num / pow10, lut)
+                + calc_cache(iteration - 1, num % pow10, lut)
+        } else {
+            calc_cache(iteration - 1, num * 2024, lut)
+        }
     }
 }
 
