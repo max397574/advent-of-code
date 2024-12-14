@@ -7,6 +7,7 @@
 #![feature(portable_simd)]
 #![feature(if_let_guard)]
 #![feature(core_intrinsics)]
+#![feature(slice_ptr_get)]
 #![allow(internal_features)]
 
 pub mod utils;

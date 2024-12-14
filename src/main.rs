@@ -7,6 +7,7 @@
 #![feature(portable_simd)]
 #![feature(if_let_guard)]
 #![feature(core_intrinsics)]
+#![feature(slice_ptr_get)]
 #![allow(dead_code)]
 #![allow(unused_attributes)]
 #![allow(internal_features)]
