@@ -24,6 +24,8 @@
 // Prize: X=8400, Y=5400
 #![feature(core_intrinsics)]
 
+use std::intrinsics::unchecked_sub;
+
 pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut sum = 0;
     unsafe {
@@ -33,33 +35,33 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         let end_ptr = input.add(len);
         loop {
             input = input.add("Button A: X+".len());
-            let a11 = (*input.offset(0) as i64 - b'0' as i64) * 10
-                + (*input.offset(1) as i64 - b'0' as i64);
+            let a11 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64);
             input = input.add("00, Y+".len());
-            let a21 = (*input.offset(0) as i64 - b'0' as i64) * 10
-                + (*input.offset(1) as i64 - b'0' as i64);
+            let a21 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64);
             input = input.add("00\nButton B: X+".len());
-            let a12 = (*input.offset(0) as i64 - b'0' as i64) * 10
-                + (*input.offset(1) as i64 - b'0' as i64);
+            let a12 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64);
             input = input.add("00, Y+".len());
-            let a22 = (*input.offset(0) as i64 - b'0' as i64) * 10
-                + (*input.offset(1) as i64 - b'0' as i64);
+            let a22 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64);
             input = input.add("00\nPrize: X=".len());
-            let mut b1 = (*input.offset(0) as i64 - b'0' as i64) * 100
-                + (*input.offset(1) as i64 - b'0' as i64) * 10
-                + (*input.offset(2) as i64 - b'0' as i64);
+            let mut b1 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 100
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(2) as i64, b'0' as i64);
             input = input.add(3);
             while *input.offset(0) != b',' {
-                b1 = 10 * b1 + (*input.offset(0) as i64 - b'0' as i64);
+                b1 = 10 * b1 + unchecked_sub(*input.offset(0) as i64, b'0' as i64);
                 input = input.add(1);
             }
             input = input.add(4);
-            let mut b2 = (*input.offset(0) as i64 - b'0' as i64) * 100
-                + (*input.offset(1) as i64 - b'0' as i64) * 10
-                + (*input.offset(2) as i64 - b'0' as i64);
+            let mut b2 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 100
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(2) as i64, b'0' as i64);
             input = input.add(3);
             while input != end_ptr && *input.offset(0) != b'\n' {
-                b2 = 10 * b2 + (*input.offset(0) as i64 - b'0' as i64);
+                b2 = 10 * b2 + unchecked_sub(*input.offset(0) as i64, b'0' as i64);
                 input = input.add(1);
             }
             let det_a = a11 * a22 - a12 * a21;
@@ -95,33 +97,33 @@ pub fn part2(input: &str) -> impl std::fmt::Display {
         let end_ptr = input.add(len);
         loop {
             input = input.add("Button A: X+".len());
-            let a11 = (*input.offset(0) as i64 - b'0' as i64) * 10
-                + (*input.offset(1) as i64 - b'0' as i64);
+            let a11 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64);
             input = input.add("00, Y+".len());
-            let a21 = (*input.offset(0) as i64 - b'0' as i64) * 10
-                + (*input.offset(1) as i64 - b'0' as i64);
+            let a21 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64);
             input = input.add("00\nButton B: X+".len());
-            let a12 = (*input.offset(0) as i64 - b'0' as i64) * 10
-                + (*input.offset(1) as i64 - b'0' as i64);
+            let a12 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64);
             input = input.add("00, Y+".len());
-            let a22 = (*input.offset(0) as i64 - b'0' as i64) * 10
-                + (*input.offset(1) as i64 - b'0' as i64);
+            let a22 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64);
             input = input.add("00\nPrize: X=".len());
-            let mut b1 = (*input.offset(0) as i64 - b'0' as i64) * 100
-                + (*input.offset(1) as i64 - b'0' as i64) * 10
-                + (*input.offset(2) as i64 - b'0' as i64);
+            let mut b1 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 100
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(2) as i64, b'0' as i64);
             input = input.add(3);
             while *input.offset(0) != b',' {
-                b1 = 10 * b1 + (*input.offset(0) as i64 - b'0' as i64);
+                b1 = 10 * b1 + unchecked_sub(*input.offset(0) as i64, b'0' as i64);
                 input = input.add(1);
             }
             input = input.add(4);
-            let mut b2 = (*input.offset(0) as i64 - b'0' as i64) * 100
-                + (*input.offset(1) as i64 - b'0' as i64) * 10
-                + (*input.offset(2) as i64 - b'0' as i64);
+            let mut b2 = unchecked_sub(*input.offset(0) as i64, b'0' as i64) * 100
+                + unchecked_sub(*input.offset(1) as i64, b'0' as i64) * 10
+                + unchecked_sub(*input.offset(2) as i64, b'0' as i64);
             input = input.add(3);
             while input != end_ptr && *input.offset(0) != b'\n' {
-                b2 = 10 * b2 + (*input.offset(0) as i64 - b'0' as i64);
+                b2 = 10 * b2 + unchecked_sub(*input.offset(0) as i64, b'0' as i64);
                 input = input.add(1);
             }
             let det_a = a11 * a22 - a12 * a21;
