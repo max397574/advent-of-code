@@ -6,8 +6,10 @@
 #![feature(let_chains)]
 #![feature(portable_simd)]
 #![feature(if_let_guard)]
+#![feature(core_intrinsics)]
 #![allow(dead_code)]
 #![allow(unused_attributes)]
+#![allow(internal_features)]
 use std::{
     env::args,
     time::{Duration, Instant},

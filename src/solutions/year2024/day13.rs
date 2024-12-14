@@ -22,6 +22,7 @@
 // Button A: X+94, Y+34
 // Button B: X+22, Y+67
 // Prize: X=8400, Y=5400
+#![feature(core_intrinsics)]
 
 pub fn part1(input: &str) -> impl std::fmt::Display {
     let mut input = input.as_bytes();
@@ -61,14 +62,14 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
             let det_a = a11 * a22 - a12 * a21;
             if det_a != 0 {
                 let tmp1 = b1 * a22 - a12 * b2;
-                let tmp2 = a11 * b2 - b1 * a21;
-                //TODO: unchecked modulo or sth?
-                if tmp1 % det_a == 0 && tmp2 % det_a == 0 {
-                    // TODO: use unchecked div
-                    let x1 = tmp1 / det_a;
-                    let x2 = tmp2 / det_a;
-                    if x1 >= 0 && x2 >= 0 {
-                        sum += 3 * x1 + x2;
+                if std::intrinsics::unchecked_rem(tmp1, det_a) == 0 {
+                    let tmp2 = a11 * b2 - b1 * a21;
+                    if std::intrinsics::unchecked_rem(tmp2, det_a) == 0 {
+                        let x1 = std::intrinsics::unchecked_div(tmp1, det_a);
+                        let x2 = std::intrinsics::unchecked_div(tmp2, det_a);
+                        if x1 >= 0 && x2 >= 0 {
+                            sum += 3 * x1 + x2;
+                        }
                     }
                 }
             }

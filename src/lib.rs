@@ -6,6 +6,8 @@
 #![feature(let_chains)]
 #![feature(portable_simd)]
 #![feature(if_let_guard)]
+#![feature(core_intrinsics)]
+#![allow(internal_features)]
 
 pub mod utils;
 
