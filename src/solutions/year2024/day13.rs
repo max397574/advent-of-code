@@ -25,39 +25,42 @@
 #![feature(core_intrinsics)]
 
 pub fn part1(input: &str) -> impl std::fmt::Display {
-    let mut input = input.as_bytes();
     let mut sum = 0;
     unsafe {
+        let input = input.as_bytes();
+        let len = input.len();
+        let mut input = input.as_ptr();
+        let end_ptr = input.add(len);
         loop {
-            input = input.get_unchecked("Button A: X+".len()..);
-            let a11 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(1) as i64 - b'0' as i64);
-            input = input.get_unchecked("00, Y+".len()..);
-            let a21 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(1) as i64 - b'0' as i64);
-            input = input.get_unchecked("00\nButton B: X+".len()..);
-            let a12 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(1) as i64 - b'0' as i64);
-            input = input.get_unchecked("00, Y+".len()..);
-            let a22 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 10
-                + (input.get_unchecked(1) - b'0') as i64;
-            input = input.get_unchecked("00\nPrize: X=".len()..);
-            let mut b1 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 100
-                + (*input.get_unchecked(1) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(2) as i64 - b'0' as i64);
-            input = input.get_unchecked(3..);
-            while *input.get_unchecked(0) != b',' {
-                b1 = 10 * b1 + (*input.get_unchecked(0) as i64 - b'0' as i64);
-                input = input.get_unchecked(1..);
+            input = input.add("Button A: X+".len());
+            let a11 = (*input.offset(0) as i64 - b'0' as i64) * 10
+                + (*input.offset(1) as i64 - b'0' as i64);
+            input = input.add("00, Y+".len());
+            let a21 = (*input.offset(0) as i64 - b'0' as i64) * 10
+                + (*input.offset(1) as i64 - b'0' as i64);
+            input = input.add("00\nButton B: X+".len());
+            let a12 = (*input.offset(0) as i64 - b'0' as i64) * 10
+                + (*input.offset(1) as i64 - b'0' as i64);
+            input = input.add("00, Y+".len());
+            let a22 = (*input.offset(0) as i64 - b'0' as i64) * 10
+                + (*input.offset(1) as i64 - b'0' as i64);
+            input = input.add("00\nPrize: X=".len());
+            let mut b1 = (*input.offset(0) as i64 - b'0' as i64) * 100
+                + (*input.offset(1) as i64 - b'0' as i64) * 10
+                + (*input.offset(2) as i64 - b'0' as i64);
+            input = input.add(3);
+            while *input.offset(0) != b',' {
+                b1 = 10 * b1 + (*input.offset(0) as i64 - b'0' as i64);
+                input = input.add(1);
             }
-            input = input.get_unchecked(4..);
-            let mut b2 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 100
-                + (*input.get_unchecked(1) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(2) as i64 - b'0' as i64);
-            input = input.get_unchecked(3..);
-            while !input.is_empty() && *input.get_unchecked(0) != b'\n' {
-                b2 = 10 * b2 + (*input.get_unchecked(0) as i64 - b'0' as i64);
-                input = input.get_unchecked(1..);
+            input = input.add(4);
+            let mut b2 = (*input.offset(0) as i64 - b'0' as i64) * 100
+                + (*input.offset(1) as i64 - b'0' as i64) * 10
+                + (*input.offset(2) as i64 - b'0' as i64);
+            input = input.add(3);
+            while input != end_ptr && *input.offset(0) != b'\n' {
+                b2 = 10 * b2 + (*input.offset(0) as i64 - b'0' as i64);
+                input = input.add(1);
             }
             let det_a = a11 * a22 - a12 * a21;
             if det_a != 0 {
@@ -73,71 +76,76 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
                     }
                 }
             }
-            if input.len() <= 1 {
+            input = input.add(1);
+            if input >= end_ptr {
                 break;
             }
-            input = input.get_unchecked(2..);
+            input = input.add(1);
         }
     }
     sum
 }
 
 pub fn part2(input: &str) -> impl std::fmt::Display {
-    let mut input = input.as_bytes();
     let mut sum = 0;
     unsafe {
+        let input = input.as_bytes();
+        let len = input.len();
+        let mut input = input.as_ptr();
+        let end_ptr = input.add(len);
         loop {
-            input = input.get_unchecked("Button A: X+".len()..);
-            let a11 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(1) as i64 - b'0' as i64);
-            input = input.get_unchecked("00, Y+".len()..);
-            let a21 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(1) as i64 - b'0' as i64);
-            input = input.get_unchecked("00\nButton B: X+".len()..);
-            let a12 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(1) as i64 - b'0' as i64);
-            input = input.get_unchecked("00, Y+".len()..);
-            let a22 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 10
-                + (input.get_unchecked(1) - b'0') as i64;
-            input = input.get_unchecked("00\nPrize: X=".len()..);
-            let mut b1 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 100
-                + (*input.get_unchecked(1) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(2) as i64 - b'0' as i64);
-            input = input.get_unchecked(3..);
-            while *input.get_unchecked(0) != b',' {
-                b1 = 10 * b1 + (*input.get_unchecked(0) as i64 - b'0' as i64);
-                input = input.get_unchecked(1..);
+            input = input.add("Button A: X+".len());
+            let a11 = (*input.offset(0) as i64 - b'0' as i64) * 10
+                + (*input.offset(1) as i64 - b'0' as i64);
+            input = input.add("00, Y+".len());
+            let a21 = (*input.offset(0) as i64 - b'0' as i64) * 10
+                + (*input.offset(1) as i64 - b'0' as i64);
+            input = input.add("00\nButton B: X+".len());
+            let a12 = (*input.offset(0) as i64 - b'0' as i64) * 10
+                + (*input.offset(1) as i64 - b'0' as i64);
+            input = input.add("00, Y+".len());
+            let a22 = (*input.offset(0) as i64 - b'0' as i64) * 10
+                + (*input.offset(1) as i64 - b'0' as i64);
+            input = input.add("00\nPrize: X=".len());
+            let mut b1 = (*input.offset(0) as i64 - b'0' as i64) * 100
+                + (*input.offset(1) as i64 - b'0' as i64) * 10
+                + (*input.offset(2) as i64 - b'0' as i64);
+            input = input.add(3);
+            while *input.offset(0) != b',' {
+                b1 = 10 * b1 + (*input.offset(0) as i64 - b'0' as i64);
+                input = input.add(1);
             }
-            input = input.get_unchecked(4..);
-            let mut b2 = (*input.get_unchecked(0) as i64 - b'0' as i64) * 100
-                + (*input.get_unchecked(1) as i64 - b'0' as i64) * 10
-                + (*input.get_unchecked(2) as i64 - b'0' as i64);
-            input = input.get_unchecked(3..);
-            while !input.is_empty() && *input.get_unchecked(0) != b'\n' {
-                b2 = 10 * b2 + (*input.get_unchecked(0) as i64 - b'0' as i64);
-                input = input.get_unchecked(1..);
+            input = input.add(4);
+            let mut b2 = (*input.offset(0) as i64 - b'0' as i64) * 100
+                + (*input.offset(1) as i64 - b'0' as i64) * 10
+                + (*input.offset(2) as i64 - b'0' as i64);
+            input = input.add(3);
+            while input != end_ptr && *input.offset(0) != b'\n' {
+                b2 = 10 * b2 + (*input.offset(0) as i64 - b'0' as i64);
+                input = input.add(1);
             }
-            let b1 = b1 + 10000000000000;
-            let b2 = b2 + 10000000000000;
-
             let det_a = a11 * a22 - a12 * a21;
             if det_a != 0 {
+                let b1 = b1 + 10000000000000;
+                let b2 = b2 + 10000000000000;
+
                 let tmp1 = b1 * a22 - a12 * b2;
-                let tmp2 = a11 * b2 - b1 * a21;
-                //TODO: unchecked modulo or sth?
-                if tmp1 % det_a == 0 && tmp2 % det_a == 0 {
-                    // TODO: use unchecked div
-                    let x1 = tmp1 / det_a;
-                    let x2 = tmp2 / det_a;
-                    if x1 >= 0 && x2 >= 0 {
-                        sum += 3 * x1 + x2;
+                if std::intrinsics::unchecked_rem(tmp1, det_a) == 0 {
+                    let tmp2 = a11 * b2 - b1 * a21;
+                    if std::intrinsics::unchecked_rem(tmp2, det_a) == 0 {
+                        let x1 = std::intrinsics::unchecked_div(tmp1, det_a);
+                        let x2 = std::intrinsics::unchecked_div(tmp2, det_a);
+                        if x1 >= 0 && x2 >= 0 {
+                            sum += 3 * x1 + x2;
+                        }
                     }
                 }
             }
-            if input.len() <= 1 {
+            input = input.add(1);
+            if input >= end_ptr {
                 break;
             }
-            input = input.get_unchecked(2..);
+            input = input.add(1);
         }
     }
     sum
