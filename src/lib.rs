@@ -9,6 +9,7 @@
 #![feature(core_intrinsics)]
 #![feature(slice_ptr_get)]
 #![allow(internal_features)]
+#![allow(clippy::type_complexity)]
 
 pub mod utils;
 

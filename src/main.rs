@@ -11,6 +11,7 @@
 #![allow(dead_code)]
 #![allow(unused_attributes)]
 #![allow(internal_features)]
+#![allow(clippy::type_complexity)]
 use std::{
     env::args,
     time::{Duration, Instant},
