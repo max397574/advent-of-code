@@ -19,53 +19,29 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         let instruction = programm[ip];
         let operand = programm[ip + 1];
         let combo_operand = || match operand {
-            0 => 0,
-            1 => 1,
-            2 => 2,
-            3 => 3,
+            0..=3 => operand as u32,
             4 => reg_a,
             5 => reg_b,
             6 => reg_c,
             _ => unreachable!(),
         };
         match instruction {
-            0 => {
-                reg_a >>= combo_operand();
-                ip += 2;
-            }
-            1 => {
-                reg_b ^= programm[ip + 1] as u32;
-                ip += 2;
-            }
-            2 => {
-                reg_b = combo_operand() % 8;
-                ip += 2;
-            }
+            0 => reg_a >>= combo_operand(),
+            1 => reg_b ^= programm[ip + 1] as u32,
+            2 => reg_b = combo_operand() % 8,
             3 => {
                 if reg_a != 0 {
                     ip = programm[ip + 1] as usize;
-                } else {
-                    ip += 2;
+                    continue;
                 }
             }
-            4 => {
-                reg_b ^= reg_c;
-                ip += 2;
-            }
-            5 => {
-                outputs.push((combo_operand() % 8).to_string());
-                ip += 2;
-            }
-            6 => {
-                reg_b = reg_a >> combo_operand();
-                ip += 2;
-            }
-            7 => {
-                reg_c = reg_a >> combo_operand();
-                ip += 2;
-            }
+            4 => reg_b ^= reg_c,
+            5 => outputs.push((combo_operand() % 8).to_string()),
+            6 => reg_b = reg_a >> combo_operand(),
+            7 => reg_c = reg_a >> combo_operand(),
             _ => unreachable!(),
         }
+        ip += 2;
     }
     outputs.join(",")
 }
