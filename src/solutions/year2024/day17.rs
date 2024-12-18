@@ -1,3 +1,4 @@
+#![feature(core_intrinsics)]
 use std::{hint::unreachable_unchecked, intrinsics::unchecked_sub};
 
 #[inline(always)]
@@ -37,39 +38,52 @@ pub fn part1(input: &str) -> &str {
             input = input.add(2);
             i += 1;
         }
-        let mut ip = 0;
-        while ip < programm.len() {
-            let instruction = *programm.get_unchecked(ip);
-            let operand = *programm.get_unchecked(ip + 1);
-            let combo_operand = || match operand {
-                0..=3 => operand as u32,
-                4 => reg_a,
-                5 => reg_b,
-                6 => reg_c,
-                _ => unreachable_unchecked(),
-            };
-            match instruction {
-                0 => reg_a >>= combo_operand(),
-                1 => reg_b ^= *programm.get_unchecked(ip + 1) as u32,
-                2 => reg_b = combo_operand() % 8,
-                3 => {
-                    if reg_a != 0 {
-                        ip = *programm.get_unchecked(ip + 1) as usize;
-                        continue;
-                    }
-                }
-                4 => reg_b ^= reg_c,
-                5 => {
-                    *OUTPUT.get_unchecked_mut(out_vals * 2) =
-                        (combo_operand() & 0b111) as u8 + b'0';
-                    //OUTPUT[out_vals * 2] = (combo_operand() & 0b111) as u8;
-                    out_vals += 1;
-                }
-                6 => reg_b = reg_a >> combo_operand(),
-                7 => reg_c = reg_a >> combo_operand(),
-                _ => unreachable_unchecked(),
+        // failing: Program: 2,4,1,1,7,5,1,5,4,5,0,3,5,5,3,0
+        // working: Program: 2,4,1,1,7,5,1,5,4,3,5,5,0,3,3,0
+        loop {
+            reg_b = reg_a % 8;
+
+            reg_b ^= programm[3] as u32;
+
+            reg_c = reg_a >> reg_b;
+
+            if programm[6] == 1 {
+                reg_b ^= programm[7] as u32;
+            } else if programm[6] == 4 {
+                reg_b ^= reg_c;
+            } else if programm[6] == 0 {
+                reg_a >>= 3;
             }
-            ip += 2;
+
+            if programm[8] == 4 {
+                reg_b ^= reg_c;
+            } else if programm[8] == 0 {
+                reg_a >>= 3;
+            } else if programm[8] == 1 {
+                reg_b ^= programm[9] as u32;
+            }
+
+            if programm[10] == 5 {
+                *OUTPUT.get_unchecked_mut(out_vals * 2) = (reg_b & 0b111) as u8 + b'0';
+                out_vals += 1;
+                reg_a >>= 3;
+            } else {
+                if programm[10] == 4 {
+                    reg_b ^= reg_c;
+                } else if programm[10] == 1 {
+                    reg_b ^= programm[11] as u32;
+                } else if programm[10] == 0 {
+                    reg_a >>= 3;
+                }
+
+                *OUTPUT.get_unchecked_mut(out_vals * 2) = (reg_b & 0b111) as u8 + b'0';
+                out_vals += 1;
+            }
+
+            // always have 3,0
+            if reg_a == 0 {
+                break;
+            }
         }
         std::str::from_utf8_unchecked(&OUTPUT)
     }
