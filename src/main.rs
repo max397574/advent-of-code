@@ -12,6 +12,7 @@
 #![allow(unused_attributes)]
 #![allow(internal_features)]
 #![allow(clippy::type_complexity)]
+#![allow(static_mut_refs)]
 use std::{
     env::args,
     time::{Duration, Instant},

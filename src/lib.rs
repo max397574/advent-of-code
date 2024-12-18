@@ -10,6 +10,7 @@
 #![feature(slice_ptr_get)]
 #![allow(internal_features)]
 #![allow(clippy::type_complexity)]
+#![allow(static_mut_refs)]
 
 pub mod utils;
 

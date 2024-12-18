@@ -1,5 +1,4 @@
-#![feature(core_intrinsics)]
-use std::{hint::unreachable_unchecked, intrinsics::unchecked_sub};
+use std::intrinsics::unchecked_sub;
 
 #[inline(always)]
 fn swar_parsing(n: u64) -> u32 {
@@ -29,8 +28,8 @@ pub fn part1(input: &str) -> &str {
         input = input.add("Register A: ".len());
 
         let mut reg_a = swar_parsing(input.cast::<u64>().read_unaligned());
-        let mut reg_b = 0;
-        let mut reg_c = 0;
+        let mut reg_b;
+        let mut reg_c;
         input = input.add("\nRegister B: 0\nRegister C: 0\n\nProgram: ".len() + 8);
         let mut program = [0; 16];
         let mut i = 0;
@@ -106,8 +105,8 @@ pub fn part2(input: &str) -> u64 {
         loop {
             out.clear();
             let mut reg_a = a;
-            let mut reg_b = 0;
-            let mut reg_c = 0;
+            let mut reg_b;
+            let mut reg_c;
             loop {
                 reg_b = reg_a % 8;
 
@@ -171,28 +170,28 @@ pub fn part2(input: &str) -> u64 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    const INPUT: &str = "Register A: 729
+    const INPUT_2: &str = "Register A: 38610541
 Register B: 0
 Register C: 0
 
-Program: 0,1,5,4,3,0";
-
-    const INPUT2: &str = "Register A: 2024
-Register B: 0
-Register C: 0
-
-Program: 0,3,5,4,3,0";
+Program: 2,4,1,1,7,5,1,5,4,3,5,5,0,3,3,0";
 
     #[test]
-    fn part_1() {
+    fn part_1_2() {
         assert_eq!(
-            part1(INPUT).to_string(),
-            String::from("4,6,3,5,6,3,5,2,1,0")
+            part1(INPUT_2).to_string(),
+            String::from("7,5,4,3,4,5,3,4,6")
         )
     }
 
+    const INPUT2: &str = "Register A: 38610541
+Register B: 0
+Register C: 0
+
+Program: 2,4,1,1,7,5,1,5,4,3,5,5,0,3,3,0";
+
     #[test]
     fn part_2() {
-        assert_eq!(part2(INPUT2).to_string(), String::from("117440"))
+        assert_eq!(part2(INPUT2).to_string(), String::from("164278899142333"))
     }
 }
