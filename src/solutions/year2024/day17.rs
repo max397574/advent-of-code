@@ -50,6 +50,7 @@ pub fn part1(input: &str) -> &str {
                 reg_b ^= program[7] as u32;
             } else if program[6] == 4 {
                 reg_b ^= reg_c;
+            } else if program[6] == 0 {
                 reg_a >>= 3;
             }
 
