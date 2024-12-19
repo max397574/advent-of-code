@@ -25,7 +25,7 @@ pub fn single_lcm(a: usize, b: usize) -> usize {
     (a * b) / gcd(a, b)
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Direction {
     Up,
     Down,
