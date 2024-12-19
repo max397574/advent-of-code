@@ -8,7 +8,7 @@ struct Path {
     pub cost: u32,
 }
 
-fn walk(input: &str) -> Vec<Path> {
+fn find_min_paths(input: &str) -> Vec<Path> {
     let mut start = (0, 0);
     let mut end = (0, 0);
     let grid = Grid::from_str(input, |(_, c)| c as u8);
@@ -67,50 +67,32 @@ fn walk(input: &str) -> Vec<Path> {
             queue.push_front(((new_x, new_y), entry.1 + 1, entry.2, new_path.clone()));
         }
 
-        if entry.1 + 1000
-            <= *min_seen
-                .entry(((x, y), entry.2.turn_left()))
-                .or_insert(u32::MAX)
-        {
-            queue.push_back(((x, y), entry.1 + 1000, entry.2.turn_left(), entry.3.clone()));
-        }
+        let mut try_turn = |i| {
+            let (new_direction, cost) = match i {
+                1 => (entry.2.turn_left(), 1000),
+                2 => (entry.2.turn_left().turn_left(), 2000),
+                3 => (entry.2.turn_right(), 1000),
+                _ => unreachable!(),
+            };
+            if entry.1 + cost <= *min_seen.entry(((x, y), new_direction)).or_insert(u32::MAX) {
+                queue.push_back(((x, y), entry.1 + cost, new_direction, entry.3.clone()));
+            }
+        };
 
-        if entry.1 + 1000
-            <= *min_seen
-                .entry(((x, y), entry.2.turn_right()))
-                .or_insert(u32::MAX)
-        {
-            queue.push_back((
-                (x, y),
-                entry.1 + 1000,
-                entry.2.turn_right(),
-                entry.3.clone(),
-            ));
-        }
-
-        if entry.1 + 2000
-            <= *min_seen
-                .entry(((x, y), entry.2.turn_right().turn_right()))
-                .or_insert(u32::MAX)
-        {
-            queue.push_back((
-                (x, y),
-                entry.1 + 2000,
-                entry.2.turn_right().turn_right(),
-                entry.3.clone(),
-            ));
-        }
+        try_turn(1);
+        try_turn(2);
+        try_turn(3);
     }
     paths
 }
 
 pub fn part1(input: &str) -> impl std::fmt::Display {
-    let paths = walk(input);
+    let paths = find_min_paths(input);
     paths.iter().map(|path| path.cost).min().unwrap()
 }
 
 pub fn part2(input: &str) -> impl std::fmt::Display {
-    let paths = walk(input);
+    let paths = find_min_paths(input);
     let mut seen = HashSet::new();
     //let mut grid = Grid::from_str(input, |(_, c)| c);
     let min = paths.iter().map(|path| path.cost).min().unwrap();
