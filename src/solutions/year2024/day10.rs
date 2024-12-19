@@ -9,15 +9,17 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         if *c == b'0' {
             let mut reachable = HashSet::new();
             reachable.insert(pos);
-            for level in b'1'..=b'9' {
-                for reachable_pos in std::mem::take(&mut reachable) {
-                    for neighbour in grid.plus_neighbours(reachable_pos) {
-                        if grid[neighbour] == level {
-                            reachable.insert(neighbour);
-                        }
-                    }
-                }
-            }
+            (b'1'..=b'9').for_each(|level| {
+                std::mem::take(&mut reachable)
+                    .iter()
+                    .for_each(|&reachable_pos| {
+                        grid.plus_neighbours(reachable_pos).for_each(|neighbour| {
+                            if grid[neighbour] == level {
+                                reachable.insert(neighbour);
+                            }
+                        });
+                    });
+            });
             sum += reachable.len();
         }
     });
@@ -31,15 +33,17 @@ pub fn part2(input: &str) -> impl std::fmt::Display {
         if *c == b'0' {
             let mut reachable = HashMap::new();
             reachable.insert(pos, 1);
-            for level in b'1'..=b'9' {
-                for (reachable_pos, ways_to_reach) in std::mem::take(&mut reachable) {
-                    for neighbour in grid.plus_neighbours(reachable_pos) {
-                        if grid[neighbour] == level {
-                            *reachable.entry(neighbour).or_insert(0) += ways_to_reach;
-                        }
-                    }
-                }
-            }
+            (b'1'..=b'9').for_each(|level| {
+                std::mem::take(&mut reachable).iter().for_each(
+                    |(&reachable_pos, &ways_to_reach)| {
+                        grid.plus_neighbours(reachable_pos).for_each(|neighbour| {
+                            if grid[neighbour] == level {
+                                *reachable.entry(neighbour).or_insert(0) += ways_to_reach;
+                            }
+                        });
+                    },
+                );
+            });
             reachable.iter().for_each(|(_, score)| {
                 sum += score;
             });
