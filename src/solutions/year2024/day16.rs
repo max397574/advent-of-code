@@ -43,59 +43,28 @@ fn walk(input: &str) -> Vec<Path> {
 
         let (x, y) = entry.0;
 
-        match entry.2 {
-            Direction::Right => {
-                if x < grid.width - 1
-                    && grid[(x + 1, y)] != b'#'
-                    && entry.1
-                        < *min_seen
-                            .entry(((x + 1, y), Direction::Right))
-                            .or_insert(u32::MAX)
-                {
-                    let mut new_path = entry.3.clone();
-                    new_path.push((x + 1, y));
-                    queue.push_front(((x + 1, y), entry.1 + 1, Direction::Right, new_path.clone()));
-                }
-            }
-            Direction::Left => {
-                if x > 0
-                    && grid[(x - 1, y)] != b'#'
-                    && entry.1
-                        < *min_seen
-                            .entry(((x - 1, y), Direction::Left))
-                            .or_insert(u32::MAX)
-                {
-                    let mut new_path = entry.3.clone();
-                    new_path.push((x - 1, y));
-                    queue.push_front(((x - 1, y), entry.1 + 1, Direction::Left, new_path.clone()));
-                }
-            }
-            Direction::Down => {
-                if y < grid.height() - 1
-                    && grid[(x, y + 1)] != b'#'
-                    && entry.1
-                        < *min_seen
-                            .entry(((x, y + 1), Direction::Down))
-                            .or_insert(u32::MAX)
-                {
-                    let mut new_path = entry.3.clone();
-                    new_path.push((x, y + 1));
-                    queue.push_front(((x, y + 1), entry.1 + 1, Direction::Down, new_path.clone()));
-                }
-            }
-            Direction::Up => {
-                if y > 0
-                    && grid[(x, y - 1)] != b'#'
-                    && entry.1
-                        < *min_seen
-                            .entry(((x, y - 1), Direction::Up))
-                            .or_insert(u32::MAX)
-                {
-                    let mut new_path = entry.3.clone();
-                    new_path.push((x, y - 1));
-                    queue.push_front(((x, y - 1), entry.1 + 1, Direction::Up, new_path.clone()));
-                }
-            }
+        let is_not_oob = |direction| match direction {
+            Direction::Right => x < grid.width - 1,
+            Direction::Left => x > 0,
+            Direction::Down => y < grid.height() - 1,
+            Direction::Up => y > 0,
+        };
+
+        let (dx, dy) = entry.2.get_offset();
+
+        let new_x = (x as isize + dx) as usize;
+        let new_y = (y as isize + dy) as usize;
+
+        if is_not_oob(entry.2)
+            && grid[(new_x, new_y)] != b'#'
+            && entry.1
+                < *min_seen
+                    .entry(((new_x, new_y), entry.2))
+                    .or_insert(u32::MAX)
+        {
+            let mut new_path = entry.3.clone();
+            new_path.push((new_x, new_y));
+            queue.push_front(((new_x, new_y), entry.1 + 1, entry.2, new_path.clone()));
         }
 
         if entry.1 + 1000
