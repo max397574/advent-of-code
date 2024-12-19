@@ -20,7 +20,7 @@ fn is_possible(towel: &str, patterns: &Vec<&str>, cache: &mut HashMap<String, bo
     false
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> usize {
     let (patterns, towels) = input.trim().split_once("\n\n").unwrap();
     let patterns: Vec<&str> = patterns.split(", ").collect();
     let towels: Vec<&str> = towels.lines().collect();
@@ -48,7 +48,7 @@ fn count_combinations(towel: &str, patterns: &Vec<&str>, cache: &mut HashMap<Str
     count
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> u64 {
     let (patterns, towels) = input.trim().split_once("\n\n").unwrap();
     let patterns: Vec<&str> = patterns.split(", ").collect();
     let towels: Vec<&str> = towels.lines().collect();
