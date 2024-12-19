@@ -56,26 +56,6 @@ fn walk(input: &str) -> Vec<Path> {
                     new_path.push((x + 1, y));
                     queue.push_front(((x + 1, y), entry.1 + 1, Direction::Right, new_path.clone()));
                 }
-
-                if entry.1 + 1000 <= *min_seen.entry(((x, y), Direction::Up)).or_insert(u32::MAX) {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Up, entry.3.clone()));
-                }
-
-                if entry.1 + 1000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Down))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Down, entry.3.clone()));
-                }
-
-                if entry.1 + 2000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Left))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Left, entry.3.clone()));
-                }
             }
             Direction::Left => {
                 if x > 0
@@ -88,26 +68,6 @@ fn walk(input: &str) -> Vec<Path> {
                     let mut new_path = entry.3.clone();
                     new_path.push((x - 1, y));
                     queue.push_front(((x - 1, y), entry.1 + 1, Direction::Left, new_path.clone()));
-                }
-
-                if entry.1 + 1000 <= *min_seen.entry(((x, y), Direction::Up)).or_insert(u32::MAX) {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Up, entry.3.clone()));
-                }
-
-                if entry.1 + 1000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Down))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Down, entry.3.clone()));
-                }
-
-                if entry.1 + 2000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Right))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 2000, Direction::Right, entry.3.clone()));
                 }
             }
             Direction::Down => {
@@ -122,26 +82,6 @@ fn walk(input: &str) -> Vec<Path> {
                     new_path.push((x, y + 1));
                     queue.push_front(((x, y + 1), entry.1 + 1, Direction::Down, new_path.clone()));
                 }
-
-                if entry.1 + 1000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Left))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Left, entry.3.clone()));
-                }
-
-                if entry.1 + 1000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Right))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Right, entry.3.clone()));
-                }
-
-                if entry.1 + 2000 <= *min_seen.entry(((x, y), Direction::Up)).or_insert(u32::MAX) {
-                    queue.push_back(((x, y), entry.1 + 2000, Direction::Up, entry.3.clone()));
-                }
             }
             Direction::Up => {
                 if y > 0
@@ -155,31 +95,41 @@ fn walk(input: &str) -> Vec<Path> {
                     new_path.push((x, y - 1));
                     queue.push_front(((x, y - 1), entry.1 + 1, Direction::Up, new_path.clone()));
                 }
-
-                if entry.1 + 1000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Left))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Left, entry.3.clone()));
-                }
-
-                if entry.1 + 1000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Right))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 1000, Direction::Right, entry.3.clone()));
-                }
-
-                if entry.1 + 2000
-                    <= *min_seen
-                        .entry(((x, y), Direction::Down))
-                        .or_insert(u32::MAX)
-                {
-                    queue.push_back(((x, y), entry.1 + 2000, Direction::Down, entry.3.clone()));
-                }
             }
+        }
+
+        if entry.1 + 1000
+            <= *min_seen
+                .entry(((x, y), entry.2.turn_left()))
+                .or_insert(u32::MAX)
+        {
+            queue.push_back(((x, y), entry.1 + 1000, entry.2.turn_left(), entry.3.clone()));
+        }
+
+        if entry.1 + 1000
+            <= *min_seen
+                .entry(((x, y), entry.2.turn_right()))
+                .or_insert(u32::MAX)
+        {
+            queue.push_back((
+                (x, y),
+                entry.1 + 1000,
+                entry.2.turn_right(),
+                entry.3.clone(),
+            ));
+        }
+
+        if entry.1 + 2000
+            <= *min_seen
+                .entry(((x, y), entry.2.turn_right().turn_right()))
+                .or_insert(u32::MAX)
+        {
+            queue.push_back((
+                (x, y),
+                entry.1 + 2000,
+                entry.2.turn_right().turn_right(),
+                entry.3.clone(),
+            ));
         }
     }
     paths
@@ -193,17 +143,17 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
 pub fn part2(input: &str) -> impl std::fmt::Display {
     let paths = walk(input);
     let mut seen = HashSet::new();
-    let mut grid = Grid::from_str(input, |(_, c)| c);
+    //let mut grid = Grid::from_str(input, |(_, c)| c);
     let min = paths.iter().map(|path| path.cost).min().unwrap();
     paths.iter().for_each(|path| {
         if path.cost == min {
             path.path.iter().for_each(|pos| {
                 seen.insert(pos);
-                grid.set_at((pos.0, pos.1), 'O');
+                //grid.set_at((pos.0, pos.1), 'O');
             });
         }
     });
-    println!("{grid}");
+    //println!("{grid}");
     seen.len()
 }
 
