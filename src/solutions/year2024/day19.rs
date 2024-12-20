@@ -31,6 +31,7 @@ pub fn part1(input: &str) -> usize {
         .count()
 }
 
+#[inline(always)]
 fn count_combinations(towel: &str, patterns: &Vec<&str>, cache: &mut HashMap<String, u64>) -> u64 {
     if towel.is_empty() {
         return 1;
