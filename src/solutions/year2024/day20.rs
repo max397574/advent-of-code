@@ -6,25 +6,24 @@ pub fn part1(input: &str) -> u32 {
     let grid = Grid::from_str(input, |(_, c)| c as u8);
     let start = grid.iter().find(|(_, &c)| c == b'S').unwrap().0;
     let end = grid.iter().find(|(_, &c)| c == b'E').unwrap().0;
-    let mut queue = VecDeque::from([(start, 0)]);
-    let mut min_costs = HashMap::new();
-    while let Some((pos, cost)) = queue.pop_front() {
-        // because we use BFS we know we already only have minimal distances
-        if min_costs.contains_key(&pos) {
-            continue;
-        }
-
-        min_costs.insert(pos, cost);
-
+    let mut path = [false; 141 * 141];
+    let mut costs = [0; 141 * 141];
+    let mut cost = 0;
+    let mut pos = start;
+    loop {
+        path[pos.0 + pos.1 * 141] = true;
+        costs[pos.0 + pos.1 * 141] = cost;
+        cost += 1;
         if pos == end {
             break;
         }
 
-        grid.plus_neighbours(pos).for_each(|neighbour| {
-            if grid[neighbour] != b'#' {
-                queue.push_back((neighbour, cost + 1));
+        for neighbour in grid.plus_neighbours(pos) {
+            if grid[neighbour] != b'#' && !path[neighbour.0 + 141 * neighbour.1] {
+                pos = neighbour;
+                break;
             }
-        })
+        }
     }
 
     // iterate through all positions and figure out if a cheat could have saved time
@@ -41,25 +40,23 @@ pub fn part1(input: &str) -> u32 {
 
     let mut sum = 0;
 
-    grid.iter().for_each(|((x, y), _)| {
-        if let Some(&cost) = min_costs.get(&(x, y)) {
-            let (x, y) = (x as isize, y as isize);
-            for (dx, dy) in CHEAT_POSITIONS {
-                let (new_x, new_y) = (x + dx, y + dy);
-                if new_x >= 0
-                    && new_y >= 0
-                    && new_x < grid.width as isize
-                    && new_y < grid.height() as isize
-                {
-                    if let Some(cheated_cost) = min_costs.get(&(new_x as usize, new_y as usize)) {
-                        if cheated_cost + 2 < cost && cost - cheated_cost - 2 >= 100 {
-                            sum += 1;
-                        }
+    for x in 0..141 {
+        for y in 0..141 {
+            if path[x + y * 141] {
+                for (dx, dy) in CHEAT_POSITIONS {
+                    let (new_x, new_y) = ((x as isize + dx) as usize, (y as isize + dy) as usize);
+                    if new_x < 141
+                        && new_y < 141
+                        && path[new_x + new_y * 141]
+                        && costs[new_x + new_y * 141] + 2 < costs[x + y * 141]
+                        && costs[x + y * 141] - costs[new_x + new_y * 141] - 2 >= 100
+                    {
+                        sum += 1;
                     }
                 }
             }
         }
-    });
+    }
     sum
 }
 
