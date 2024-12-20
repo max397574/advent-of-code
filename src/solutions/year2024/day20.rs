@@ -39,7 +39,7 @@ pub fn part1(input: &str) -> u32 {
         (-1, -1),
     ];
 
-    let mut cheat_amount_saved: HashMap<i32, u32> = HashMap::new();
+    let mut sum = 0;
 
     grid.iter().for_each(|((x, y), _)| {
         if let Some(&cost) = min_costs.get(&(x, y)) {
@@ -52,24 +52,15 @@ pub fn part1(input: &str) -> u32 {
                     && new_y < grid.height() as isize
                 {
                     if let Some(cheated_cost) = min_costs.get(&(new_x as usize, new_y as usize)) {
-                        if cheated_cost + 2 < cost {
-                            let saved = cost - cheated_cost - 2;
-                            *cheat_amount_saved.entry(saved).or_default() += 1;
+                        if cheated_cost + 2 < cost && cost - cheated_cost - 2 >= 100 {
+                            sum += 1;
                         }
                     }
                 }
             }
         }
     });
-    //cheat_amount_saved.iter().for_each(|(&saved, &count)| {
-    //    println!("There are {} cheats that save {} picoseconds", count, saved);
-    //});
-
-    cheat_amount_saved
-        .iter()
-        .filter(|(&saved, _)| saved >= 100)
-        .map(|(_, count)| count)
-        .sum()
+    sum
 }
 
 pub fn part2(input: &str) -> u32 {
@@ -97,7 +88,7 @@ pub fn part2(input: &str) -> u32 {
         })
     }
 
-    let mut cheat_amount_saved: HashMap<i32, u32> = HashMap::new();
+    let mut count = 0;
 
     grid.iter().for_each(|((x, y), _)| {
         if let Some(&cost) = min_costs.get(&(x, y)) {
@@ -116,7 +107,9 @@ pub fn part2(input: &str) -> u32 {
                         {
                             if cheated_cost + (dx.abs() + dy.abs()) < cost {
                                 let saved = cost - cheated_cost - (dx.abs() + dy.abs());
-                                *cheat_amount_saved.entry(saved as i32).or_default() += 1;
+                                if saved >= 100 {
+                                    count += 1;
+                                }
                             }
                         }
                     }
@@ -124,15 +117,7 @@ pub fn part2(input: &str) -> u32 {
             }
         }
     });
-    //cheat_amount_saved.iter().for_each(|(&saved, &count)| {
-    //    println!("There are {} cheats that save {} picoseconds", count, saved);
-    //});
-
-    cheat_amount_saved
-        .iter()
-        .filter(|(&saved, _)| saved >= 100)
-        .map(|(_, count)| count)
-        .sum()
+    count
 }
 
 #[cfg(test)]
