@@ -11,6 +11,7 @@
 #![allow(internal_features)]
 #![allow(clippy::type_complexity)]
 #![allow(static_mut_refs)]
+#![feature(slice_as_chunks)]
 
 pub mod utils;
 

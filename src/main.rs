@@ -3,6 +3,7 @@
 #![feature(iter_next_chunk)]
 #![feature(extract_if)]
 #![feature(slice_split_once)]
+#![feature(slice_as_chunks)]
 #![feature(let_chains)]
 #![feature(portable_simd)]
 #![feature(if_let_guard)]
