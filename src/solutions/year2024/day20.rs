@@ -102,8 +102,8 @@ pub fn part2(input: &str) -> u32 {
             }
         }
 
-        for x in 0..141 {
-            for y in 0..141 {
+        for x in 1..140 {
+            for y in 1..140 {
                 let pos = x + y * 142;
                 if *path.get_unchecked(pos) && *costs.get_unchecked(pos) >= 100 {
                     for dx in -20_isize..=20 {
