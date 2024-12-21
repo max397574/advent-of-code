@@ -1,8 +1,5 @@
 const NEIGHBOUR_OFFSETS: [isize; 4] = [-142, 142, 1, -1];
 
-//static mut PATH: [bool; 141 * 142] = [false; 141 * 142];
-//static mut COSTS: [i32; 141 * 142] = [0; 141 * 142];
-
 pub fn part1(input: &str) -> u32 {
     let mut sum = 0;
     unsafe {
@@ -81,6 +78,7 @@ pub fn part2(input: &str) -> u32 {
         }
         let mut path = [false; 141 * 142];
         let mut costs = [0; 141 * 142];
+
         let mut cost = 0;
         let mut pos = start;
         loop {
@@ -107,7 +105,7 @@ pub fn part2(input: &str) -> u32 {
         for x in 0..141 {
             for y in 0..141 {
                 let pos = x + y * 142;
-                if *path.get_unchecked(pos) {
+                if *path.get_unchecked(pos) && *costs.get_unchecked(pos) >= 100 {
                     for dx in -20_isize..=20 {
                         let distance_left = 20 - dx.abs();
                         for dy in -distance_left..=distance_left {
