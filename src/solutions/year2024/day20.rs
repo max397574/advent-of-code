@@ -1,4 +1,7 @@
-use crate::utils::grid::Grid;
+const NEIGHBOUR_OFFSETS: [isize; 4] = [-142, 142, 1, -1];
+
+//static mut PATH: [bool; 141 * 142] = [false; 141 * 142];
+//static mut COSTS: [i32; 141 * 142] = [0; 141 * 142];
 
 pub fn part1(input: &str) -> u32 {
     let mut sum = 0;
@@ -26,7 +29,6 @@ pub fn part1(input: &str) -> u32 {
                 break;
             }
 
-            const NEIGHBOUR_OFFSETS: [isize; 4] = [-142, 142, 1, -1];
             for offset in NEIGHBOUR_OFFSETS {
                 let new_pos = pos.wrapping_add_signed(offset);
                 if new_pos < 141 * 142 - 1
@@ -64,50 +66,70 @@ pub fn part1(input: &str) -> u32 {
 }
 
 pub fn part2(input: &str) -> u32 {
-    let grid = Grid::from_str(input, |(_, c)| c as u8);
-    let start = grid.iter().find(|(_, &c)| c == b'S').unwrap().0;
-    let end = grid.iter().find(|(_, &c)| c == b'E').unwrap().0;
-    let mut path = [false; 141 * 141];
-    let mut costs = [0; 141 * 141];
-    let mut cost = 0;
-    let mut pos = start;
-    loop {
-        path[pos.0 + pos.1 * 141] = true;
-        costs[pos.0 + pos.1 * 141] = cost;
-        cost += 1;
-        if pos == end {
-            break;
-        }
-
-        for neighbour in grid.plus_neighbours(pos) {
-            if grid[neighbour] != b'#' && !path[neighbour.0 + 141 * neighbour.1] {
-                pos = neighbour;
-                break;
+    let mut count = 0;
+    unsafe {
+        let input = input.as_bytes();
+        let mut start = 0;
+        let mut end = 0;
+        for (i, &byte) in input.iter().enumerate() {
+            if byte == b'S' {
+                start = i;
+            }
+            if byte == b'E' {
+                end = i;
             }
         }
-    }
+        let mut path = [false; 141 * 142];
+        let mut costs = [0; 141 * 142];
+        let mut cost = 0;
+        let mut pos = start;
+        loop {
+            *path.get_unchecked_mut(pos) = true;
+            *costs.get_unchecked_mut(pos) = cost;
+            cost += 1;
+            if pos == end {
+                break;
+            }
 
-    let mut count = 0;
+            for offset in NEIGHBOUR_OFFSETS {
+                let new_pos = pos.wrapping_add_signed(offset);
+                if new_pos < 141 * 142 - 1
+                    && *input.get_unchecked(new_pos) != b'\n'
+                    && *input.get_unchecked(new_pos) != b'#'
+                    && !path.get_unchecked(new_pos)
+                {
+                    pos = new_pos;
+                    break;
+                }
+            }
+        }
 
-    for x in 0..141 {
-        for y in 0..141 {
-            if path[x + y * 141] {
-                for dx in -20_isize..=20 {
-                    let distance_left = 20 - dx.abs();
-                    for dy in -distance_left..=distance_left {
-                        let (new_x, new_y) =
-                            ((x as isize + dx) as usize, (y as isize + dy) as usize);
-                        if new_x < 141
-                            && new_y < 141
-                            && path[new_x + new_y * 141]
-                            && costs[new_x + new_y * 141] + (dx.abs() + dy.abs())
-                                < costs[x + y * 141]
-                            && costs[x + y * 141]
-                                - costs[new_x + new_y * 141]
-                                - (dx.abs() + dy.abs())
-                                >= 100
-                        {
-                            count += 1;
+        for x in 0..141 {
+            for y in 0..141 {
+                let pos = x + y * 142;
+                if *path.get_unchecked(pos) {
+                    for dx in -20_isize..=20 {
+                        let distance_left = 20 - dx.abs();
+                        for dy in -distance_left..=distance_left {
+                            let (new_x, new_y) =
+                                (x.wrapping_add_signed(dx), y.wrapping_add_signed(dy));
+                            let new_pos = new_x + 142 * new_y;
+                            if new_x < 141
+                                && new_y < 141
+                                && new_pos < 141 * 142 - 1
+                                && *path.get_unchecked(new_pos)
+                            {
+                                let cheat_cost = dx.abs() + dy.abs();
+                                if costs.get_unchecked(new_pos) + cheat_cost
+                                    < *costs.get_unchecked(pos)
+                                    && costs.get_unchecked(pos)
+                                        - costs.get_unchecked(new_pos)
+                                        - cheat_cost
+                                        >= 100
+                                {
+                                    count += 1;
+                                }
+                            }
                         }
                     }
                 }
