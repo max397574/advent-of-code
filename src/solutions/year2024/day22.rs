@@ -1,23 +1,42 @@
-pub fn part1(_input: &str) -> usize {
-    0
+pub fn part1(input: &str) -> u64 {
+    input
+        .lines()
+        .map(|line| {
+            let mut num = line.parse::<u64>().unwrap();
+            for _ in 0..2000 {
+                num ^= num << 6;
+                num %= 16777216;
+
+                num ^= num >> 5;
+                num %= 16777216;
+
+                num ^= num << 11;
+                num %= 16777216;
+            }
+            num
+        })
+        .sum()
 }
 
 pub fn part2(_input: &str) -> usize {
     0
 }
 
-// #[cfg(test)]
+#[cfg(test)]
 mod tests {
     use super::*;
-    const _INPUT: &str = "";
+    const INPUT: &str = "1
+10
+100
+2024";
 
-    // #[test]
-    fn _part1() {
-        assert_eq!(part1(_INPUT).to_string(), String::from("0"))
+    #[test]
+    fn part_1() {
+        assert_eq!(part1(INPUT).to_string(), String::from("37327623"))
     }
 
-    // #[test]
-    fn _part2() {
-        assert_eq!(part2(_INPUT).to_string(), String::from("0"))
+    #[test]
+    fn part_2() {
+        assert_eq!(part2(INPUT).to_string(), String::from("23"))
     }
 }
