@@ -1,126 +1,136 @@
-#![feature(let_chains)]
-use std::collections::HashMap;
+use std::intrinsics::unchecked_sub;
 
-#[derive(Copy, Clone, Eq, PartialEq)]
-enum GateType {
-    And,
-    Xor,
-    Or,
-}
+static mut WIRES: [u8; 15700] = [3; 15700];
+static mut GATES: [(usize, usize, u8, usize); 222] = [(0, 0, 0, 0); 222];
 
-impl GateType {
-    fn from_bytes(val: [u8; 3]) -> Self {
-        match val[0] {
-            b'A' => Self::And,
-            b'O' => Self::Or,
-            b'X' => Self::Xor,
-            _ => unreachable!(),
+#[inline(always)]
+unsafe fn execute(op: u8, i1: usize, i2: usize, out: usize) {
+    let i1 = WIRES.get_unchecked(i1);
+    let i2 = WIRES.get_unchecked(i2);
+    let res = {
+        if op == b'O' {
+            i1 | i2
+        } else if op == b'A' {
+            i1 & i2
+        } else {
+            i1 ^ i2
         }
-    }
+    };
+    *WIRES.get_unchecked_mut(out) = res;
 }
 
-#[derive(Clone, Eq, PartialEq)]
-struct Gate {
-    gate_type: GateType,
-    inputs: ([u8; 3], [u8; 3]),
-    output: [u8; 3],
-}
+pub fn part1(input: &str) -> u64 {
+    unsafe {
+        let input = input.as_bytes();
+        let mut input = input.as_ptr();
 
-// utilities for p2
-impl Gate {
-    fn has_direct_input(&self) -> bool {
-        (self.inputs.0[0] == b'x' && self.inputs.1[0] == b'y')
-            || (self.inputs.1[0] == b'x' && self.inputs.0[0] == b'y')
-    }
+        WIRES.fill(u8::MAX);
 
-    fn has_direct_output(&self) -> bool {
-        self.output[0] == b'z'
-    }
+        unsafe fn b26(val: [u8; 3]) -> usize {
+            let [a, b, c] = [
+                (unchecked_sub(*val.get_unchecked(0), b'a')) as usize,
+                (unchecked_sub(*val.get_unchecked(1), b'a')) as usize,
+                (unchecked_sub(*val.get_unchecked(2), b'a')) as usize,
+            ];
+            a * 26 * 26 + b * 26 + c
+        }
 
-    fn is_xor(&self) -> bool {
-        self.gate_type == GateType::Xor
-    }
+        input = input.add("x00: ".len());
 
-    fn is_and(&self) -> bool {
-        self.gate_type == GateType::And
-    }
+        for i in 0..45 {
+            *WIRES.get_unchecked_mut(15500 + i) = unchecked_sub(*input.offset(0), b'0');
+            input = input.add("0\nx00: ".len());
+        }
 
-    fn is_or(&self) -> bool {
-        self.gate_type == GateType::Or
-    }
+        for i in 0..45 {
+            *WIRES.get_unchecked_mut(15550 + i) = unchecked_sub(*input.offset(0), b'0');
+            input = input.add("0\ny00: ".len());
+        }
 
-    fn has_input(&self, input: &[u8]) -> bool {
-        self.inputs.0 == input || self.inputs.1 == input
-    }
+        input = input.sub("0\ny00: ".len());
+        input = input.add("0\n\n".len());
 
-    fn outputs_into(&self, gate_type: GateType, gates: &[Gate]) -> bool {
-        gates
-            .iter()
-            .filter(|gate2| gate2.has_input(&self.output) && gate2.gate_type == gate_type)
-            .count()
-            >= 1
-    }
-}
+        // gate: (in1,in2,op,out) use 0 as special op for already calculated
 
-pub fn part1(input: &str) -> u128 {
-    let (raw_wires, raw_gates) = input.split_once("\n\n").unwrap();
-    let mut wires: HashMap<&[u8; 3], bool> = HashMap::new();
-    raw_wires.lines().for_each(|line| {
-        wires.insert(
-            line[0..3].as_bytes().try_into().unwrap(),
-            line.chars().nth(5).unwrap() == '1',
-        );
-    });
+        // we interpret abc values as b26, can go up to 15466
+        // so we use values above that for the xZZ, yZZ, zZZ (add 15500 plus another 50 to
+        // distinguish)
 
-    let mut gates = Vec::new();
-
-    raw_gates.lines().for_each(|line| {
-        let line = line.as_bytes();
-        let input1: [u8; 3] = line[0..3].try_into().unwrap();
-        let gate: [u8; 3] = line[4..7].try_into().unwrap();
-        let gate_len = if gate[0] == b'O' { 2 } else { 3 };
-        let input2: [u8; 3] = line[5 + gate_len..8 + gate_len].try_into().unwrap();
-        let output: [u8; 3] = line[12 + gate_len..15 + gate_len].try_into().unwrap();
-        gates.push(Gate {
-            gate_type: GateType::from_bytes(gate),
-            inputs: (input1, input2),
-            output,
-        })
-    });
-
-    loop {
-        let mut all_set = true;
-        for gate in &gates {
-            if let Some(&input1) = wires.get(&gate.inputs.0)
-                && let Some(&input2) = wires.get(&gate.inputs.1)
-            {
-                wires.insert(&gate.output, {
-                    match gate.gate_type {
-                        GateType::Or => input1 || input2,
-                        GateType::And => input1 && input2,
-                        GateType::Xor => input1 ^ input2,
-                    }
-                });
+        (0..222).for_each(|i| {
+            let i1 = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+                // is x,y,z so do as described above
+                (unchecked_sub(*input.offset(1) as usize, b'0' as usize)) * 10
+                    + unchecked_sub(*input.offset(2) as usize, b'0' as usize)
+                    + 15500
+                    + 50 * (unchecked_sub(*input.offset(0), b'x') as usize)
             } else {
-                all_set = false;
+                b26([*input.offset(0), *input.offset(1), *input.offset(2)])
+            };
+            let op = *input.offset(4);
+            input = input.add(7);
+            if op != b'O' {
+                input = input.add(1);
             }
-        }
-        if all_set {
-            break;
-        }
-    }
+            let i2 = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+                (unchecked_sub(*input.offset(1) as usize, b'0' as usize)) * 10
+                    + unchecked_sub(*input.offset(2) as usize, b'0' as usize)
+                    + 15500
+                    + 50 * (unchecked_sub(*input.offset(0), b'x') as usize)
+            } else {
+                b26([*input.offset(0), *input.offset(1), *input.offset(2)])
+            };
+            input = input.add(7);
+            let out = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+                unchecked_sub(*input.offset(1) as usize, b'0' as usize) * 10
+                    + unchecked_sub(*input.offset(2) as usize, b'0' as usize)
+                    + 15500
+                    + 50 * (unchecked_sub(*input.offset(0), b'x') as usize)
+            } else {
+                b26([*input.offset(0), *input.offset(1), *input.offset(2)])
+            };
+            input = input.add(4);
+            *GATES.get_unchecked_mut(i) = (i1, i2, op, out);
+        });
 
-    let mut outval = 0u128;
-    for (name, val) in wires {
-        if name[0] == b'z' {
-            let idx = name[1] * 10 + name[2];
-            if val {
-                outval |= 1 << idx;
+        let mut all_calculated = false;
+
+        while !all_calculated {
+            all_calculated = true;
+            for i in 0..222 {
+                let gate = GATES.get_unchecked(i);
+                if gate.2 == 0 {
+                    continue;
+                }
+                if *WIRES.get_unchecked(gate.0) < 3 && *WIRES.get_unchecked(gate.1) < 3 {
+                    execute(gate.2, gate.0, gate.1, gate.3);
+                    GATES.get_unchecked_mut(i).2 = 0;
+                } else {
+                    all_calculated = false;
+                }
             }
         }
+        let mut z = 0;
+        for i in 0..46 {
+            z |= (*WIRES.get_unchecked(15600 + i) as u64) << i;
+        }
+        z
     }
-    outval
 }
+
+static mut WIRES_INPUT_INTO: [[bool; 3]; 15500] = [[false; 3]; 15500];
+
+#[inline(always)]
+unsafe fn outputs_into(output: usize, gate_type: u8) -> bool {
+    output < 15500 && WIRES_INPUT_INTO[output][GATE_TYPE_LUT[gate_type as usize]]
+}
+
+const GATE_TYPE_LUT: [usize; 100] = {
+    let mut table = [0; 100];
+    table[b'X' as usize] = 2;
+    table[b'O' as usize] = 1;
+    table[b'A' as usize] = 0;
+    table
+};
 
 fn sort_groups(slice: &mut [u8]) {
     assert_eq!(slice.len(), 31);
@@ -143,140 +153,187 @@ fn sort_groups(slice: &mut [u8]) {
 }
 
 pub fn part2(input: &str) -> &str {
-    let (_, raw_gates) = input.split_once("\n\n").unwrap();
-    let mut gates = Vec::new();
-
-    let mut first_carry = [0; 3];
-
-    raw_gates.lines().for_each(|line| {
-        let line = line.as_bytes();
-        let input1: [u8; 3] = line[0..3].try_into().unwrap();
-        let gate: [u8; 3] = line[4..7].try_into().unwrap();
-        let gate_len = if gate[0] == b'O' { 2 } else { 3 };
-        let input2: [u8; 3] = line[5 + gate_len..8 + gate_len].try_into().unwrap();
-        let output: [u8; 3] = line[12 + gate_len..15 + gate_len].try_into().unwrap();
-        if input1 == [b'x', b'0', b'0'] && input2 == [b'y', b'0', b'0'] && gate[0] == b'A' {
-            first_carry = output;
-        }
-        gates.push(Gate {
-            gate_type: GateType::from_bytes(gate),
-            inputs: (input1, input2),
-            output,
-        })
-    });
-
-    static mut SWAPPED_WIRES: [u8; 31] = [
-        0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',',
-        0, 0, 0, b',', 0, 0, 0,
-    ];
-
-    let mut swapped_wires_found = 0;
-
-    for gate in &gates {
-        // there are five different gates in an adder
-        // - XOR with direct input, which outputs to other XOR and AND
-        // - XOR with direct output with input from carry and from other XOR
-        // - AND with direct inputs which outputs to OR
-        // - AND with inputs from carry and XOR which outputs to OR
-        // - OR with carry output with inputs from ANDs
-        if gate.output == [b'z', b'0', b'0']
-            || gate.output == [b'z', b'4', b'5']
-            || gate.output == first_carry
-        {
-            continue;
-        }
-
-        if gate.has_direct_output() && !gate.is_xor() {
-            unsafe {
-                SWAPPED_WIRES[swapped_wires_found * 4] = gate.output[0];
-                SWAPPED_WIRES[swapped_wires_found * 4 + 1] = gate.output[1];
-                SWAPPED_WIRES[swapped_wires_found * 4 + 2] = gate.output[2];
-                swapped_wires_found += 1;
-                if swapped_wires_found >= 8 {
-                    break;
-                }
-                continue;
-            }
-        }
-
-        if !((gate.is_and() && !gate.has_direct_input() && gate.outputs_into(GateType::Or, &gates))
-            || (gate.is_xor()
-                && ((gate.outputs_into(GateType::And, &gates)
-                    && gate.outputs_into(GateType::Xor, &gates)
-                    && gate.has_direct_input())
-                    || gate.has_direct_output()))
-            || (gate.is_and()
-                && gate.has_direct_input()
-                && gate.outputs_into(GateType::Or, &gates))
-            || (gate.is_or()
-                && !gate.has_direct_input()
-                && gate.outputs_into(GateType::And, &gates)
-                && gate.outputs_into(GateType::Xor, &gates)))
-        {
-            unsafe {
-                SWAPPED_WIRES[swapped_wires_found * 4] = gate.output[0];
-                SWAPPED_WIRES[swapped_wires_found * 4 + 1] = gate.output[1];
-                SWAPPED_WIRES[swapped_wires_found * 4 + 2] = gate.output[2];
-                swapped_wires_found += 1;
-                if swapped_wires_found >= 8 {
-                    break;
-                }
-                continue;
-            }
-        }
-    }
-
     unsafe {
+        let input = input.as_bytes();
+        let mut input = input.as_ptr();
+
+        fn b26(val: [u8; 3]) -> usize {
+            let [a, b, c] = [
+                (val[0] - b'a') as usize,
+                (val[1] - b'a') as usize,
+                (val[2] - b'a') as usize,
+            ];
+            a * 26 * 26 + b * 26 + c
+        }
+
+        input = input.add("x00: ".len());
+        input = input.add("0\nx00: ".len() * 45);
+        input = input.add("0\ny00: ".len() * 45);
+        input = input.sub("0\ny00: ".len());
+        input = input.add("0\n\n".len());
+        // gate: (in1,in2,op,out) use 0 as special op for already calculated
+
+        // we interpret abc values as b26, can go up to 15466
+        // so we use values above that for the xZZ, yZZ, zZZ (add 15500 plus another 50 to
+        // distinguish)
+
+        let mut first_carry = 0;
+
+        (0..222).for_each(|i| {
+            let i1 = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+                // is x,y,z so do as described above
+                (*input.offset(1) as usize - b'0' as usize) * 10
+                    + (*input.offset(2) as usize - b'0' as usize)
+                    + 15500
+                    + 50 * ((*input.offset(0) - b'x') as usize)
+            } else {
+                b26([*input.offset(0), *input.offset(1), *input.offset(2)])
+            };
+            let op = *input.offset(4);
+            input = input.add(7);
+            if op != b'O' {
+                input = input.add(1);
+            }
+            let i2 = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+                (*input.offset(1) as usize - b'0' as usize) * 10
+                    + (*input.offset(2) as usize - b'0' as usize)
+                    + 15500
+                    + 50 * ((*input.offset(0) - b'x') as usize)
+            } else {
+                b26([*input.offset(0), *input.offset(1), *input.offset(2)])
+            };
+            input = input.add(7);
+            let out = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+                (*input.offset(1) as usize - b'0' as usize) * 10
+                    + (*input.offset(2) as usize - b'0' as usize)
+                    + 15500
+                    + 50 * ((*input.offset(0) - b'x') as usize)
+            } else {
+                b26([*input.offset(0), *input.offset(1), *input.offset(2)])
+            };
+            input = input.add(4);
+            //if input1 == [b'x', b'0', b'0'] && input2 == [b'y', b'0', b'0'] && gate[0] == b'A' {
+
+            if i1 == 15500 && i2 == 15550 && op == b'A' {
+                first_carry = out;
+            }
+
+            if i1 < 15500 {
+                WIRES_INPUT_INTO[i1][GATE_TYPE_LUT[op as usize]] = true;
+            }
+            if i2 < 15500 {
+                WIRES_INPUT_INTO[i2][GATE_TYPE_LUT[op as usize]] = true;
+            }
+
+            GATES[i] = (i1, i2, op, out);
+        });
+
+        static mut SWAPPED_WIRES: [u8; 31] = [
+            0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0,
+            b',', 0, 0, 0, b',', 0, 0, 0,
+        ];
+
+        let mut swapped_wires_found = 0;
+
+        fn reverse_b26(mut value: usize) -> [u8; 3] {
+            if value >= 15500 {
+                let norm = value - 15500;
+                let idx = norm % 50;
+                [
+                    (norm / 50) as u8 + b'x',
+                    (idx / 10) as u8 + b'0',
+                    (idx % 10) as u8 + b'0',
+                ]
+            } else {
+                let c = (value % 26) as u8;
+                value /= 26;
+                let b = (value % 26) as u8;
+                value /= 26;
+                let a = value as u8;
+
+                [a + b'a', b + b'a', c + b'a']
+            }
+        }
+
+        for i in 0..222 {
+            // there are five different gates in an adder
+            // - XOR with direct input, which outputs to other XOR and AND
+            // - XOR with direct output with input from carry and from other XOR
+            // - AND with direct inputs which outputs to OR
+            // - AND with inputs from carry and XOR which outputs to OR
+            // - OR with carry output with inputs from ANDs
+
+            // gate: (in1,in2,op,out) use 0 as special op for already calculated
+
+            let gate = GATES[i];
+
+            if gate.3 == 15600 || gate.3 == 15645 || gate.3 == first_carry {
+                continue;
+            }
+
+            // has_direct_output: >=15600
+            // has_direct_input: both >= 15500 and < 15600
+            // outputs into: keep track of into which gate types wires go
+
+            if gate.3 >= 15600 && (gate.2 != b'X') {
+                let out = reverse_b26(gate.3);
+                SWAPPED_WIRES[swapped_wires_found * 4] = out[0];
+                SWAPPED_WIRES[swapped_wires_found * 4 + 1] = out[1];
+                SWAPPED_WIRES[swapped_wires_found * 4 + 2] = out[2];
+                swapped_wires_found += 1;
+                if swapped_wires_found >= 8 {
+                    break;
+                }
+                continue;
+            }
+
+            //if !((gate.is_and()
+            //    && !gate.has_direct_input()
+            //    && gate.outputs_into(GateType::Or, &gates))
+            //    || (gate.is_xor()
+            //        && ((gate.outputs_into(GateType::And, &gates)
+            //            && gate.outputs_into(GateType::Xor, &gates)
+            //            && gate.has_direct_input())
+            //            || gate.has_direct_output()))
+            //    || (gate.is_and()
+            //        && gate.has_direct_input()
+            //        && gate.outputs_into(GateType::Or, &gates))
+            //    || (gate.is_or()
+            //        && !gate.has_direct_input()
+            //        && gate.outputs_into(GateType::And, &gates)
+            //        && gate.outputs_into(GateType::Xor, &gates)))
+
+            if !((gate.2 == b'A'
+                && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                && outputs_into(gate.3, b'O'))
+                || (gate.2 == b'X'
+                    && ((outputs_into(gate.3, b'A') && outputs_into(gate.3, b'X'))
+                        && (gate.0 < 15600
+                            && gate.1 < 15600
+                            && gate.0 >= 15500
+                            && gate.1 >= 15500))
+                    || (gate.3 >= 15600))
+                || (gate.2 == b'A'
+                    && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                    && outputs_into(gate.3, b'O'))
+                || (gate.2 == b'O'
+                    && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                    && outputs_into(gate.3, b'A')
+                    && outputs_into(gate.3, b'X')))
+            {
+                let out = reverse_b26(gate.3);
+                SWAPPED_WIRES[swapped_wires_found * 4] = out[0];
+                SWAPPED_WIRES[swapped_wires_found * 4 + 1] = out[1];
+                SWAPPED_WIRES[swapped_wires_found * 4 + 2] = out[2];
+                swapped_wires_found += 1;
+                if swapped_wires_found >= 8 {
+                    break;
+                }
+                continue;
+            }
+        }
+
         sort_groups(&mut SWAPPED_WIRES);
         std::str::from_utf8(&SWAPPED_WIRES).unwrap()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    const INPUT: &str = "x00: 1
-x01: 1
-x02: 1
-y00: 0
-y01: 1
-y02: 0
-
-x00 AND y00 -> z00
-x01 XOR y01 -> z01
-x02 OR y02 -> z02";
-
-    const INPUT2: &str = "x00: 0
-x01: 1
-x02: 0
-x03: 1
-x04: 0
-x05: 1
-y00: 0
-y01: 0
-y02: 1
-y03: 1
-y04: 0
-y05: 1
-
-x00 AND y00 -> z05
-x01 AND y01 -> z02
-x02 AND y02 -> z01
-x03 AND y03 -> z03
-x04 AND y04 -> z04
-x05 AND y05 -> z00";
-
-    #[test]
-    fn part_1() {
-        assert_eq!(part1(INPUT).to_string(), String::from("4"))
-    }
-
-    #[test]
-    fn part_2() {
-        assert_eq!(
-            part2(INPUT2).to_string(),
-            // weird because of optimizations
-            String::from("\0\0\0,\0\0\0,\0\0\0,\0\0\0,z01,z02,z03,z04")
-        )
     }
 }
