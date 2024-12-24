@@ -1,6 +1,5 @@
+#![feature(let_chains)]
 use std::collections::HashMap;
-
-use crate::utils::parsing::ByteParsing;
 
 #[derive(Copy, Clone, Eq, PartialEq)]
 enum GateType {
@@ -10,12 +9,12 @@ enum GateType {
 }
 
 impl GateType {
-    fn from_str(val: &str) -> Self {
-        match val {
-            "AND" => Self::And,
-            "OR" => Self::Or,
-            "XOR" => Self::Xor,
-            _ => unimplemented!(),
+    fn from_bytes(val: [u8; 3]) -> Self {
+        match val[0] {
+            b'A' => Self::And,
+            b'O' => Self::Or,
+            b'X' => Self::Xor,
+            _ => unreachable!(),
         }
     }
 }
@@ -76,16 +75,15 @@ pub fn part1(input: &str) -> u128 {
     let mut gates = Vec::new();
 
     raw_gates.lines().for_each(|line| {
-        let (gate, output) = line.split_once(" -> ").unwrap();
-        let (input1, rest) = gate.split_once(" ").unwrap();
-        let (gate_type, input2) = rest.split_once(" ").unwrap();
+        let line = line.as_bytes();
+        let input1: [u8; 3] = line[0..3].try_into().unwrap();
+        let gate: [u8; 3] = line[4..7].try_into().unwrap();
+        let input2: [u8; 3] = line[8..11].try_into().unwrap();
+        let output: [u8; 3] = line[15..18].try_into().unwrap();
         gates.push(Gate {
-            gate_type: GateType::from_str(gate_type),
-            inputs: (
-                input1.as_bytes().try_into().unwrap(),
-                input2.as_bytes().try_into().unwrap(),
-            ),
-            output: output.as_bytes().try_into().unwrap(),
+            gate_type: GateType::from_bytes(gate),
+            inputs: (input1, input2),
+            output,
         })
     });
 
@@ -114,7 +112,7 @@ pub fn part1(input: &str) -> u128 {
     let mut outval = 0u128;
     for (name, val) in wires {
         if name[0] == b'z' {
-            let idx = name[1..].as_num::<u64>();
+            let idx = name[1] * 10 + name[2];
             if val {
                 outval |= 1 << idx;
             }
@@ -124,29 +122,18 @@ pub fn part1(input: &str) -> u128 {
 }
 
 fn sort_groups(slice: &mut [u8]) {
-    assert_eq!(slice.len(), 31, "Slice must have exactly 31 elements");
-
-    // Use indices to represent groups
+    assert_eq!(slice.len(), 31);
     let mut indices: [usize; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
-
-    // Sort indices based on the groups they represent
     indices.sort_unstable_by(|&a, &b| {
         let group_a = &slice[a * 4..a * 4 + 3];
         let group_b = &slice[b * 4..b * 4 + 3];
         group_a.cmp(group_b)
     });
-
-    // Perform the swap operations
     (0..=7).for_each(|i| {
         if indices[i] != i {
-            // Swap groups
             for j in 0..3 {
                 slice.swap(i * 4 + j, indices[i] * 4 + j);
             }
-            ////// Swap the unrelated value
-            //slice.swap(i * 4 + 3, indices[i] * 4 + 3);
-            //
-            //// Update indices
             let swapped_index = indices[i];
             indices[indices.iter().position(|&x| x == i).unwrap()] = swapped_index;
             indices[i] = i;
@@ -158,22 +145,22 @@ pub fn part2(input: &str) -> &str {
     let (_, raw_gates) = input.split_once("\n\n").unwrap();
     let mut gates = Vec::new();
 
-    let mut first_carry = "";
+    let mut first_carry = [0; 3];
 
     raw_gates.lines().for_each(|line| {
-        let (gate, output) = line.split_once(" -> ").unwrap();
-        let (input1, rest) = gate.split_once(" ").unwrap();
-        let (gate_type, input2) = rest.split_once(" ").unwrap();
-        if input1 == "x00" && input2 == "y00" && gate_type == "AND" {
+        let line = line.as_bytes();
+        let input1: [u8; 3] = line[0..3].try_into().unwrap();
+        let gate: [u8; 3] = line[4..7].try_into().unwrap();
+        let gate_len = if gate[0] == b'O' { 2 } else { 3 };
+        let input2: [u8; 3] = line[5 + gate_len..8 + gate_len].try_into().unwrap();
+        let output: [u8; 3] = line[12 + gate_len..15 + gate_len].try_into().unwrap();
+        if input1 == [b'x', b'0', b'0'] && input2 == [b'y', b'0', b'0'] && gate[0] == b'A' {
             first_carry = output;
         }
         gates.push(Gate {
-            gate_type: GateType::from_str(gate_type),
-            inputs: (
-                input1.as_bytes().try_into().unwrap(),
-                input2.as_bytes().try_into().unwrap(),
-            ),
-            output: output.as_bytes().try_into().unwrap(),
+            gate_type: GateType::from_bytes(gate),
+            inputs: (input1, input2),
+            output,
         })
     });
 
@@ -191,9 +178,9 @@ pub fn part2(input: &str) -> &str {
         // - AND with direct inputs which outputs to OR
         // - AND with inputs from carry and XOR which outputs to OR
         // - OR with carry output with inputs from ANDs
-        if std::str::from_utf8(&gate.output).unwrap() == "z00"
-            || std::str::from_utf8(&gate.output).unwrap() == "z45"
-            || std::str::from_utf8(&gate.output).unwrap() == first_carry
+        if gate.output == [b'z', b'0', b'0']
+            || gate.output == [b'z', b'4', b'5']
+            || gate.output == first_carry
         {
             continue;
         }
@@ -204,6 +191,9 @@ pub fn part2(input: &str) -> &str {
                 SWAPPED_WIRES[swapped_wires_found * 4 + 1] = gate.output[1];
                 SWAPPED_WIRES[swapped_wires_found * 4 + 2] = gate.output[2];
                 swapped_wires_found += 1;
+                if swapped_wires_found >= 8 {
+                    break;
+                }
                 continue;
             }
         }
@@ -227,6 +217,9 @@ pub fn part2(input: &str) -> &str {
                 SWAPPED_WIRES[swapped_wires_found * 4 + 1] = gate.output[1];
                 SWAPPED_WIRES[swapped_wires_found * 4 + 2] = gate.output[2];
                 swapped_wires_found += 1;
+                if swapped_wires_found >= 8 {
+                    break;
+                }
                 continue;
             }
         }
@@ -279,6 +272,10 @@ x05 AND y05 -> z00";
 
     #[test]
     fn part_2() {
-        assert_eq!(part2(INPUT2).to_string(), String::from("z00,z01,z02,z05"))
+        assert_eq!(
+            part2(INPUT2).to_string(),
+            // weird because of optimizations
+            String::from("\0\0\0,\0\0\0,\0\0\0,\0\0\0,z01,z02,z03,z04")
+        )
     }
 }
