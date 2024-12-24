@@ -78,8 +78,9 @@ pub fn part1(input: &str) -> u128 {
         let line = line.as_bytes();
         let input1: [u8; 3] = line[0..3].try_into().unwrap();
         let gate: [u8; 3] = line[4..7].try_into().unwrap();
-        let input2: [u8; 3] = line[8..11].try_into().unwrap();
-        let output: [u8; 3] = line[15..18].try_into().unwrap();
+        let gate_len = if gate[0] == b'O' { 2 } else { 3 };
+        let input2: [u8; 3] = line[5 + gate_len..8 + gate_len].try_into().unwrap();
+        let output: [u8; 3] = line[12 + gate_len..15 + gate_len].try_into().unwrap();
         gates.push(Gate {
             gate_type: GateType::from_bytes(gate),
             inputs: (input1, input2),
