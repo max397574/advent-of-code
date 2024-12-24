@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use crate::utils::parsing::ByteParsing;
+
 #[derive(Copy, Clone, Eq, PartialEq)]
 enum GateType {
     And,
@@ -21,19 +23,19 @@ impl GateType {
 #[derive(Clone, Eq, PartialEq)]
 struct Gate {
     gate_type: GateType,
-    inputs: (String, String),
-    output: String,
+    inputs: ([u8; 3], [u8; 3]),
+    output: [u8; 3],
 }
 
 // utilities for p2
 impl Gate {
     fn has_direct_input(&self) -> bool {
-        (self.inputs.0.starts_with('x') && self.inputs.1.starts_with('y'))
-            || (self.inputs.1.starts_with('x') && self.inputs.0.starts_with('y'))
+        (self.inputs.0[0] == b'x' && self.inputs.1[0] == b'y')
+            || (self.inputs.1[0] == b'x' && self.inputs.0[0] == b'y')
     }
 
     fn has_direct_output(&self) -> bool {
-        self.output.starts_with('z')
+        self.output[0] == b'z'
     }
 
     fn is_xor(&self) -> bool {
@@ -48,7 +50,7 @@ impl Gate {
         self.gate_type == GateType::Or
     }
 
-    fn has_input(&self, input: &str) -> bool {
+    fn has_input(&self, input: &[u8]) -> bool {
         self.inputs.0 == input || self.inputs.1 == input
     }
 
@@ -63,9 +65,12 @@ impl Gate {
 
 pub fn part1(input: &str) -> u128 {
     let (raw_wires, raw_gates) = input.split_once("\n\n").unwrap();
-    let mut wires = HashMap::new();
+    let mut wires: HashMap<&[u8; 3], bool> = HashMap::new();
     raw_wires.lines().for_each(|line| {
-        wires.insert(line[0..3].to_string(), line.chars().nth(5).unwrap() == '1');
+        wires.insert(
+            line[0..3].as_bytes().try_into().unwrap(),
+            line.chars().nth(5).unwrap() == '1',
+        );
     });
 
     let mut gates = Vec::new();
@@ -76,24 +81,27 @@ pub fn part1(input: &str) -> u128 {
         let (gate_type, input2) = rest.split_once(" ").unwrap();
         gates.push(Gate {
             gate_type: GateType::from_str(gate_type),
-            inputs: (input1.to_owned(), input2.to_owned()),
-            output: output.to_owned(),
+            inputs: (
+                input1.as_bytes().try_into().unwrap(),
+                input2.as_bytes().try_into().unwrap(),
+            ),
+            output: output.as_bytes().try_into().unwrap(),
         })
     });
 
     loop {
         let mut all_set = true;
-        for gate in gates.clone() {
+        for gate in &gates {
             if let Some(&input1) = wires.get(&gate.inputs.0)
                 && let Some(&input2) = wires.get(&gate.inputs.1)
             {
-                *wires.entry(gate.output).or_insert(false) = {
+                wires.insert(&gate.output, {
                     match gate.gate_type {
                         GateType::Or => input1 || input2,
                         GateType::And => input1 && input2,
                         GateType::Xor => input1 ^ input2,
                     }
-                };
+                });
             } else {
                 all_set = false;
             }
@@ -105,8 +113,8 @@ pub fn part1(input: &str) -> u128 {
 
     let mut outval = 0u128;
     for (name, val) in wires {
-        if let Some(rest) = name.strip_prefix('z') {
-            let idx = rest.parse::<u64>().unwrap();
+        if name[0] == b'z' {
+            let idx = name[1..].as_num::<u64>();
             if val {
                 outval |= 1 << idx;
             }
@@ -115,7 +123,38 @@ pub fn part1(input: &str) -> u128 {
     outval
 }
 
-pub fn part2(input: &str) -> String {
+fn sort_groups(slice: &mut [u8]) {
+    assert_eq!(slice.len(), 31, "Slice must have exactly 31 elements");
+
+    // Use indices to represent groups
+    let mut indices: [usize; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
+
+    // Sort indices based on the groups they represent
+    indices.sort_unstable_by(|&a, &b| {
+        let group_a = &slice[a * 4..a * 4 + 3];
+        let group_b = &slice[b * 4..b * 4 + 3];
+        group_a.cmp(group_b)
+    });
+
+    // Perform the swap operations
+    (0..=7).for_each(|i| {
+        if indices[i] != i {
+            // Swap groups
+            for j in 0..3 {
+                slice.swap(i * 4 + j, indices[i] * 4 + j);
+            }
+            ////// Swap the unrelated value
+            //slice.swap(i * 4 + 3, indices[i] * 4 + 3);
+            //
+            //// Update indices
+            let swapped_index = indices[i];
+            indices[indices.iter().position(|&x| x == i).unwrap()] = swapped_index;
+            indices[i] = i;
+        }
+    });
+}
+
+pub fn part2(input: &str) -> &str {
     let (_, raw_gates) = input.split_once("\n\n").unwrap();
     let mut gates = Vec::new();
 
@@ -130,12 +169,20 @@ pub fn part2(input: &str) -> String {
         }
         gates.push(Gate {
             gate_type: GateType::from_str(gate_type),
-            inputs: (input1.to_owned(), input2.to_owned()),
-            output: output.to_owned(),
+            inputs: (
+                input1.as_bytes().try_into().unwrap(),
+                input2.as_bytes().try_into().unwrap(),
+            ),
+            output: output.as_bytes().try_into().unwrap(),
         })
     });
 
-    let mut swapped_wires = Vec::new();
+    static mut SWAPPED_WIRES: [u8; 31] = [
+        0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',', 0, 0, 0, b',',
+        0, 0, 0, b',', 0, 0, 0,
+    ];
+
+    let mut swapped_wires_found = 0;
 
     for gate in &gates {
         // there are five different gates in an adder
@@ -144,13 +191,21 @@ pub fn part2(input: &str) -> String {
         // - AND with direct inputs which outputs to OR
         // - AND with inputs from carry and XOR which outputs to OR
         // - OR with carry output with inputs from ANDs
-        if gate.output == "z00" || gate.output == "z45" || gate.output == first_carry {
+        if std::str::from_utf8(&gate.output).unwrap() == "z00"
+            || std::str::from_utf8(&gate.output).unwrap() == "z45"
+            || std::str::from_utf8(&gate.output).unwrap() == first_carry
+        {
             continue;
         }
 
         if gate.has_direct_output() && !gate.is_xor() {
-            swapped_wires.push(gate.output.clone());
-            continue;
+            unsafe {
+                SWAPPED_WIRES[swapped_wires_found * 4] = gate.output[0];
+                SWAPPED_WIRES[swapped_wires_found * 4 + 1] = gate.output[1];
+                SWAPPED_WIRES[swapped_wires_found * 4 + 2] = gate.output[2];
+                swapped_wires_found += 1;
+                continue;
+            }
         }
 
         if !((gate.is_and() && !gate.has_direct_input() && gate.outputs_into(GateType::Or, &gates))
@@ -167,13 +222,20 @@ pub fn part2(input: &str) -> String {
                 && gate.outputs_into(GateType::And, &gates)
                 && gate.outputs_into(GateType::Xor, &gates)))
         {
-            swapped_wires.push(gate.output.clone());
-            continue;
+            unsafe {
+                SWAPPED_WIRES[swapped_wires_found * 4] = gate.output[0];
+                SWAPPED_WIRES[swapped_wires_found * 4 + 1] = gate.output[1];
+                SWAPPED_WIRES[swapped_wires_found * 4 + 2] = gate.output[2];
+                swapped_wires_found += 1;
+                continue;
+            }
         }
     }
 
-    swapped_wires.sort();
-    swapped_wires.join(",")
+    unsafe {
+        sort_groups(&mut SWAPPED_WIRES);
+        std::str::from_utf8(&SWAPPED_WIRES).unwrap()
+    }
 }
 
 #[cfg(test)]

@@ -59,7 +59,10 @@ pub fn get_solutions_per_year() -> YearSolutions {
         [get_string(day21::part1), get_string(day21::part2)],
         [get_string(day22::part1), get_string(day22::part2)],
         [get_string(day23::part1), get_string(day23::part2)],
-        [get_string(day24::part1), get_string(day24::part2)],
+        [
+            get_string(day24::part1),
+            Box::new(move |input| day24::part2(input).to_owned()),
+        ],
         [get_string(day25::part1), get_string(day25::part2)],
     ]
 }
