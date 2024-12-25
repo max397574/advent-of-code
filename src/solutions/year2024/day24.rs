@@ -1,5 +1,4 @@
-#![feature(core_intrinsics)]
-use std::{hint::unreachable_unchecked, intrinsics::unchecked_sub};
+use std::intrinsics::unchecked_sub;
 
 static mut WIRES: [u8; 15700] = [3; 15700];
 static mut GATES: [(usize, usize, u8, usize); 222] = [(0, 0, 0, 0); 222];
@@ -212,10 +211,12 @@ pub fn part2(input: &str) -> &str {
             }
 
             if i1 < 15500 {
-                WIRES_INPUT_INTO.get_unchecked_mut(i1)[GATE_TYPE_LUT[op as usize]] = true;
+                WIRES_INPUT_INTO.get_unchecked_mut(i1)[*GATE_TYPE_LUT.get_unchecked(op as usize)] =
+                    true;
             }
             if i2 < 15500 {
-                WIRES_INPUT_INTO.get_unchecked_mut(i2)[GATE_TYPE_LUT[op as usize]] = true;
+                WIRES_INPUT_INTO.get_unchecked_mut(i2)[*GATE_TYPE_LUT.get_unchecked(op as usize)] =
+                    true;
             }
 
             *GATES.get_unchecked_mut(i) = (i1, i2, op, out);
@@ -269,6 +270,11 @@ pub fn part2(input: &str) -> &str {
             }
 
             if !(match gate.2 {
+                b'O' => {
+                    !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                        && outputs_into(gate.3, b'A')
+                        && outputs_into(gate.3, b'X')
+                }
                 b'A' => {
                     (!(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
                         && outputs_into(gate.3, b'O'))
@@ -278,52 +284,12 @@ pub fn part2(input: &str) -> &str {
                             && gate.1 >= 15500)
                             && outputs_into(gate.3, b'O'))
                 }
-                b'X' => {
+                _ => {
                     ((outputs_into(gate.3, b'A') && outputs_into(gate.3, b'X'))
                         && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500))
                         || (gate.3 >= 15600)
                 }
-                _ => {
-                    !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-                        && outputs_into(gate.3, b'A')
-                        && outputs_into(gate.3, b'X')
-                } //_ => unreachable_unchecked(),
-            })
-            // !(
-            //(
-            //    gate.2 == b'A'
-            //        && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-            //        && outputs_into(gate.3, b'O'),
-            //) || (gate.2 == b'X'
-            //    && ((outputs_into(gate.3, b'A') && outputs_into(gate.3, b'X'))
-            //        && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500))
-            //    || (gate.3 >= 15600))
-            //    || (gate.2 == b'A'
-            //        && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-            //        && outputs_into(gate.3, b'O'))
-            //    || (gate.2 == b'O'
-            //        && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-            //        && outputs_into(gate.3, b'A')
-            //        && outputs_into(gate.3, b'X')))
-            {
-                //if !((gate.2 == b'A'
-                //    && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-                //    && outputs_into(gate.3, b'O'))
-                //    || (gate.2 == b'X'
-                //        && ((outputs_into(gate.3, b'A') && outputs_into(gate.3, b'X'))
-                //            && (gate.0 < 15600
-                //                && gate.1 < 15600
-                //                && gate.0 >= 15500
-                //                && gate.1 >= 15500))
-                //        || (gate.3 >= 15600))
-                //    || (gate.2 == b'A'
-                //        && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-                //        && outputs_into(gate.3, b'O'))
-                //    || (gate.2 == b'O'
-                //        && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-                //        && outputs_into(gate.3, b'A')
-                //        && outputs_into(gate.3, b'X')))
-                //{
+            }) {
                 let out = reverse_b26(gate.3);
                 SWAPPED_WIRES[swapped_wires_found * 4] = out[0];
                 SWAPPED_WIRES[swapped_wires_found * 4 + 1] = out[1];
