@@ -1,23 +1,9 @@
+#![feature(core_intrinsics)]
 use std::intrinsics::unchecked_sub;
 
 static mut WIRES: [u8; 15700] = [3; 15700];
 static mut GATES: [(usize, usize, u8, usize); 222] = [(0, 0, 0, 0); 222];
-
-#[inline(always)]
-unsafe fn execute(op: u8, i1: usize, i2: usize, out: usize) {
-    let i1 = WIRES.get_unchecked(i1);
-    let i2 = WIRES.get_unchecked(i2);
-    let res = {
-        if op == b'O' {
-            i1 | i2
-        } else if op == b'A' {
-            i1 & i2
-        } else {
-            i1 ^ i2
-        }
-    };
-    *WIRES.get_unchecked_mut(out) = res;
-}
+static mut GATE_OUTPUTS: [u8; 15700] = [3; 15700];
 
 pub fn part1(input: &str) -> u64 {
     unsafe {
@@ -28,9 +14,9 @@ pub fn part1(input: &str) -> u64 {
 
         unsafe fn b26(val: [u8; 3]) -> usize {
             let [a, b, c] = [
-                (unchecked_sub(*val.get_unchecked(0), b'a')) as usize,
-                (unchecked_sub(*val.get_unchecked(1), b'a')) as usize,
-                (unchecked_sub(*val.get_unchecked(2), b'a')) as usize,
+                (unchecked_sub(val[0], b'a')) as usize,
+                (unchecked_sub(val[1], b'a')) as usize,
+                (unchecked_sub(val[2], b'a')) as usize,
             ];
             a * 26 * 26 + b * 26 + c
         }
@@ -38,12 +24,12 @@ pub fn part1(input: &str) -> u64 {
         input = input.add("x00: ".len());
 
         for i in 0..45 {
-            *WIRES.get_unchecked_mut(15500 + i) = unchecked_sub(*input.offset(0), b'0');
+            WIRES[15500 + i] = unchecked_sub(*input.offset(0), b'0');
             input = input.add("0\nx00: ".len());
         }
 
         for i in 0..45 {
-            *WIRES.get_unchecked_mut(15550 + i) = unchecked_sub(*input.offset(0), b'0');
+            WIRES[15550 + i] = unchecked_sub(*input.offset(0), b'0');
             input = input.add("0\ny00: ".len());
         }
 
@@ -89,29 +75,43 @@ pub fn part1(input: &str) -> u64 {
                 b26([*input.offset(0), *input.offset(1), *input.offset(2)])
             };
             input = input.add(4);
-            *GATES.get_unchecked_mut(i) = (i1, i2, op, out);
+            GATE_OUTPUTS[out] = i;
+            GATES[i as usize] = (i1, i2, op, out);
         });
 
-        let mut all_calculated = false;
+        // not sure how this works but it does
+        // similar to what was done here https://fprijate.github.io/tlborm/mbe-min-debugging.html
+        macro_rules! calc_unrolled {
+    ($wire:expr, $($depth:tt)*) => {{
+        calc_unrolled_inner!($wire, $($depth)*)
+    }};
+}
 
-        while !all_calculated {
-            all_calculated = true;
-            for i in 0..222 {
-                let gate = GATES.get_unchecked(i);
-                if gate.2 == 0 {
-                    continue;
-                }
-                if *WIRES.get_unchecked(gate.0) < 3 && *WIRES.get_unchecked(gate.1) < 3 {
-                    execute(gate.2, gate.0, gate.1, gate.3);
-                    GATES.get_unchecked_mut(i).2 = 0;
-                } else {
-                    all_calculated = false;
-                }
-            }
+        macro_rules! calc_unrolled_inner {
+    ($wire:expr, ) => {
+        WIRES[$wire]
+    };
+    ($wire:expr, $depth:tt $($rest:tt)*) => {{
+        if WIRES[$wire] != u8::MAX {
+            WIRES[$wire]
+        } else {
+            let gate = GATES[GATE_OUTPUTS[$wire] as usize];
+            let i1 = calc_unrolled_inner!(gate.0, $($rest)*);
+            let i2 = calc_unrolled_inner!(gate.1, $($rest)*);
+            let res = match gate.2 {
+                b'O' => i1 | i2,
+                b'A' => i1 & i2,
+                _ => i1 ^ i2,
+            };
+            WIRES[gate.3] = res;
+            res
         }
+    }};
+}
+
         let mut z = 0;
-        for i in 0..46 {
-            z |= (*WIRES.get_unchecked(15600 + i) as u64) << i;
+        for z_idx in 0..46 {
+            z |= (calc_unrolled!(15600 + z_idx, a a a a a) as u64) << z_idx;
         }
         z
     }
