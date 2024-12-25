@@ -1,4 +1,3 @@
-#![feature(core_intrinsics)]
 use std::intrinsics::unchecked_sub;
 
 static mut WIRES: [u8; 15700] = [3; 15700];
@@ -132,6 +131,7 @@ const GATE_TYPE_LUT: [usize; 100] = {
     table
 };
 
+#[inline(always)]
 fn sort_groups(slice: &mut [u8]) {
     assert_eq!(slice.len(), 31);
     let mut indices: [usize; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -212,8 +212,6 @@ pub fn part2(input: &str) -> &str {
                 b26([*input.offset(0), *input.offset(1), *input.offset(2)])
             };
             input = input.add(4);
-            //if input1 == [b'x', b'0', b'0'] && input2 == [b'y', b'0', b'0'] && gate[0] == b'A' {
-
             if i1 == 15500 && i2 == 15550 && op == b'A' {
                 first_carry = out;
             }
@@ -256,24 +254,11 @@ pub fn part2(input: &str) -> &str {
         }
 
         for i in 0..222 {
-            // there are five different gates in an adder
-            // - XOR with direct input, which outputs to other XOR and AND
-            // - XOR with direct output with input from carry and from other XOR
-            // - AND with direct inputs which outputs to OR
-            // - AND with inputs from carry and XOR which outputs to OR
-            // - OR with carry output with inputs from ANDs
-
-            // gate: (in1,in2,op,out) use 0 as special op for already calculated
-
             let gate = GATES[i];
 
             if gate.3 == 15600 || gate.3 == 15645 || gate.3 == first_carry {
                 continue;
             }
-
-            // has_direct_output: >=15600
-            // has_direct_input: both >= 15500 and < 15600
-            // outputs into: keep track of into which gate types wires go
 
             if gate.3 >= 15600 && (gate.2 != b'X') {
                 let out = reverse_b26(gate.3);
@@ -286,22 +271,6 @@ pub fn part2(input: &str) -> &str {
                 }
                 continue;
             }
-
-            //if !((gate.is_and()
-            //    && !gate.has_direct_input()
-            //    && gate.outputs_into(GateType::Or, &gates))
-            //    || (gate.is_xor()
-            //        && ((gate.outputs_into(GateType::And, &gates)
-            //            && gate.outputs_into(GateType::Xor, &gates)
-            //            && gate.has_direct_input())
-            //            || gate.has_direct_output()))
-            //    || (gate.is_and()
-            //        && gate.has_direct_input()
-            //        && gate.outputs_into(GateType::Or, &gates))
-            //    || (gate.is_or()
-            //        && !gate.has_direct_input()
-            //        && gate.outputs_into(GateType::And, &gates)
-            //        && gate.outputs_into(GateType::Xor, &gates)))
 
             if !((gate.2 == b'A'
                 && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
