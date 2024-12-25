@@ -4,6 +4,16 @@ static mut WIRES: [u8; 15700] = [3; 15700];
 static mut GATES: [(usize, usize, u8, usize); 222] = [(0, 0, 0, 0); 222];
 static mut GATE_OUTPUTS: [u8; 15700] = [3; 15700];
 
+#[inline(always)]
+unsafe fn b26(val: [u8; 3]) -> usize {
+    let [a, b, c] = [
+        (unchecked_sub(*val.get_unchecked(0), b'a')) as usize,
+        (unchecked_sub(*val.get_unchecked(1), b'a')) as usize,
+        (unchecked_sub(*val.get_unchecked(2), b'a')) as usize,
+    ];
+    a * 26 * 26 + b * 26 + c
+}
+
 pub fn part1(input: &str) -> u64 {
     unsafe {
         let input = input.as_bytes();
@@ -11,24 +21,15 @@ pub fn part1(input: &str) -> u64 {
 
         WIRES.fill(u8::MAX);
 
-        unsafe fn b26(val: [u8; 3]) -> usize {
-            let [a, b, c] = [
-                (unchecked_sub(val[0], b'a')) as usize,
-                (unchecked_sub(val[1], b'a')) as usize,
-                (unchecked_sub(val[2], b'a')) as usize,
-            ];
-            a * 26 * 26 + b * 26 + c
-        }
-
         input = input.add("x00: ".len());
 
         for i in 0..45 {
-            WIRES[15500 + i] = unchecked_sub(*input.offset(0), b'0');
+            *WIRES.get_unchecked_mut(15500 + i) = unchecked_sub(*input.offset(0), b'0');
             input = input.add("0\nx00: ".len());
         }
 
         for i in 0..45 {
-            WIRES[15550 + i] = unchecked_sub(*input.offset(0), b'0');
+            *WIRES.get_unchecked_mut(15550 + i) = unchecked_sub(*input.offset(0), b'0');
             input = input.add("0\ny00: ".len());
         }
 
@@ -74,8 +75,8 @@ pub fn part1(input: &str) -> u64 {
                 b26([*input.offset(0), *input.offset(1), *input.offset(2)])
             };
             input = input.add(4);
-            GATE_OUTPUTS[out] = i;
-            GATES[i as usize] = (i1, i2, op, out);
+            *GATE_OUTPUTS.get_unchecked_mut(out) = i;
+            *GATES.get_unchecked_mut(i as usize) = (i1, i2, op, out);
         });
 
         // not sure how this works but it does
@@ -94,7 +95,7 @@ pub fn part1(input: &str) -> u64 {
         if *WIRES.get_unchecked($wire) != u8::MAX {
             *WIRES.get_unchecked($wire)
         } else {
-            let gate = GATES.get_unchecked(GATE_OUTPUTS[$wire] as usize);
+            let gate = GATES.get_unchecked(*GATE_OUTPUTS.get_unchecked($wire) as usize);
             let i1 = calc_unrolled_inner!(gate.0, $($rest)*);
             let i2 = calc_unrolled_inner!(gate.1, $($rest)*);
             let res = match gate.2 {
@@ -102,7 +103,7 @@ pub fn part1(input: &str) -> u64 {
                 b'A' => i1 & i2,
                 _ => i1 ^ i2,
             };
-            WIRES[gate.3] = res;
+            *WIRES.get_unchecked_mut(gate.3) = res;
             res
         }
     }};
@@ -123,7 +124,7 @@ unsafe fn outputs_into(output: usize, gate_type: u8) -> bool {
     output < 15500
         && *WIRES_INPUT_INTO
             .get_unchecked(output)
-            .get_unchecked(GATE_TYPE_LUT[gate_type as usize])
+            .get_unchecked(*GATE_TYPE_LUT.get_unchecked(gate_type as usize))
 }
 
 const GATE_TYPE_LUT: [usize; 100] = {
@@ -135,22 +136,22 @@ const GATE_TYPE_LUT: [usize; 100] = {
 };
 
 #[inline(always)]
-fn sort_groups(slice: &mut [u8]) {
+unsafe fn sort_groups(slice: &mut [u8]) {
     assert_eq!(slice.len(), 31);
     let mut indices: [usize; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
     indices.sort_unstable_by(|&a, &b| {
-        let group_a = &slice[a * 4..a * 4 + 3];
-        let group_b = &slice[b * 4..b * 4 + 3];
+        let group_a = slice.get_unchecked(a * 4..a * 4 + 3);
+        let group_b = slice.get_unchecked(b * 4..b * 4 + 3);
         group_a.cmp(group_b)
     });
     (0..=7).for_each(|i| {
-        if indices[i] != i {
+        if *indices.get_unchecked(i) != i {
             for j in 0..3 {
-                slice.swap(i * 4 + j, indices[i] * 4 + j);
+                slice.swap(i * 4 + j, indices.get_unchecked(i) * 4 + j);
             }
-            let swapped_index = indices[i];
+            let swapped_index = *indices.get_unchecked(i);
             indices[indices.iter().position(|&x| x == i).unwrap()] = swapped_index;
-            indices[i] = i;
+            *indices.get_unchecked_mut(i) = i;
         }
     });
 }
@@ -159,15 +160,6 @@ pub fn part2(input: &str) -> &str {
     unsafe {
         let input = input.as_bytes();
         let mut input = input.as_ptr();
-
-        fn b26(val: [u8; 3]) -> usize {
-            let [a, b, c] = [
-                (val[0] - b'a') as usize,
-                (val[1] - b'a') as usize,
-                (val[2] - b'a') as usize,
-            ];
-            a * 26 * 26 + b * 26 + c
-        }
 
         input = input.add("x00: ".len());
         input = input.add("0\nx00: ".len() * 45);
@@ -226,7 +218,7 @@ pub fn part2(input: &str) -> &str {
                 WIRES_INPUT_INTO.get_unchecked_mut(i2)[GATE_TYPE_LUT[op as usize]] = true;
             }
 
-            GATES[i] = (i1, i2, op, out);
+            *GATES.get_unchecked_mut(i) = (i1, i2, op, out);
         });
 
         static mut SWAPPED_WIRES: [u8; 31] = [
@@ -236,6 +228,7 @@ pub fn part2(input: &str) -> &str {
 
         let mut swapped_wires_found = 0;
 
+        #[inline(always)]
         fn reverse_b26(mut value: usize) -> [u8; 3] {
             if value >= 15500 {
                 let norm = value - 15500;
@@ -265,9 +258,9 @@ pub fn part2(input: &str) -> &str {
 
             if gate.3 >= 15600 && (gate.2 != b'X') {
                 let out = reverse_b26(gate.3);
-                SWAPPED_WIRES[swapped_wires_found * 4] = out[0];
-                SWAPPED_WIRES[swapped_wires_found * 4 + 1] = out[1];
-                SWAPPED_WIRES[swapped_wires_found * 4 + 2] = out[2];
+                *SWAPPED_WIRES.get_unchecked_mut(swapped_wires_found * 4) = out[0];
+                *SWAPPED_WIRES.get_unchecked_mut(swapped_wires_found * 4 + 1) = out[1];
+                *SWAPPED_WIRES.get_unchecked_mut(swapped_wires_found * 4 + 2) = out[2];
                 swapped_wires_found += 1;
                 if swapped_wires_found >= 8 {
                     break;
