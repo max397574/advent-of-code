@@ -1,3 +1,4 @@
+#![feature(core_intrinsics)]
 use std::intrinsics::unchecked_sub;
 
 static mut WIRES: [u8; 15700] = [3; 15700];
@@ -18,8 +19,6 @@ pub fn part1(input: &str) -> u64 {
     unsafe {
         let input = input.as_bytes();
         let mut input = input.as_ptr();
-
-        WIRES.fill(u8::MAX);
 
         input = input.add("x00: ".len());
 
@@ -75,6 +74,7 @@ pub fn part1(input: &str) -> u64 {
                 b26([*input.offset(0), *input.offset(1), *input.offset(2)])
             };
             input = input.add(4);
+            *WIRES.get_unchecked_mut(out) = u8::MAX;
             *GATE_OUTPUTS.get_unchecked_mut(out) = i;
             *GATES.get_unchecked_mut(i as usize) = (i1, i2, op, out);
         });
@@ -150,7 +150,7 @@ unsafe fn sort_groups(slice: &mut [u8]) {
                 slice.swap(i * 4 + j, indices.get_unchecked(i) * 4 + j);
             }
             let swapped_index = *indices.get_unchecked(i);
-            indices[indices.iter().position(|&x| x == i).unwrap()] = swapped_index;
+            indices[indices.iter().position(|&x| x == i).unwrap_unchecked()] = swapped_index;
             *indices.get_unchecked_mut(i) = i;
         }
     });
@@ -299,6 +299,6 @@ pub fn part2(input: &str) -> &str {
         }
 
         sort_groups(&mut SWAPPED_WIRES);
-        std::str::from_utf8(&SWAPPED_WIRES).unwrap()
+        std::str::from_utf8_unchecked(&SWAPPED_WIRES)
     }
 }
