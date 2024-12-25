@@ -88,13 +88,13 @@ pub fn part1(input: &str) -> u64 {
 
         macro_rules! calc_unrolled_inner {
     ($wire:expr, ) => {
-        WIRES[$wire]
+        *WIRES.get_unchecked($wire)
     };
     ($wire:expr, $depth:tt $($rest:tt)*) => {{
-        if WIRES[$wire] != u8::MAX {
-            WIRES[$wire]
+        if *WIRES.get_unchecked($wire) != u8::MAX {
+            *WIRES.get_unchecked($wire)
         } else {
-            let gate = GATES[GATE_OUTPUTS[$wire] as usize];
+            let gate = GATES.get_unchecked(GATE_OUTPUTS[$wire] as usize);
             let i1 = calc_unrolled_inner!(gate.0, $($rest)*);
             let i2 = calc_unrolled_inner!(gate.1, $($rest)*);
             let res = match gate.2 {
@@ -120,7 +120,10 @@ static mut WIRES_INPUT_INTO: [[bool; 3]; 15500] = [[false; 3]; 15500];
 
 #[inline(always)]
 unsafe fn outputs_into(output: usize, gate_type: u8) -> bool {
-    output < 15500 && WIRES_INPUT_INTO[output][GATE_TYPE_LUT[gate_type as usize]]
+    output < 15500
+        && *WIRES_INPUT_INTO
+            .get_unchecked(output)
+            .get_unchecked(GATE_TYPE_LUT[gate_type as usize])
 }
 
 const GATE_TYPE_LUT: [usize; 100] = {
@@ -217,10 +220,10 @@ pub fn part2(input: &str) -> &str {
             }
 
             if i1 < 15500 {
-                WIRES_INPUT_INTO[i1][GATE_TYPE_LUT[op as usize]] = true;
+                WIRES_INPUT_INTO.get_unchecked_mut(i1)[GATE_TYPE_LUT[op as usize]] = true;
             }
             if i2 < 15500 {
-                WIRES_INPUT_INTO[i2][GATE_TYPE_LUT[op as usize]] = true;
+                WIRES_INPUT_INTO.get_unchecked_mut(i2)[GATE_TYPE_LUT[op as usize]] = true;
             }
 
             GATES[i] = (i1, i2, op, out);
@@ -254,7 +257,7 @@ pub fn part2(input: &str) -> &str {
         }
 
         for i in 0..222 {
-            let gate = GATES[i];
+            let gate = GATES.get_unchecked(i);
 
             if gate.3 == 15600 || gate.3 == 15645 || gate.3 == first_carry {
                 continue;
