@@ -1,5 +1,5 @@
 #![feature(core_intrinsics)]
-use std::intrinsics::unchecked_sub;
+use std::{hint::unreachable_unchecked, intrinsics::unchecked_sub};
 
 static mut WIRES: [u8; 15700] = [3; 15700];
 static mut GATES: [(usize, usize, u8, usize); 222] = [(0, 0, 0, 0); 222];
@@ -42,7 +42,7 @@ pub fn part1(input: &str) -> u64 {
         // distinguish)
 
         (0..222).for_each(|i| {
-            let i1 = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+            let i1 = if *input.offset(0) >= b'x' {
                 // is x,y,z so do as described above
                 (unchecked_sub(*input.offset(1) as usize, b'0' as usize)) * 10
                     + unchecked_sub(*input.offset(2) as usize, b'0' as usize)
@@ -56,7 +56,7 @@ pub fn part1(input: &str) -> u64 {
             if op != b'O' {
                 input = input.add(1);
             }
-            let i2 = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+            let i2 = if *input.offset(0) >= b'x' {
                 (unchecked_sub(*input.offset(1) as usize, b'0' as usize)) * 10
                     + unchecked_sub(*input.offset(2) as usize, b'0' as usize)
                     + 15500
@@ -65,7 +65,7 @@ pub fn part1(input: &str) -> u64 {
                 b26([*input.offset(0), *input.offset(1), *input.offset(2)])
             };
             input = input.add(7);
-            let out = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+            let out = if *input.offset(0) >= b'x' {
                 unchecked_sub(*input.offset(1) as usize, b'0' as usize) * 10
                     + unchecked_sub(*input.offset(2) as usize, b'0' as usize)
                     + 15500
@@ -175,7 +175,7 @@ pub fn part2(input: &str) -> &str {
         let mut first_carry = 0;
 
         (0..222).for_each(|i| {
-            let i1 = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+            let i1 = if *input.offset(0) >= b'x' {
                 // is x,y,z so do as described above
                 (*input.offset(1) as usize - b'0' as usize) * 10
                     + (*input.offset(2) as usize - b'0' as usize)
@@ -189,7 +189,7 @@ pub fn part2(input: &str) -> &str {
             if op != b'O' {
                 input = input.add(1);
             }
-            let i2 = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+            let i2 = if *input.offset(0) >= b'x' {
                 (*input.offset(1) as usize - b'0' as usize) * 10
                     + (*input.offset(2) as usize - b'0' as usize)
                     + 15500
@@ -198,7 +198,7 @@ pub fn part2(input: &str) -> &str {
                 b26([*input.offset(0), *input.offset(1), *input.offset(2)])
             };
             input = input.add(7);
-            let out = if (*input.offset(0)).wrapping_sub(b'x') < 3 {
+            let out = if *input.offset(0) >= b'x' {
                 (*input.offset(1) as usize - b'0' as usize) * 10
                     + (*input.offset(2) as usize - b'0' as usize)
                     + 15500
@@ -268,24 +268,62 @@ pub fn part2(input: &str) -> &str {
                 continue;
             }
 
-            if !((gate.2 == b'A'
-                && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-                && outputs_into(gate.3, b'O'))
-                || (gate.2 == b'X'
-                    && ((outputs_into(gate.3, b'A') && outputs_into(gate.3, b'X'))
-                        && (gate.0 < 15600
+            if !(match gate.2 {
+                b'A' => {
+                    (!(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                        && outputs_into(gate.3, b'O'))
+                        || ((gate.0 < 15600
                             && gate.1 < 15600
                             && gate.0 >= 15500
-                            && gate.1 >= 15500))
-                    || (gate.3 >= 15600))
-                || (gate.2 == b'A'
-                    && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-                    && outputs_into(gate.3, b'O'))
-                || (gate.2 == b'O'
-                    && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
-                    && outputs_into(gate.3, b'A')
-                    && outputs_into(gate.3, b'X')))
+                            && gate.1 >= 15500)
+                            && outputs_into(gate.3, b'O'))
+                }
+                b'X' => {
+                    ((outputs_into(gate.3, b'A') && outputs_into(gate.3, b'X'))
+                        && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500))
+                        || (gate.3 >= 15600)
+                }
+                _ => {
+                    !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                        && outputs_into(gate.3, b'A')
+                        && outputs_into(gate.3, b'X')
+                } //_ => unreachable_unchecked(),
+            })
+            // !(
+            //(
+            //    gate.2 == b'A'
+            //        && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+            //        && outputs_into(gate.3, b'O'),
+            //) || (gate.2 == b'X'
+            //    && ((outputs_into(gate.3, b'A') && outputs_into(gate.3, b'X'))
+            //        && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500))
+            //    || (gate.3 >= 15600))
+            //    || (gate.2 == b'A'
+            //        && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+            //        && outputs_into(gate.3, b'O'))
+            //    || (gate.2 == b'O'
+            //        && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+            //        && outputs_into(gate.3, b'A')
+            //        && outputs_into(gate.3, b'X')))
             {
+                //if !((gate.2 == b'A'
+                //    && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                //    && outputs_into(gate.3, b'O'))
+                //    || (gate.2 == b'X'
+                //        && ((outputs_into(gate.3, b'A') && outputs_into(gate.3, b'X'))
+                //            && (gate.0 < 15600
+                //                && gate.1 < 15600
+                //                && gate.0 >= 15500
+                //                && gate.1 >= 15500))
+                //        || (gate.3 >= 15600))
+                //    || (gate.2 == b'A'
+                //        && (gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                //        && outputs_into(gate.3, b'O'))
+                //    || (gate.2 == b'O'
+                //        && !(gate.0 < 15600 && gate.1 < 15600 && gate.0 >= 15500 && gate.1 >= 15500)
+                //        && outputs_into(gate.3, b'A')
+                //        && outputs_into(gate.3, b'X')))
+                //{
                 let out = reverse_b26(gate.3);
                 SWAPPED_WIRES[swapped_wires_found * 4] = out[0];
                 SWAPPED_WIRES[swapped_wires_found * 4 + 1] = out[1];
@@ -294,7 +332,6 @@ pub fn part2(input: &str) -> &str {
                 if swapped_wires_found >= 8 {
                     break;
                 }
-                continue;
             }
         }
 
