@@ -1,7 +1,7 @@
 #![feature(iter_array_chunks)]
+#![feature(ascii_char)]
 #![feature(iter_map_windows)]
 #![feature(iter_next_chunk)]
-#![feature(extract_if)]
 #![feature(slice_split_once)]
 #![feature(let_chains)]
 #![feature(portable_simd)]
@@ -11,7 +11,6 @@
 #![allow(internal_features)]
 #![allow(clippy::type_complexity)]
 #![allow(static_mut_refs)]
-#![feature(slice_as_chunks)]
 
 pub mod utils;
 

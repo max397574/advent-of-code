@@ -4,7 +4,7 @@ pub struct Grid<T> {
     pub width: usize,
 }
 
-impl<T> Grid<T> {
+impl<T: Clone> Grid<T> {
     pub fn new() -> Self {
         Self {
             cells: Vec::new(),
@@ -119,9 +119,16 @@ impl<T> Grid<T> {
             })
             .map(move |(x, y)| (x as usize, y as usize))
     }
+
+    pub fn clone(&self) -> Grid<T> {
+        return Grid {
+            cells: self.cells.clone(),
+            width: self.width,
+        };
+    }
 }
 
-impl<T> std::ops::Index<(usize, usize)> for Grid<T> {
+impl<T: Clone> std::ops::Index<(usize, usize)> for Grid<T> {
     type Output = T;
 
     fn index(&self, index: (usize, usize)) -> &Self::Output {
@@ -129,7 +136,7 @@ impl<T> std::ops::Index<(usize, usize)> for Grid<T> {
     }
 }
 
-impl<T> std::ops::Index<(isize, isize)> for Grid<T> {
+impl<T: Clone> std::ops::Index<(isize, isize)> for Grid<T> {
     type Output = T;
 
     fn index(&self, index: (isize, isize)) -> &Self::Output {
@@ -137,7 +144,7 @@ impl<T> std::ops::Index<(isize, isize)> for Grid<T> {
     }
 }
 
-impl<T> Default for Grid<T> {
+impl<T: Clone> Default for Grid<T> {
     fn default() -> Self {
         Self::new()
     }

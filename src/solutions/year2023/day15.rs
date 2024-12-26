@@ -23,8 +23,59 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     sum + tmp_sum
 }
 
-pub fn part2(_input: &str) -> impl std::fmt::Display {
-    0
+#[derive(Clone, Copy)]
+struct Lens {
+    label: u32,
+    focal_length: u8,
+}
+
+pub fn part2(input: &str) -> impl std::fmt::Display {
+    let mut boxes: [Vec<Lens>; 256] = [const { Vec::new() }; 256];
+    input.split(',').for_each(|instr| {
+        let mut hash = 0;
+        let mut label = 0;
+        let mut label_factor = 1;
+        let mut i = 0;
+        while i < instr.len() {
+            let b = *instr.as_bytes().get(i).unwrap();
+            match b {
+                b'-' => {
+                    let idx = boxes[hash].iter().position(|lens| lens.label == label);
+                    if let Some(index) = idx {
+                        boxes[hash].remove(index);
+                    }
+                }
+                b'=' => {
+                    let idx = boxes[hash].iter().position(|lens| lens.label == label);
+                    if let Some(index) = idx {
+                        boxes[hash][index].focal_length =
+                            *instr.as_bytes().get(i + 1).unwrap() - b'0';
+                    } else {
+                        boxes[hash].push(Lens {
+                            label,
+                            focal_length: *instr.as_bytes().get(i + 1).unwrap() - b'0',
+                        });
+                    }
+                    i += 1;
+                }
+                _ => {
+                    label += label_factor * ((b - b'a') as u32);
+                    label_factor <<= 8;
+                    hash += b as usize;
+                    hash *= 17;
+                    hash %= 256;
+                }
+            }
+            i += 1;
+        }
+    });
+    let mut res = 0;
+    for (i, lens_box) in boxes.iter().enumerate() {
+        for (idx, lens) in lens_box.iter().enumerate() {
+            res += (i + 1) * (idx + 1) * lens.focal_length as usize;
+        }
+    }
+    res
 }
 
 #[cfg(test)]
@@ -39,6 +90,6 @@ mod tests {
 
     #[test]
     fn part_2() {
-        assert_eq!(part2(INPUT).to_string(), String::from("0"))
+        assert_eq!(part2(INPUT).to_string(), String::from("145"))
     }
 }

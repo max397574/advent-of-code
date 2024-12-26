@@ -54,8 +54,36 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     sum
 }
 
-pub fn part2(_input: &str) -> impl std::fmt::Display {
-    0
+pub fn part2(input: &str) -> impl std::fmt::Display {
+    // taken from https://github.com/SkiFire13/adventofcode-2024-rs/commit/20b7ffe3956e7288917d18f4284d4d5b64ad1ae8
+    let input: Vec<u8> = input.trim().bytes().map(|b| b - b'0').collect();
+    let mut pos = 0;
+    let mut poss = Vec::new();
+    for i in 0..input.len() {
+        poss.push(pos);
+        pos += input[i] as usize;
+    }
+
+    let mut tot = 0;
+
+    for i in (0..(input.len() + 1) / 2).rev() {
+        if let Some(j) =
+            (0..i).find(|&j| poss[2 + 2 * j] - poss[1 + 2 * j] >= input[2 * i] as usize)
+        {
+            let pos = poss[1 + 2 * j];
+            let len = input[2 * i] as usize;
+            let new_pos = pos + len;
+            tot += i * ((new_pos * (new_pos - 1) / 2) - (pos * (pos - 1) / 2));
+            poss[1 + 2 * j] += len;
+        } else {
+            let pos = poss[2 * i];
+            let len = input[2 * i] as usize;
+            let new_pos = pos + len;
+            tot += i * ((new_pos * (new_pos - 1) / 2) - (pos * (pos.saturating_sub(1)) / 2));
+        }
+    }
+
+    tot
 }
 
 #[cfg(test)]
@@ -68,8 +96,8 @@ mod tests {
         assert_eq!(part1(INPUT).to_string(), String::from("1928"))
     }
 
-    // #[test]
-    fn _part2() {
+    #[test]
+    fn part_2() {
         assert_eq!(part2(INPUT).to_string(), String::from("2858"))
     }
 }

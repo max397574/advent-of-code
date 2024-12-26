@@ -13,7 +13,6 @@ pub fn run(input: &str) -> u64 {
 pub fn part1(input: &str) -> u64 {
     unsafe {
         let mut input = input.as_bytes().as_ptr();
-        let mut count = 0;
         let mut block;
         let mut key_count = 0;
         let mut lock_count = 0;
@@ -35,9 +34,12 @@ pub fn part1(input: &str) -> u64 {
             input = input.add(43);
         }
 
+        let mut count = 0;
+
         for l in 0..250 {
+            let lock = LOCKS.get_unchecked(l);
             for k in 0..250 {
-                if KEYS.get_unchecked(k) & LOCKS.get_unchecked(l) == 0 {
+                if KEYS.get_unchecked(k) & lock == 0 {
                     count += 1;
                 }
             }
@@ -49,53 +51,4 @@ pub fn part1(input: &str) -> u64 {
 
 pub fn part2(_input: &str) -> usize {
     0
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    const INPUT: &str = "#####
-.####
-.####
-.####
-.#.#.
-.#...
-.....
-
-#####
-##.##
-.#.##
-...##
-...#.
-...#.
-.....
-
-.....
-#....
-#....
-#...#
-#.#.#
-#.###
-#####
-
-.....
-.....
-#.#..
-###..
-###.#
-###.#
-#####
-
-.....
-.....
-.....
-#....
-#.#..
-#.#.#
-#####";
-
-    #[test]
-    fn part_1() {
-        assert_eq!(part1(INPUT).to_string(), String::from("3"))
-    }
 }

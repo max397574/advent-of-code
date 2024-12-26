@@ -3,7 +3,7 @@ use crate::utils::grid::Grid;
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 
-#[derive(Hash, PartialEq, Eq)]
+#[derive(Hash, PartialEq, Eq, Clone)]
 enum Type {
     Round,
     Square,
