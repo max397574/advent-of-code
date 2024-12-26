@@ -1,30 +1,50 @@
-pub fn part1(input: &str) -> usize {
-    let mut keys = Vec::new();
-    let mut locks = Vec::new();
-    for block in input.split("\n\n") {
-        let mut key_or_lock = vec![0, 0, 0, 0, 0];
-        for line in block.lines() {
-            for (idx, char) in line.chars().enumerate() {
-                if char == '#' {
-                    key_or_lock[idx] += 1;
+#![allow(unused_attributes)]
+#![feature(portable_simd)]
+
+use std::simd::prelude::*;
+
+static mut KEYS: [u64; 250] = [0; 250];
+static mut LOCKS: [u64; 250] = [0; 250];
+
+pub fn run(input: &str) -> u64 {
+    part1(input)
+}
+
+pub fn part1(input: &str) -> u64 {
+    unsafe {
+        let mut input = input.as_bytes().as_ptr();
+        let mut count = 0;
+        let mut block;
+        let mut key_count = 0;
+        let mut lock_count = 0;
+        for _ in 0..500 {
+            block = input.cast::<u8x64>().read_unaligned();
+            // bitmask where # are
+            let mut mask = block.simd_eq(std::simd::u8x64::splat(b'#')).to_bitmask();
+            // just look at the first 42 bytes (avoid reading next input)
+            mask &= (1 << 43) - 1;
+            if mask & 1 == 0 {
+                // is a lock
+                *LOCKS.get_unchecked_mut(lock_count) = mask;
+                lock_count += 1;
+            } else {
+                // is a key
+                *KEYS.get_unchecked_mut(key_count) = mask;
+                key_count += 1;
+            }
+            input = input.add(43);
+        }
+
+        for l in 0..250 {
+            for k in 0..250 {
+                if KEYS.get_unchecked(k) & LOCKS.get_unchecked(l) == 0 {
+                    count += 1;
                 }
             }
         }
-        if block.starts_with('#') {
-            locks.push(key_or_lock);
-        } else {
-            keys.push(key_or_lock);
-        }
+
+        count
     }
-    let mut count = 0;
-    for key in keys {
-        for lock in locks.iter() {
-            if key.iter().zip(lock).all(|(k, l)| k + l <= 7) {
-                count += 1;
-            }
-        }
-    }
-    count
 }
 
 pub fn part2(_input: &str) -> usize {
@@ -77,10 +97,5 @@ mod tests {
     #[test]
     fn part_1() {
         assert_eq!(part1(INPUT).to_string(), String::from("3"))
-    }
-
-    // #[test]
-    fn _part2() {
-        assert_eq!(part2(INPUT).to_string(), String::from("0"))
     }
 }
