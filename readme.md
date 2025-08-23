@@ -1,3 +1,3 @@
-aoc for 2023
+`cargo run --release 2020 1 2` (year, day, part)
 
-run with `cargo run --bin day<x>` (use `--release` for benchmarks)
+`--bench` for benchmarks

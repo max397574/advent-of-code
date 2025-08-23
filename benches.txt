@@ -1,0 +1,6 @@
+can optimize (and fun to do so): 2023d18p1/2
+
+2023:
+- d18:
+    - p1:
+        - inital: (487863 runs): 10.207µs

@@ -2,6 +2,20 @@ pub mod graphs;
 pub mod grid;
 pub mod parsing;
 
+pub fn shoelace(vertices: &[(isize, isize)]) -> f64 {
+    let mut sum = 0;
+    let len = vertices.len();
+    for i in 0..len - 1 {
+        sum += vertices[i].0 * vertices[i + 1].1;
+        sum -= vertices[i].1 * vertices[i + 1].0;
+    }
+
+    sum += vertices[len - 1].0 * vertices[0].1;
+    sum -= vertices[len - 1].1 * vertices[0].0;
+
+    0.5 * (sum as f64).abs()
+}
+
 pub fn grid<T>(text_block: &str, callback: impl Fn(char) -> T) -> Vec<Vec<T>> {
     text_block
         .lines()
