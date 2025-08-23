@@ -1,6 +1,4 @@
-use std::collections::VecDeque;
-
-pub fn do_thing(
+pub unsafe fn do_thing(
     input: &[u8],
     start_pos: usize,
     start_direction: u8,
@@ -8,14 +6,14 @@ pub fn do_thing(
     height: usize,
 ) -> i32 {
     // whether a tile has been energized
-    let mut energized: Vec<bool> = vec![false; (width + 1) * height];
+    let mut energized: [u128; 128] = [0; 128];
     // cache for where beam have been
     // use bitflags: 0 -> up, 1 -> right, 2 -> down, 3 -> left
     let mut cache: Vec<u8> = vec![0; (width + 1) * height];
     let mut energized_count = 0;
     let mut direction = start_direction;
     let mut pos = start_pos;
-    let mut queue: VecDeque<(usize, u8)> = VecDeque::new();
+    let mut stack: Vec<usize> = Vec::new();
     // queue.push_front((0, 1));
 
     match input[pos] {
@@ -30,7 +28,8 @@ pub fn do_thing(
             // 1 or 3
             _ => {
                 direction = 0;
-                queue.push_back((pos, 2));
+                let val = (pos << 4) | (1 << 2);
+                stack.push(val);
             }
         },
         b'-' => match direction {
@@ -38,20 +37,21 @@ pub fn do_thing(
             // 0 or 2
             _ => {
                 direction = 1;
-                queue.push_back((pos, 3));
+                let val = (pos << 4) | (1 << 3);
+                stack.push(val);
             }
         },
-        b'.' => {}
-        _ => unreachable!(),
+        _ => {}
     }
-    queue.push_back((pos, direction));
+    let val = (pos << 4) | (1 << direction);
+    stack.push(val);
 
-    fn exec_position(
+    unsafe fn exec_position(
         direction: u8,
         pos: usize,
         width: usize,
         height: usize,
-        queue: &mut VecDeque<(usize, u8)>,
+        queue: &mut Vec<usize>,
         input: &[u8],
     ) {
         let (x, y) = (pos % (width + 1), pos / (width + 1));
@@ -75,7 +75,7 @@ pub fn do_thing(
             3 => pos -= 1,
             _ => unreachable!(),
         }
-        match input[pos] {
+        match input.get_unchecked(pos) {
             b'/' => {
                 direction = [1, 0, 3, 2][direction as usize];
             }
@@ -87,7 +87,8 @@ pub fn do_thing(
                 // 1 or 3
                 _ => {
                     direction = 0;
-                    queue.push_back((pos, 2));
+                    let val = (pos << 4) | (1 << 2);
+                    queue.push(val);
                 }
             },
             b'-' => match direction {
@@ -95,26 +96,29 @@ pub fn do_thing(
                 // 0 or 2
                 _ => {
                     direction = 1;
-                    queue.push_back((pos, 3));
+                    let val = (pos << 4) | (1 << 3);
+                    queue.push(val);
                 }
             },
             b'.' => {}
             _ => unreachable!(),
         }
-        queue.push_back((pos, direction));
+        let val = (pos << 4) | (1 << direction);
+        queue.push(val);
     }
-    while !queue.is_empty() {
-        (pos, direction) = queue.pop_front().unwrap();
+    while let Some(val) = stack.pop() {
+        pos = val >> 4;
+        let direction = val.trailing_zeros() as u8;
 
-        if (cache[pos] & 1 << direction) == 0 {
-            cache[pos] |= 1 << direction;
+        if (cache.get_unchecked(pos) & 1 << direction) == 0 {
+            *cache.get_unchecked_mut(pos) |= 1 << direction;
 
-            if !energized[pos] {
+            if energized.get_unchecked(pos >> 7) & (1 << (pos % 128)) == 0 {
                 energized_count += 1;
-                energized[pos] = true;
+                *energized.get_unchecked_mut(pos >> 7) |= 1 << (pos % 128);
             }
 
-            exec_position(direction, pos, width, height, &mut queue, input);
+            exec_position(direction, pos, width, height, &mut stack, input);
         }
     }
     energized_count
@@ -125,7 +129,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     let height = (input.len() + 1) / (width + 1);
     let input = input.as_bytes();
 
-    do_thing(input, 0, 1, width, height)
+    unsafe { do_thing(input, 0, 1, width, height) }
 }
 
 pub fn part2(input: &str) -> impl std::fmt::Display {
@@ -134,26 +138,28 @@ pub fn part2(input: &str) -> impl std::fmt::Display {
     let input = input.as_bytes();
 
     let mut max = 0;
-    for x in 0..width {
-        max = max.max(do_thing(input, x, 2, width, height));
-        max = max.max(do_thing(
-            input,
-            x + (height - 1) * (width + 1),
-            0,
-            width,
-            height,
-        ));
-    }
+    unsafe {
+        for x in 0..width {
+            max = max.max(do_thing(input, x, 2, width, height));
+            max = max.max(do_thing(
+                input,
+                x + (height - 1) * (width + 1),
+                0,
+                width,
+                height,
+            ));
+        }
 
-    for y in 0..height {
-        max = max.max(do_thing(input, y * (width + 1), 1, width, height));
-        max = max.max(do_thing(
-            input,
-            y * (width + 1) + width - 1,
-            3,
-            width,
-            height,
-        ));
+        for y in 0..height {
+            max = max.max(do_thing(input, y * (width + 1), 1, width, height));
+            max = max.max(do_thing(
+                input,
+                y * (width + 1) + width - 1,
+                3,
+                width,
+                height,
+            ));
+        }
     }
 
     max
