@@ -29,7 +29,7 @@ jobs:
           mkdir -p inputs
           mkdir -p inputs/2025
           for i in {1..12}; do
-            aoc download -I -i inputs/day$i.txt --year 2025 -d $i || true
+            aoc download -I -i inputs/2025/day$i.txt --year 2025 -d $i || true
           done
       - name: Build the benchmark target(s)
         run: cargo codspeed build
