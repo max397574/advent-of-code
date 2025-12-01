@@ -21,7 +21,7 @@ jobs:
         with:
           channel: stable
           cache-target: release
-          bins: cargo-codspeed
+          bins: cargo-codspeed, aoc-cli
       - name: Download available input files
         env:
           ADVENT_OF_CODE_SESSION: ${{ secrets.AOC_SESSION }}
