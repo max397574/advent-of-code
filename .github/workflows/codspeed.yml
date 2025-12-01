@@ -9,7 +9,6 @@ on:
   # performance analysis in order to generate initial data.
   workflow_dispatch:
 jobs:
-  name: Run benchmarks
   benchmarks:
     runs-on: ubuntu-latest
     permissions: # optional for public repositories
