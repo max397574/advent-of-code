@@ -9,3 +9,6 @@ can optimize (and fun to do so): 2023d18p1/2
 - d1
   - p1:
     - Initial: (215711 runs): 23.143µs
+    - Raw Ptr: (340542 runs): 14.646µs
+  - p2:
+    - Initial: (207988 runs): 24.003µs
