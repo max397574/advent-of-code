@@ -21,7 +21,7 @@ fn is_symbol(char: u8) -> bool {
     char != b'.' && !char.is_ascii_digit()
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut sum = 0;
     let grid = get_grid(input.as_bytes());
     //for line in grid.iter() {
@@ -65,7 +65,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     sum
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut sum = 0;
     let grid = get_grid(input.as_bytes());
     for (idx, line) in grid.iter().enumerate().skip(1).rev().skip(1).rev() {

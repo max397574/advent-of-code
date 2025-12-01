@@ -29,7 +29,11 @@ pub mod day9;
 type YearSolutions = [[Box<dyn Fn(&str) -> String>; 2]; 25];
 
 pub fn get_solutions_per_year() -> YearSolutions {
-    fn get_string<D: Display + 'static>(function: fn(&str) -> D) -> Box<dyn Fn(&str) -> String> {
+    fn get_string<F, D>(function: F) -> Box<dyn Fn(&str) -> String>
+    where
+        F: Fn(&str) -> D + 'static,
+        D: Display + 'static,
+    {
         Box::new(move |input| function(input).to_string())
     }
     [

@@ -3,7 +3,7 @@ use bstr::ByteSlice;
 
 // Each line is an arithmetic sequence of unknown order
 // the next elements of each sequence on all the lines have to be summed up
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut numbers: Vec<Vec<_>> = input
         .as_bytes()
         .lines()
@@ -33,7 +33,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
 
 // Each line is an arithmetic sequence of unknown order
 // the previous elements of each sequence on all the lines have to be summed up
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut numbers: Vec<Vec<_>> = input
         .as_bytes()
         .lines()

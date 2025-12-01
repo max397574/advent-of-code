@@ -3,7 +3,6 @@
 #![feature(iter_map_windows)]
 #![feature(iter_next_chunk)]
 #![feature(slice_split_once)]
-#![feature(let_chains)]
 #![feature(portable_simd)]
 #![feature(if_let_guard)]
 #![feature(core_intrinsics)]
@@ -18,4 +17,4 @@ pub use utils as aoc;
 
 pub mod solutions;
 
-pub use crate::solutions::year2024::*;
+pub use crate::solutions::year2025::*;

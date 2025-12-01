@@ -43,7 +43,7 @@
 //    (beacon_distances, beacons)
 //}
 
-pub fn part1(_input: &str) -> impl std::fmt::Display {
+pub fn part1(_input: &str) -> impl std::fmt::Display + use<> {
     //let (beacon_distances, mut beacons) = get_beacon_distances_and_beacons(input);
     //beacons.sort();
     //beacons.dedup();
@@ -67,7 +67,7 @@ pub fn part1(_input: &str) -> impl std::fmt::Display {
     0
 }
 
-pub fn part2(_input: &str) -> impl std::fmt::Display {
+pub fn part2(_input: &str) -> impl std::fmt::Display + use<> {
     //let (beacon_distances, mut beacons) = get_beacon_distances_and_beacons(input);
     //beacons.sort();
     //beacons.dedup();

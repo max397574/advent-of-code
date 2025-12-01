@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     input
         .split("\n\n")
         .map(|set| {
@@ -10,7 +10,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         .unwrap()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut sorted = input
         .split("\n\n")
         .map(|set| {

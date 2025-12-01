@@ -1,5 +1,5 @@
 use bstr::ByteSlice;
-use std::simd::{cmp::SimdPartialEq, Simd};
+use std::simd::{Simd, cmp::SimdPartialEq};
 
 use crate::utils::grid::Grid;
 
@@ -47,7 +47,7 @@ pub fn part1_speedy(input: &str) -> u32 {
     let mut s_prev_prev = [0, 0, 0];
     let mut s_prev_prev_prev = [0, 0, 0];
 
-    const OVERLAP_MASK: u64 = u64::MAX & !(0b111) & !(0b111 << 61);
+    const OVERLAP_MASK: u64 = !(0b111) & !(0b111 << 61);
 
     input.lines().for_each(|line| {
         let vecs = get_bitvecs_p1(line);
@@ -141,7 +141,7 @@ pub fn part1_simple(input: &str) -> u32 {
     count
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     if input.len() < 140 {
         part1_simple(input)
     } else {
@@ -210,7 +210,7 @@ pub fn part2_simple(input: &str) -> u32 {
     count
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     if input.len() < 140 {
         part2_simple(input)
     } else {

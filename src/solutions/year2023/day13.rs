@@ -86,7 +86,7 @@ fn try_reflect(block: &[u32], allow_smudge: bool) -> usize {
     }
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let blocks = parse(input);
     blocks
         .iter()
@@ -101,7 +101,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         .sum::<usize>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let blocks = parse(input);
     blocks
         .iter()

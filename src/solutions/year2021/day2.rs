@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut depth = 0;
     let mut horizontal = 0;
     for line in input.lines() {
@@ -20,7 +20,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     depth * horizontal
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut depth = 0;
     let mut horizontal = 0;
     let mut aim = 0;

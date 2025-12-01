@@ -4,7 +4,7 @@ use bstr::ByteSlice;
 
 use crate::utils::parsing::ByteParsing;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let (rules, updates) = input.split_once("\n\n").unwrap();
     let rules = rules.as_bytes();
     let updates = updates.as_bytes();
@@ -31,7 +31,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         .sum::<u32>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let (rules, updates) = input.split_once("\n\n").unwrap();
     let rules = rules.as_bytes();
     let updates = updates.as_bytes();

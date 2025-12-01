@@ -6,7 +6,7 @@ use crate::utils::parsing::ByteParsing;
 
 const SIZE: u8 = 70;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     get_path(input, 1024).unwrap()
 }
 
@@ -48,7 +48,7 @@ fn get_path(input: &str, iterations: usize) -> Option<i32> {
     None
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut lines = input.as_bytes().lines();
     let mut min = 0;
     let mut max = lines.clone().count();

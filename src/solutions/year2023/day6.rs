@@ -19,7 +19,7 @@ fn find_options(total_time: u64, minimal_distance: u64) -> u64 {
     total_time + 1 - (time_hold * 2)
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let mut lines = input.lines();
     let times = lines.next().unwrap()[11..]
@@ -50,7 +50,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     total_options
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let mut time = 0;
     let mut i = 10;

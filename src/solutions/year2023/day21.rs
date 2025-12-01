@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-pub fn bfs_reachable(input: &str, steps: usize, wrap: bool) -> impl std::fmt::Display {
+pub fn bfs_reachable(input: &str, steps: usize, wrap: bool) -> impl std::fmt::Display + use<> {
     let width = input.find('\n').unwrap();
     let height = (input.len() + 1) / (width + 1);
 
@@ -81,11 +81,11 @@ pub fn bfs_reachable(input: &str, steps: usize, wrap: bool) -> impl std::fmt::Di
     count
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     bfs_reachable(input, 64, false)
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     // doesn't work because of visiting the same block multiple itmes in a different "clone" when
     // wrapping around isn't counted
     bfs_reachable(input, 26501365, true)

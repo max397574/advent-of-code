@@ -6,7 +6,7 @@
 
 use crate::utils::grid;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let cells = grid(input, |byte| byte.to_digit(10).unwrap() as i16);
     let len = cells.len();
     let row_len = cells[0].len();
@@ -83,7 +83,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     visible
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let cells = input
         .lines()
         .map(|row| {

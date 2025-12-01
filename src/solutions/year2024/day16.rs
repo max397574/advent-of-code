@@ -86,12 +86,12 @@ fn find_min_paths(input: &str) -> Vec<Path> {
     paths
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let paths = find_min_paths(input);
     paths.iter().map(|path| path.cost).min().unwrap()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let paths = find_min_paths(input);
     let mut seen = HashSet::new();
     //let mut grid = Grid::from_str(input, |(_, c)| c);

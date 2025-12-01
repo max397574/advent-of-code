@@ -1,6 +1,6 @@
 use crate::utils::{grid::Grid, Direction};
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut player_pos: (isize, isize) = (0, 0);
     let mut direction = Direction::Up;
     input.lines().enumerate().for_each(|(y, line)| {
@@ -100,7 +100,7 @@ pub fn has_loop(mut grid: Grid<char>, player_pos: (isize, isize), direction: Dir
     false
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut player_pos: (isize, isize) = (0, 0);
     let mut direction = Direction::Up;
     input.lines().enumerate().for_each(|(y, line)| {

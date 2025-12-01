@@ -26,7 +26,7 @@ fn filter_oob(coords: Vec<Node>, dimensions: (usize, usize)) -> Vec<Node> {
         .collect()
 }
 
-pub fn solve(input: &str, min_straight: u8, max_straight: u8) -> impl std::fmt::Display {
+pub fn solve(input: &str, min_straight: u8, max_straight: u8) -> impl std::fmt::Display + use<> {
     let grid = Grid::from_str(input, |((_, _), c)| (c as u8 - 48) as usize);
     let dimensions = grid.get_dimensions();
 
@@ -102,11 +102,11 @@ pub fn solve(input: &str, min_straight: u8, max_straight: u8) -> impl std::fmt::
     .unwrap()
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     solve(input, 0, 3)
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     solve(input, 4, 10)
 }
 

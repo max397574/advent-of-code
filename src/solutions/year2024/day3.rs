@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     regex::Regex::new(r"mul\((\d+),(\d+)\)")
         .unwrap()
         .captures_iter(input)
@@ -7,20 +7,20 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         .sum::<u64>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut enabled = true;
     regex::Regex::new(r"mul\((\d+),(\d+)\)|do\(\)|don't\(\)")
         .unwrap()
         .captures_iter(input)
         .filter_map(|caps| {
             if let Some(first) = caps.get(1) {
-                if let Some(second) = caps.get(2) {
-                    if enabled {
-                        return Some(
-                            first.as_str().parse::<u64>().unwrap()
-                                * second.as_str().parse::<u64>().unwrap(),
-                        );
-                    }
+                if let Some(second) = caps.get(2)
+                    && enabled
+                {
+                    return Some(
+                        first.as_str().parse::<u64>().unwrap()
+                            * second.as_str().parse::<u64>().unwrap(),
+                    );
                 }
             } else if caps
                 .get(0)

@@ -2,24 +2,7 @@ use crate::utils::parsing::ByteParsing;
 use bstr::ByteSlice;
 // bottom up solution from https://github.com/hb0nes/aoc_2023/blob/main/twelve_dp/src/main.rs
 
-#[derive(Debug, Eq, PartialEq, Clone, Hash)]
-enum Spring {
-    Operational,
-    Damaged,
-    Unknown,
-}
-
-impl From<u8> for Spring {
-    fn from(c: u8) -> Self {
-        match c {
-            b'.' => Spring::Operational,
-            b'#' => Spring::Damaged,
-            _ => Spring::Unknown,
-        }
-    }
-}
-
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     input
         .as_bytes()
         .lines()
@@ -85,7 +68,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         .sum::<usize>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     part1(
         &input
             .lines()

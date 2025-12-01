@@ -1,6 +1,6 @@
 use crate::utils::shoelace;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut points = vec![(0, 0)];
     let mut steps = 0;
     let mut pos = (0, 0);
@@ -31,7 +31,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     area - steps / 2 + 1 + steps
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut points = vec![(0, 0)];
     let mut steps = 0;
     let mut pos = (0, 0);

@@ -1,7 +1,7 @@
 use crate::utils::parsing::ByteParsing;
 use std::collections::HashMap;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let (rules, parts) = input.split_once("\n\n").unwrap();
     let rules: HashMap<&str, Vec<(char, char, u32, &str)>> = rules
         .lines()
@@ -81,7 +81,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         .sum::<u32>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let (rules, _) = input.split_once("\n\n").unwrap();
     let rules: HashMap<&str, Vec<(char, char, u64, &str)>> = rules
         .lines()

@@ -1,7 +1,7 @@
 use atoi::atoi;
 use bstr::ByteSlice;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let mut lines = input.lines();
     let mut curr_state = lines.next().unwrap()[7..]
@@ -51,7 +51,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
 }
 
 // TODO: for real input gave result one too high, figure out why
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let mut lines = input.lines();
     let numbers = lines.next().unwrap()[7..]

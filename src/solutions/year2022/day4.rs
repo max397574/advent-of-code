@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let lines = input.lines();
     let re = regex::Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
     let mut amount = 0;
@@ -21,7 +21,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     amount
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let lines = input.lines();
     let re = regex::Regex::new(r"(\d+)-(\d+),(\d+)-(\d+)").unwrap();
     let mut amount = 0;

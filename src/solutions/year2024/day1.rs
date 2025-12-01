@@ -22,7 +22,7 @@ fn simple_parse_part1(input: &[u8]) -> u64 {
         .sum::<u64>()
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let line_length = unsafe { input.find_byte(b'\n').unwrap_unchecked() + 1 };
     if line_length != 14 {
@@ -65,7 +65,7 @@ fn simple_parse_part2(input: &[u8]) -> usize {
         .sum::<usize>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let line_length = unsafe { input.find_byte(b'\n').unwrap_unchecked() + 1 };
     if line_length != 14 {

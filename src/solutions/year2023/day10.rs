@@ -32,7 +32,7 @@ fn iterate_loop(grid: &Grid<u8>, mut callback: impl FnMut((usize, usize))) {
     }
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut distance = 0;
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     iterate_loop(&grid, |(_, _)| distance += 1);
@@ -53,16 +53,16 @@ fn shoelace(vertices: &[(i32, i32)]) -> f64 {
     0.5 * (sum as f64).abs()
 }
 
-// pub fn part2_picks_shoelace(input: &str) -> impl std::fmt::Display {
-pub fn part2(input: &str) -> impl std::fmt::Display {
+// pub fn part2_picks_shoelace(input: &str) -> impl std::fmt::Display + use<> {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut vertices = Vec::new();
     iterate_loop(&grid, |(x, y)| vertices.push((x as i32, y as i32)));
     shoelace(&vertices) - (vertices.len() / 2) as f64 + 1.0
 }
 
-pub fn _part2_rays(input: &str) -> impl std::fmt::Display {
-    // pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn _part2_rays(input: &str) -> impl std::fmt::Display + use<> {
+    // pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut seen = Grid {
         cells: vec![false; grid.cells.len()],

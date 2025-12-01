@@ -8,8 +8,10 @@ pub mod year2021;
 pub mod year2022;
 pub mod year2023;
 pub mod year2024;
+pub mod year2025;
 
 type Solutions = Vec<[[Box<dyn Fn(&str) -> String>; 2]; 25]>;
+type Solutions12d = Vec<[[Box<dyn Fn(&str) -> String>; 2]; 12]>;
 
 pub fn get_solutions() -> Solutions {
     Vec::from([
@@ -24,4 +26,8 @@ pub fn get_solutions() -> Solutions {
         year2023::get_solutions_per_year(),
         year2024::get_solutions_per_year(),
     ])
+}
+
+pub fn get_solutions_12d() -> Solutions12d {
+    Vec::from([year2025::get_solutions_per_year()])
 }

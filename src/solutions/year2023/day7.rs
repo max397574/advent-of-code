@@ -96,7 +96,7 @@ fn compare_hands(a: &(u32, [u8; 5]), b: &(u32, [u8; 5]), jokers: bool) -> Orderi
     Ordering::Equal
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let mut hands: Vec<(u32, [u8; 5])> = Vec::new();
     for line in input.lines() {
@@ -110,7 +110,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     score
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let mut hands: Vec<(u32, [u8; 5])> = Vec::new();
     for line in input.lines() {

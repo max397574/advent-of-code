@@ -1,12 +1,12 @@
 // benches/bench_days.rs
 
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 use paste::paste;
 
 /// Get input for a single day
 macro_rules! get_day_input {
     ($day_num:literal) => {
-        include_str!(concat!("../inputs/day", $day_num, ".txt"))
+        include_str!(concat!("../inputs/2025/day", $day_num, ".txt"))
     };
 }
 
@@ -40,4 +40,4 @@ macro_rules! benches {
     };
 }
 
-benches!(25);
+benches!(1);

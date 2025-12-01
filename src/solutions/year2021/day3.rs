@@ -1,6 +1,6 @@
 use bstr::ByteSlice;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let total_amount = input.lines().count();
     let mut one_counts: Vec<u32> = vec![0; input.lines().next().unwrap().len()];
@@ -25,7 +25,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     u32::from_str_radix(&gamma, 2).unwrap() * u32::from_str_radix(&epsilon, 2).unwrap()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut input1 = input
         .as_bytes()
         .split(|b| b == &b'\n')
@@ -91,8 +91,8 @@ pub fn part2(input: &str) -> impl std::fmt::Display {
         std::str::from_utf8(input2[0]).unwrap()
     );
 
-    return u32::from_str_radix(std::str::from_utf8(input1[0]).unwrap(), 2).unwrap()
-        * u32::from_str_radix(std::str::from_utf8(input2[0]).unwrap(), 2).unwrap();
+    u32::from_str_radix(std::str::from_utf8(input1[0]).unwrap(), 2).unwrap()
+        * u32::from_str_radix(std::str::from_utf8(input2[0]).unwrap(), 2).unwrap()
 }
 
 #[cfg(test)]

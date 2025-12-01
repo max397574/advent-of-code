@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use crate::utils::grid::Grid;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut sum = 0;
     grid.iter().for_each(|(pos, c)| {
@@ -26,7 +26,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     sum
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut sum = 0;
     grid.iter().for_each(|(pos, c)| {

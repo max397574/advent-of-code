@@ -7,7 +7,7 @@ pub type FxIndexSet<T> = IndexSet<T, std::hash::BuildHasherDefault<rustc_hash::F
 pub fn part1(input: &str) -> usize {
     let (grid, ops) = input.split_once("\n\n").unwrap();
     let mut grid = Grid::from_str(grid, |(_, c)| c as u8);
-    let ((x, y), _) = grid.iter().find(|(_, &c)| c == b'@').unwrap();
+    let ((x, y), _) = grid.iter().find(|&(_, c)| *c == b'@').unwrap();
     grid.set_at((x, y), b'.');
     let (mut grid, (x, y), ops) = (grid, (x, y), ops.trim().as_bytes());
 
@@ -40,7 +40,7 @@ pub fn part1(input: &str) -> usize {
     }
 
     grid.iter()
-        .filter(|(_, &c)| c == b'O')
+        .filter(|&(_, c)| *c == b'O')
         .map(|((x, y), _)| 100 * y + x)
         .sum()
 }
@@ -71,7 +71,7 @@ pub fn part2(input: &str) -> usize {
     }
     let grid = double_wide_grid.trim();
     let mut grid = Grid::from_str(grid, |(_, c)| c as u8);
-    let ((x, y), _) = grid.iter().find(|(_, &c)| c == b'@').unwrap();
+    let ((x, y), _) = grid.iter().find(|&(_, c)| *c == b'@').unwrap();
     grid.set_at((x, y), b'.');
     let (mut grid, (x, y), ops) = (grid, (x, y), ops.trim().as_bytes());
 
@@ -140,7 +140,7 @@ pub fn part2(input: &str) -> usize {
             }
         }
 
-        let mut new_grid = grid.clone();
+        let mut new_grid = grid.clone_grid();
         if can_move_to(&mut new_grid, x + dx, y + dy, dx, dy) {
             for ((x, y), &c) in new_grid.iter() {
                 if c == b'[' {
@@ -153,7 +153,7 @@ pub fn part2(input: &str) -> usize {
     }
 
     grid.iter()
-        .filter(|(_, &c)| c == b'[')
+        .filter(|&(_, c)| *c == b'[')
         .map(|((x, y), _)| 100 * y + x)
         .sum()
 }

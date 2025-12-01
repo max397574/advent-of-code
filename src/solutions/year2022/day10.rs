@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut result = 0;
     let mut register = 1;
     let mut cycles = 1;
@@ -31,7 +31,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     result
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut register: i32 = 1;
     let mut cycles: i32 = 1;
     let mut to_add;

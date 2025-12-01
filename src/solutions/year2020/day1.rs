@@ -11,7 +11,7 @@ fn parse(input: &str) -> Vec<usize> {
     values
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let mut hash = [false; 2021];
     for line in input.split(|&c| c == b'\n') {
@@ -29,11 +29,11 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     0
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     part2_inner(&parse(input))
 }
 
-pub fn part2_inner(values: &[usize]) -> impl std::fmt::Display {
+pub fn part2_inner(values: &[usize]) -> impl std::fmt::Display + use<> {
     let mut hash = [0; 2021];
     for j in 0..values.len() {
         let i = values[j];

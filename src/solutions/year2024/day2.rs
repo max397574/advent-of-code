@@ -2,7 +2,7 @@ use bstr::ByteSlice;
 
 use crate::utils::parsing::ByteParsing;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     input
         .trim()
@@ -39,7 +39,7 @@ fn check_line(numbers: &[u32]) -> bool {
     })
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     input
         .lines()

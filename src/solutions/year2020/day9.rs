@@ -1,8 +1,8 @@
-pub fn part1(_input: &str) -> impl std::fmt::Display {
+pub fn part1(_input: &str) -> impl std::fmt::Display + use<> {
     0
 }
 
-pub fn part2(_input: &str) -> impl std::fmt::Display {
+pub fn part2(_input: &str) -> impl std::fmt::Display + use<> {
     0
 }
 

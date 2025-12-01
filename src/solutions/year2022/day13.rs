@@ -16,6 +16,7 @@ impl PartialEq for Value {
     }
 }
 
+#[allow(clippy::non_canonical_partial_ord_impl)]
 impl PartialOrd for Value {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         use Value::*;
@@ -96,7 +97,7 @@ fn parse(input: &str) -> Vec<Value> {
         .collect()
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut count = 0;
     for (i, values) in parse(input).chunks(2).enumerate() {
         if values[0] < values[1] {
@@ -106,7 +107,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     count
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut input = parse(input).to_owned();
     let divider1 = Value::from("[[2]]");
     let divider2 = Value::from("[[6]]");

@@ -2,14 +2,14 @@ use bstr::ByteSlice;
 
 use crate::utils::parsing::ByteParsing;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     fn is_possible(res: u64, values: &[u64]) -> bool {
         let last_value = values[values.len() - 1];
         if values.len() == 1 {
             res == last_value
         } else {
             (last_value < res && is_possible(res - last_value, &values[..values.len() - 1]))
-                || (res % last_value == 0
+                || (res.is_multiple_of(last_value)
                     && is_possible(res / last_value, &values[..values.len() - 1]))
         }
     }
@@ -34,7 +34,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         .sum::<u64>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     fn is_possible(res: u64, values: &[u64]) -> bool {
         let last_value = values[values.len() - 1];
         if values.len() == 1 {
@@ -42,7 +42,7 @@ pub fn part2(input: &str) -> impl std::fmt::Display {
         } else {
             // return if no of the cases is possible
             (last_value < res && is_possible(res - last_value, &values[..values.len() - 1]))
-                || (res % last_value == 0
+                || (res.is_multiple_of(last_value)
                     && is_possible(res / last_value, &values[..values.len() - 1]))
                 || (res % 10_u64.pow(last_value.ilog10() + 1) == last_value
                     && is_possible(

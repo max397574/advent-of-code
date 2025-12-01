@@ -1,6 +1,6 @@
 use bstr::ByteSlice;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut sum: u32 = 0;
     let mut tmp_sum: u32 = 0;
     input
@@ -29,7 +29,7 @@ struct Lens {
     focal_length: u8,
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut boxes: [Vec<Lens>; 256] = [const { Vec::new() }; 256];
     input.split(',').for_each(|instr| {
         let mut hash = 0;

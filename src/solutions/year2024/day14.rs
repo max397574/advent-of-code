@@ -1,7 +1,7 @@
 use bstr::ByteSlice;
 use std::intrinsics::unchecked_sub;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = input.as_bytes();
     let (mut one, mut two, mut three, mut four) = (0, 0, 0, 0);
     input.lines().for_each(|line| unsafe {
@@ -100,7 +100,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
 const W: i32 = 101;
 const H: i32 = 101;
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut robots = Vec::new();
     let input = input.as_bytes();
     input.lines().for_each(|line| unsafe {

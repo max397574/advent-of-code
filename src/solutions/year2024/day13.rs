@@ -24,7 +24,7 @@
 // Prize: X=8400, Y=5400
 use std::intrinsics::unchecked_sub;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut sum = 0;
     unsafe {
         let input = input.as_bytes();
@@ -86,7 +86,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     sum
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut sum = 0;
     unsafe {
         let input = input.as_bytes();

@@ -34,7 +34,7 @@ fn generator(input: &str) -> Vec<Monkey> {
         let mut op = Operation::Square;
         let lines = monkey
             .lines()
-            .filter_map(|l| l.split(':').last())
+            .filter_map(|l| l.split(':').next_back())
             .collect::<Vec<&str>>();
         let items_vec: VecDeque<usize> = lines[1].trim().split(", ").flat_map(str::parse).collect();
         let operation_parts: Vec<&str> = lines[2]
@@ -95,7 +95,7 @@ fn round(monkeys: &mut [Monkey], callback: impl Fn(&usize) -> usize) {
             let monkey = &mut monkeys[i];
             let new = callback(&monkey.operation.apply(item));
             monkey.inspections += 1;
-            if new % monkeys[i].test == 0 {
+            if new.is_multiple_of(monkeys[i].test) {
                 monkeys[monkeys[i].success].items.push_back(new)
             } else {
                 monkeys[monkeys[i].failure].items.push_back(new)
@@ -104,7 +104,7 @@ fn round(monkeys: &mut [Monkey], callback: impl Fn(&usize) -> usize) {
     }
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut monkeys = generator(input);
     for _ in 0..20 {
         round(&mut monkeys[..], |x| *x / 3);
@@ -117,7 +117,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     inspections[monkeys.len() - 2..].iter().product::<u128>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut monkeys = generator(input);
     let lcm = get_lcm(monkeys.iter().map(|monkey| monkey.test).collect::<Vec<_>>());
     for _ in 0..10000 {

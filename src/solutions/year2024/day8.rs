@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use crate::utils::grid::Grid;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut seen_antidotes = HashSet::new();
     grid.iter().for_each(|((x, y), c)| {
@@ -25,7 +25,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     seen_antidotes.len()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let grid = Grid::from_str(input, |((_, _), c)| c as u8);
     let mut seen_antidotes = HashSet::new();
     grid.iter().for_each(|((x, y), c)| {

@@ -1,7 +1,7 @@
 use atoi::atoi;
 use bstr::ByteSlice;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     input
         .as_bytes()
         .lines()
@@ -18,7 +18,7 @@ fn get_fuel(fuel: u64) -> u64 {
     }
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     input
         .as_bytes()
         .lines()

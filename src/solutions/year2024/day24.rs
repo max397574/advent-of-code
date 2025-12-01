@@ -6,12 +6,14 @@ static mut GATE_OUTPUTS: [u8; 15700] = [3; 15700];
 
 #[inline(always)]
 unsafe fn b26(val: [u8; 3]) -> usize {
-    let [a, b, c] = [
-        (unchecked_sub(*val.get_unchecked(0), b'a')) as usize,
-        (unchecked_sub(*val.get_unchecked(1), b'a')) as usize,
-        (unchecked_sub(*val.get_unchecked(2), b'a')) as usize,
-    ];
-    a * 26 * 26 + b * 26 + c
+    unsafe {
+        let [a, b, c] = [
+            (unchecked_sub(*val.get_unchecked(0), b'a')) as usize,
+            (unchecked_sub(*val.get_unchecked(1), b'a')) as usize,
+            (unchecked_sub(*val.get_unchecked(2), b'a')) as usize,
+        ];
+        a * 26 * 26 + b * 26 + c
+    }
 }
 
 pub fn part1(input: &str) -> u64 {
@@ -120,10 +122,12 @@ static mut WIRES_INPUT_INTO: [[bool; 3]; 15500] = [[false; 3]; 15500];
 
 #[inline(always)]
 unsafe fn outputs_into(output: usize, gate_type: u8) -> bool {
-    output < 15500
-        && *WIRES_INPUT_INTO
-            .get_unchecked(output)
-            .get_unchecked(*GATE_TYPE_LUT.get_unchecked(gate_type as usize))
+    unsafe {
+        output < 15500
+            && *WIRES_INPUT_INTO
+                .get_unchecked(output)
+                .get_unchecked(*GATE_TYPE_LUT.get_unchecked(gate_type as usize))
+    }
 }
 
 const GATE_TYPE_LUT: [usize; 100] = {
@@ -136,23 +140,25 @@ const GATE_TYPE_LUT: [usize; 100] = {
 
 #[inline(always)]
 unsafe fn sort_groups(slice: &mut [u8]) {
-    assert_eq!(slice.len(), 31);
-    let mut indices: [usize; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
-    indices.sort_unstable_by(|&a, &b| {
-        let group_a = slice.get_unchecked(a * 4..a * 4 + 3);
-        let group_b = slice.get_unchecked(b * 4..b * 4 + 3);
-        group_a.cmp(group_b)
-    });
-    (0..=7).for_each(|i| {
-        if *indices.get_unchecked(i) != i {
-            for j in 0..3 {
-                slice.swap(i * 4 + j, indices.get_unchecked(i) * 4 + j);
+    unsafe {
+        assert_eq!(slice.len(), 31);
+        let mut indices: [usize; 8] = [0, 1, 2, 3, 4, 5, 6, 7];
+        indices.sort_unstable_by(|&a, &b| {
+            let group_a = slice.get_unchecked(a * 4..a * 4 + 3);
+            let group_b = slice.get_unchecked(b * 4..b * 4 + 3);
+            group_a.cmp(group_b)
+        });
+        (0..=7).for_each(|i| {
+            if *indices.get_unchecked(i) != i {
+                for j in 0..3 {
+                    slice.swap(i * 4 + j, indices.get_unchecked(i) * 4 + j);
+                }
+                let swapped_index = *indices.get_unchecked(i);
+                indices[indices.iter().position(|&x| x == i).unwrap_unchecked()] = swapped_index;
+                *indices.get_unchecked_mut(i) = i;
             }
-            let swapped_index = *indices.get_unchecked(i);
-            indices[indices.iter().position(|&x| x == i).unwrap_unchecked()] = swapped_index;
-            *indices.get_unchecked_mut(i) = i;
-        }
-    });
+        });
+    }
 }
 
 pub fn part2(input: &str) -> &str {

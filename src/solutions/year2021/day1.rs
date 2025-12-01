@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let lines = input.split('\n');
     let mut increments = 0;
     let mut previous = 10000000;
@@ -14,7 +14,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     increments
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut increments = 0;
     let mut previous = 65000;
     for line in input.split('\n').collect::<Vec<&str>>()[..].windows(3) {

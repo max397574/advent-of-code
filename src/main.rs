@@ -3,7 +3,6 @@
 #![feature(iter_map_windows)]
 #![feature(iter_next_chunk)]
 #![feature(slice_split_once)]
-#![feature(let_chains)]
 #![feature(portable_simd)]
 #![feature(if_let_guard)]
 #![feature(core_intrinsics)]
@@ -22,7 +21,7 @@ mod utils;
 
 mod solutions;
 
-pub use crate::solutions::year2024::*;
+pub use crate::solutions::year2025::*;
 
 pub fn main() {
     let mut args = args();
@@ -34,7 +33,11 @@ pub fn main() {
 
     let input = std::fs::read_to_string(format!("inputs/{}/day{}.txt", year, day)).unwrap();
 
-    let solution = &solutions::get_solutions()[year - 2015][day - 1][part - 1];
+    let solution = if year < 2025 {
+        &solutions::get_solutions()[year - 2015][day - 1][part - 1]
+    } else {
+        &solutions::get_solutions_12d()[year - 2025][day - 1][part - 1]
+    };
 
     if bench {
         let mut total = Duration::ZERO;

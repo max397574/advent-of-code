@@ -120,11 +120,11 @@ impl<T: Clone> Grid<T> {
             .map(move |(x, y)| (x as usize, y as usize))
     }
 
-    pub fn clone(&self) -> Grid<T> {
-        return Grid {
+    pub fn clone_grid(&self) -> Grid<T> {
+        Grid {
             cells: self.cells.clone(),
             width: self.width,
-        };
+        }
     }
 }
 

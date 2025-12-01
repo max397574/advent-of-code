@@ -46,7 +46,7 @@ fn generator(input: &str) -> Supplies {
     }
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input = generator(input);
     let mut stacks = input.stacks.to_owned();
     for instruction in input.instructions.iter() {
@@ -62,7 +62,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     String::from_utf8(top_crates).unwrap()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let input = generator(input);
     let mut stacks = input.stacks.to_owned();
     for instruction in input.instructions.iter() {

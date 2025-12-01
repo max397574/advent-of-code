@@ -4,12 +4,12 @@ session=$(<".session")
 
 day=$1
 year=2025
-curl --cookie "session=$session" "https://adventofcode.com/$year/day/$1/input" >> input/day$1.txt
-echo "pub fn part1(_input: &str) -> impl std::fmt::Display {
+curl --cookie "session=$session" "https://adventofcode.com/$year/day/$1/input" >> inputs/$year/day$1.txt
+echo "pub fn part1(_input: &str) -> impl std::fmt::Display + use<> {
     0
 }
 
-pub fn part2(_input: &str) -> impl std::fmt::Display {
+pub fn part2(_input: &str) -> impl std::fmt::Display + use<> {
     0
 }
 

@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut last = vec![];
     let mut count = 0;
     // TODO: rewrite with std::slice::Windows
@@ -23,7 +23,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     count
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut last = vec![];
     let mut count = 0;
     // TODO: rewrite with std::slice::Windows

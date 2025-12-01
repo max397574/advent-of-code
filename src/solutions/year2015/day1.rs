@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     input
         .bytes()
         .map(|char| match char {
@@ -9,7 +9,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
         .sum::<i32>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     input
         .bytes()
         .map(|char| match char {

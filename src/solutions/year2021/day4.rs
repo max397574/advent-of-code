@@ -25,6 +25,7 @@ impl Game {
                     break;
                 }
             }
+            #[allow(clippy::needless_range_loop)]
             for col in 0..5 {
                 if (0..5).map(|row| board[row][col]).sum::<u32>() == 0 {
                     boards[idx] = true;
@@ -46,7 +47,7 @@ impl Game {
     }
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let (numbers, boards) = input.split_once("\n\n").unwrap();
     let numbers = numbers
         .split(',')
@@ -77,7 +78,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     0
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let (numbers, boards) = input.split_once("\n\n").unwrap();
     let numbers = numbers
         .split(',')

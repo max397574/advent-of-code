@@ -14,9 +14,9 @@ pub fn part1_slower(input: &str) -> u64 {
             let num = nums[i];
             if num == 0 {
                 nums[i] = 1;
-            } else if (num.ilog10() + 1) % 2 == 0 {
-                let first = num % 10_u64.pow((num.ilog10() + 1) / 2);
-                let second = num / 10_u64.pow((num.ilog10() + 1) / 2);
+            } else if (num.ilog10() + 1).is_multiple_of(2) {
+                let first = num % 10_u64.pow(num.ilog10().div_ceil(2));
+                let second = num / 10_u64.pow(num.ilog10().div_ceil(2));
                 nums[i] = first;
                 nums.push(second);
             } else {
@@ -45,7 +45,7 @@ pub fn part2_slower(input: &str) -> u64 {
             rec(1, iteration - 1, cache)
         } else {
             let digits = num.ilog10() + 1;
-            if digits % 2 == 0 {
+            if digits.is_multiple_of(2) {
                 let pow = 10_u64.pow(digits / 2);
                 let first = num % pow;
                 let second = num / pow;

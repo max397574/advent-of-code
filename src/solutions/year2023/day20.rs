@@ -1,6 +1,6 @@
 use std::collections::{HashMap, VecDeque};
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     // module: type (&,%, or b), targets, on/off (for flip-flp), list of inputs remembered for
     // conjunctions as 0,1
 
@@ -84,7 +84,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     highs * lows
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     // module: type (&,%, or b), targets, on/off (for flip-flp), list of inputs remembered for
     // conjunctions as 0,1
 

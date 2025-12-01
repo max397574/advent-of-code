@@ -56,7 +56,7 @@ fn get_distance(parents: &[Option<usize>], index: usize, depth: usize) -> usize 
     }
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let steps = get_steps(input);
     let start = steps.iter().position(|step| step.height == 50).unwrap();
     let mut queue = VecDeque::new();
@@ -90,7 +90,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
 }
 
 // Can be solved to search the shortest path to value 1 from `E`
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let steps = get_steps(input);
     let start = steps.iter().position(|step| step.height == 100).unwrap();
     let mut queue = VecDeque::new();

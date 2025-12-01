@@ -36,11 +36,11 @@ fn solve(input: &str, mut expansion_factor: usize) -> usize {
         .sum::<usize>()
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     solve(input, 1)
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     solve(input, 1000000)
 }
 

@@ -33,14 +33,14 @@ fn generator(input: &str) -> HashMap<String, usize> {
     dir_sizes
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     generator(input)
         .values()
         .filter(|x| x <= &&100000)
         .sum::<usize>()
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let input = generator(input);
     let needed = 40000000;
     let cur = input.get("//").unwrap();

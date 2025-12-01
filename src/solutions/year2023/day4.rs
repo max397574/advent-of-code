@@ -1,7 +1,7 @@
 use atoi::atoi;
 use bstr::ByteSlice;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut score = 0;
     let input = input.as_bytes();
     let numbers_per_line = ((input.find_byte(b'\n').unwrap() - 9) / 3) as u32;
@@ -24,7 +24,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     score
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut matching_numbers = Vec::new();
     let input = input.as_bytes();
     let numbers_per_line = ((input.find_byte(b'\n').unwrap() - 9) / 3) as u32;

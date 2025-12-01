@@ -4,7 +4,7 @@ enum State {
     File(u32),
 }
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let input: Vec<u32> = input.trim().bytes().map(|b| (b - b'0') as u32).collect();
     let mut id = 0;
     let mut is_file = true;
@@ -54,19 +54,19 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     sum
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     // taken from https://github.com/SkiFire13/adventofcode-2024-rs/commit/20b7ffe3956e7288917d18f4284d4d5b64ad1ae8
     let input: Vec<u8> = input.trim().bytes().map(|b| b - b'0').collect();
     let mut pos = 0;
     let mut poss = Vec::new();
-    for i in 0..input.len() {
+    for in_char in &input {
         poss.push(pos);
-        pos += input[i] as usize;
+        pos += *in_char as usize;
     }
 
     let mut tot = 0;
 
-    for i in (0..(input.len() + 1) / 2).rev() {
+    for i in (0..(input.len()).div_ceil(2)).rev() {
         if let Some(j) =
             (0..i).find(|&j| poss[2 + 2 * j] - poss[1 + 2 * j] >= input[2 * i] as usize)
         {

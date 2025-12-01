@@ -1,6 +1,6 @@
 use atoi::atoi;
 
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let mut sum = 0;
     let mut id = 0;
     // let mut valid = true;
@@ -41,7 +41,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     sum
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let mut max_red: u32 = 0;
     let mut max_green: u32 = 0;
     let mut max_blue: u32 = 0;

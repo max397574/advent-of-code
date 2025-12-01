@@ -1,4 +1,4 @@
-pub fn part1(input: &str) -> impl std::fmt::Display {
+pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     let lines = input.lines();
     let mut score = 0;
     for line in lines {
@@ -23,7 +23,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display {
     score
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display {
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let lines = input.lines();
     let mut score = 0;
     for line in lines.array_chunks::<3>() {

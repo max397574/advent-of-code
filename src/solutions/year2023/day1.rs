@@ -1,7 +1,7 @@
 use bstr::ByteSlice;
 use std::fmt::Display;
 
-pub fn part1(input: &str) -> impl Display {
+pub fn part1(input: &str) -> impl Display + use<> {
     let mut sum1: u32 = 0;
     let mut sum2: u32 = 0;
     const OFFSET_PER_LINE: u32 = 11 * b'0' as u32;
@@ -15,7 +15,7 @@ pub fn part1(input: &str) -> impl Display {
     }
     sum1 * 10 + sum2 - line_count * OFFSET_PER_LINE
 }
-pub fn part2(input: &str) -> impl Display {
+pub fn part2(input: &str) -> impl Display + use<> {
     const OPTIONS: [&[u8]; 9] = [
         b"one", b"two", b"three", b"four", b"five", b"six", b"seven", b"eight", b"nine",
     ];
