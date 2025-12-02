@@ -1,5 +1,6 @@
 #![feature(iter_array_chunks)]
 #![feature(ascii_char)]
+#![feature(unchecked_shifts)]
 #![feature(iter_map_windows)]
 #![feature(iter_next_chunk)]
 #![feature(slice_split_once)]

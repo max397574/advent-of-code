@@ -12,3 +12,13 @@ can optimize (and fun to do so): 2023d18p1/2
     - Raw Ptr: (340542 runs): 14.646µs
   - p2:
     - Initial: (207988 runs): 24.003µs
+- d2
+  - p1:
+    - Initial: 22ms: comparing string-halves for every number in rnage
+    - Approach with number multiply: 2ms
+    - Numerical approach (directly calculate sum): (8301034 runs): 563ns
+    - Index based parsing: (14888663 runs): 297ns
+    - Optimizing with unsafe etc: (17885286 runs): 239ns
+    - More micro optimizations: (18238883 runs): 234ns
+  - p2:
+    - Initial: (37 runs): 138.267489ms

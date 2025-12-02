@@ -1,7 +1,5 @@
 use std::intrinsics::{unchecked_mul, unchecked_sub};
 
-use bstr::ByteSlice;
-
 /// L: 01001100 -> -1
 /// R: 01010010 -> 1
 #[inline(always)]

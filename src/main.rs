@@ -1,5 +1,6 @@
 #![feature(iter_array_chunks)]
 #![feature(ascii_char)]
+#![feature(unchecked_shifts)]
 #![feature(iter_map_windows)]
 #![feature(iter_next_chunk)]
 #![feature(slice_split_once)]
@@ -31,7 +32,10 @@ pub fn main() {
     let part: usize = args.next().unwrap().parse().unwrap();
     let bench = args.any(|arg| arg == "--bench");
 
-    let input = std::fs::read_to_string(format!("inputs/{}/day{}.txt", year, day)).unwrap();
+    let mut input = std::fs::read_to_string(format!("inputs/{}/day{}.txt", year, day)).unwrap();
+    if !input.ends_with('\n') {
+        input.push('\n');
+    }
 
     let solution = if year < 2025 {
         &solutions::get_solutions()[year - 2015][day - 1][part - 1]
