@@ -120,6 +120,28 @@ impl<T: Clone> Grid<T> {
             .map(move |(x, y)| (x as usize, y as usize))
     }
 
+    pub fn all_neighbours(
+        &self,
+        (x, y): (usize, usize),
+    ) -> impl Iterator<Item = (usize, usize)> + use<'_, T> {
+        [
+            (0, -1),
+            (-1, 0),
+            (1, 0),
+            (0, 1),
+            (-1, -1),
+            (-1, 1),
+            (1, -1),
+            (1, 1),
+        ]
+        .into_iter()
+        .map(move |(dx, dy)| (x as isize + dx, y as isize + dy))
+        .filter(move |&(x, y)| {
+            0 <= x && x < self.width as isize && 0 <= y && y < self.height() as isize
+        })
+        .map(move |(x, y)| (x as usize, y as usize))
+    }
+
     pub fn clone_grid(&self) -> Grid<T> {
         Grid {
             cells: self.cells.clone(),
