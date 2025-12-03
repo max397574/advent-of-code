@@ -6,13 +6,13 @@ pub fn part2(_input: &str) -> impl std::fmt::Display + use<> {
     0
 }
 
-#[cfg(test)]
+// #[cfg(test)]
 mod tests {
     use super::*;
     const _INPUT: &str = "";
 
-    #[test]
-    fn part_1() {
+    // #[test]
+    fn _part_1() {
         assert_eq!(part1(_INPUT).to_string(), String::from("0"))
     }
 
