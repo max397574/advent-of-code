@@ -5,14 +5,17 @@ fn get_multiple_sum(start: u64, end: u64, base: u64) -> u64 {
     unsafe {
         let first_multiple = unchecked_div(start + base - 1, base);
         let last_multiple = unchecked_div(end, base);
-        // dbg!(first_multiple, last_multiple);
 
-        base.unchecked_mul(
-            (unchecked_mul(
-                unchecked_add(first_multiple, last_multiple),
-                unchecked_sub(last_multiple, first_multiple) + 1,
-            )) / 2,
-        )
+        if last_multiple < first_multiple {
+            0
+        } else {
+            base.unchecked_mul(
+                (unchecked_mul(
+                    unchecked_add(first_multiple, last_multiple),
+                    unchecked_sub(last_multiple, first_multiple) + 1,
+                )) / 2,
+            )
+        }
     }
 }
 

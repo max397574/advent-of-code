@@ -94,7 +94,7 @@ L55
 L1
 L99
 R14
-L82";
+L82\n";
     #[test]
     fn hash_function() {
         assert_eq!(lr_hash(b'L'), -1);
