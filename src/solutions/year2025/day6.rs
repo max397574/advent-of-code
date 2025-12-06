@@ -24,53 +24,58 @@ pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
 }
 
 pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
-    let mut lines = input.lines().rev();
-    let mut symbol_indices = Vec::new();
-    lines
-        .next()
-        .unwrap()
-        .as_bytes()
-        .iter()
-        .enumerate()
-        .for_each(|(i, c)| match c {
-            b'+' => symbol_indices.push((b'+', i)),
-            b'*' => symbol_indices.push((b'*', i)),
-            _ => (),
-        });
+    unsafe {
+        let mut lines = input.lines().rev();
+        let mut symbol_indices = Vec::with_capacity(1000);
+        lines
+            .next()
+            .unwrap_unchecked()
+            .as_bytes()
+            .iter()
+            .enumerate()
+            .for_each(|(i, &c)| {
+                if c > b' ' {
+                    symbol_indices.push((c, i));
+                }
+            });
 
-    let bytes: Vec<&[u8]> = lines.rev().map(|line| line.as_bytes()).collect::<Vec<_>>();
-    let columns = symbol_indices.len();
-    let line_count = bytes.len();
+        let bytes: Vec<&[u8]> = lines.rev().map(|line| line.as_bytes()).collect::<Vec<_>>();
+        let columns = symbol_indices.len();
+        let line_count = bytes.len();
 
-    let mut lengths = Vec::with_capacity(symbol_indices.len());
-    for col in 0..columns - 1 {
-        lengths.push(symbol_indices[col + 1].1 - symbol_indices[col].1 - 1);
-    }
-    lengths.push(input.find('\n').unwrap() - symbol_indices[symbol_indices.len() - 1].1);
+        let mut lengths = Vec::with_capacity(columns);
+        for col in 0..columns - 1 {
+            lengths.push(symbol_indices[col + 1].1 - symbol_indices[col].1 - 1);
+        }
+        lengths
+            .push(input.find('\n').unwrap_unchecked() - symbol_indices[symbol_indices.len() - 1].1);
 
-    let mut res = 0;
-    for col in 0..columns {
-        let mut numbers = Vec::with_capacity(columns);
+        const INITIAL_VALS: [u64; 2] = [1, 0];
+
+        let mut res = 0;
         #[allow(clippy::needless_range_loop)]
-        for col_idx in symbol_indices[col].1..symbol_indices[col].1 + lengths[col] {
-            let mut num = 0;
-            for line in 0..line_count {
-                unsafe {
+        for col in 0..columns {
+            let symbol = *symbol_indices.get_unchecked(col);
+            let is_plus = symbol.0 == b'+';
+            let mut val = *INITIAL_VALS.get_unchecked((symbol.0 & 1) as usize);
+            for col_idx in symbol.1..symbol.1 + lengths[col] {
+                let mut num = 0;
+                for line in 0..line_count {
                     let val = *bytes.get_unchecked(line).get_unchecked(col_idx);
                     if val >= b'0' {
                         num = num * 10 + (val - b'0') as u64;
                     }
                 }
+                if is_plus {
+                    val += num;
+                } else {
+                    val *= num;
+                }
             }
-            numbers.push(num);
+            res += val;
         }
-        if symbol_indices[col].0 == b'+' {
-            res += numbers.iter().sum::<u64>();
-        } else {
-            res += numbers.iter().product::<u64>();
-        }
+        res
     }
-    res
 }
 
 #[cfg(test)]
