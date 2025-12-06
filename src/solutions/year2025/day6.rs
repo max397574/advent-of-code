@@ -48,27 +48,29 @@ pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     }
     lengths.push(input.find('\n').unwrap() - symbol_indices[symbol_indices.len() - 1].1);
 
-    let mut results = Vec::with_capacity(columns);
-
+    let mut res = 0;
     for col in 0..columns {
-        let mut numbers = Vec::new();
+        let mut numbers = Vec::with_capacity(columns);
         #[allow(clippy::needless_range_loop)]
         for col_idx in symbol_indices[col].1..symbol_indices[col].1 + lengths[col] {
             let mut num = 0;
             for line in 0..line_count {
-                if bytes[line][col_idx] >= b'0' {
-                    num = num * 10 + (bytes[line][col_idx] - b'0') as u64;
+                unsafe {
+                    let val = *bytes.get_unchecked(line).get_unchecked(col_idx);
+                    if val >= b'0' {
+                        num = num * 10 + (val - b'0') as u64;
+                    }
                 }
             }
             numbers.push(num);
         }
         if symbol_indices[col].0 == b'+' {
-            results.push(numbers.iter().sum::<u64>());
+            res += numbers.iter().sum::<u64>();
         } else {
-            results.push(numbers.iter().product::<u64>());
+            res += numbers.iter().product::<u64>();
         }
     }
-    results.iter().sum::<u64>()
+    res
 }
 
 #[cfg(test)]
