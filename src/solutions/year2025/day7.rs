@@ -41,42 +41,39 @@ pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     let height = (input.len() + 1) / (width + 1);
     let input = input.as_bytes();
 
-    let mut possible_timelines: Vec<u64> = vec![0; (width + 1) * height];
-    possible_timelines[start] = 1;
+    let mut possible_timelines_prev: Vec<u64> = vec![0; width + 1];
+    let mut possible_timelines_curr: Vec<u64> = vec![0; width + 1];
+    possible_timelines_prev[start % (width + 1)] = 1;
     unsafe {
         for y in 1..height {
             for x in 0..width {
                 let pos = x + y * (width + 1);
-                let above = pos - (width + 1);
-                let above_val = *possible_timelines.get_unchecked(above);
+                let above_val = *possible_timelines_prev.get_unchecked(x);
                 if above_val == 0 {
                     continue;
                 }
                 match *input.get_unchecked(pos) {
                     b'^' => {
                         if x > 0 {
-                            *possible_timelines.get_unchecked_mut(pos - 1) += above_val;
+                            *possible_timelines_curr.get_unchecked_mut(x - 1) += above_val;
                         }
                         if x < width {
-                            *possible_timelines.get_unchecked_mut(pos + 1) += above_val;
+                            *possible_timelines_curr.get_unchecked_mut(x + 1) += above_val;
                         }
                     }
                     _ => {
-                        *possible_timelines.get_unchecked_mut(pos) += above_val;
+                        *possible_timelines_curr.get_unchecked_mut(x) += above_val;
                     }
                 }
             }
+            std::mem::swap(&mut possible_timelines_prev, &mut possible_timelines_curr);
+            possible_timelines_curr
+                .as_mut_ptr()
+                .write_bytes(0, possible_timelines_curr.len())
         }
     }
-    // for y in 0..height {
-    //     println!(
-    //         "{:?}",
-    //         &possible_timelines[y * (width + 1)..y * (width + 1) + width + 1]
-    //     );
-    // }
-    possible_timelines[(width + 1) * (height - 1)..]
-        .iter()
-        .sum::<u64>()
+
+    possible_timelines_prev.iter().sum::<u64>()
 }
 
 #[cfg(test)]
