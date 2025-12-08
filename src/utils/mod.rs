@@ -85,8 +85,8 @@ pub fn get_lcm(numbers: Vec<usize>) -> usize {
 /// Union-Find for indices 0..N with path compression, union by size, and size tracking.
 /// Assumes all elements from 0 to capacity-1 exist (pre-initialized).
 pub struct UnionFind {
-    parent: Vec<usize>,
-    size: Vec<usize>,
+    pub parent: Vec<usize>,
+    pub size: Vec<usize>,
 }
 
 impl UnionFind {
@@ -99,7 +99,7 @@ impl UnionFind {
         Self { parent, size }
     }
 
-    fn find(&mut self, mut x: usize) -> usize {
+    pub fn find(&mut self, mut x: usize) -> usize {
         while self.parent[x] != x {
             self.parent[x] = self.parent[self.parent[x]];
             x = self.parent[x];

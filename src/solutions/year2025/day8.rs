@@ -1,70 +1,87 @@
-use crate::utils::UnionFind;
+use crate::utils::{UnionFind, parsing::ByteParsing};
+use std::collections::BinaryHeap;
 
-type Input = (Vec<(usize, usize, usize)>, Vec<(usize, usize, usize)>);
+type Input = (
+    Vec<(isize, isize, isize)>,
+    BinaryHeap<(isize, usize, usize)>,
+);
 
 pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     innerp1(parse(input), 1000)
+}
+
+fn innerp1(input: Input, steps: usize) -> usize {
+    let (points, mut edges) = input;
+    let limit = steps.min(edges.len());
+    let mut union_find = UnionFind::new(points.len());
+    for _ in 0..limit {
+        let edge = edges.pop().unwrap();
+        union_find.union(edge.1, edge.2);
+    }
+    let component_sizes: std::collections::HashMap<usize, usize> = {
+        let this = &mut union_find;
+        let mut sizes = std::collections::HashMap::new();
+        for i in 0..this.parent.len() {
+            let root = this.find(i);
+            sizes.insert(root, this.size[root]);
+        }
+        sizes.into_iter().collect()
+    };
+    let mut max1 = 0;
+    let mut max2 = 0;
+    let mut max3 = 0;
+    for cmp_sz in component_sizes.values() {
+        if *cmp_sz > max1 {
+            max3 = max2;
+            max2 = max1;
+            max1 = *cmp_sz;
+        } else if *cmp_sz > max2 {
+            max3 = max2;
+            max2 = *cmp_sz;
+        } else {
+            max3 = max3.max(*cmp_sz);
+        }
+    }
+    max1 * max2 * max3
 }
 pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
     innerp2(parse(input))
 }
 
-pub fn parse(input: &str) -> (Vec<(usize, usize, usize)>, Vec<(usize, usize, usize)>) {
+pub fn innerp2(input: Input) -> impl std::fmt::Display + use<> {
+    let (points, mut edges) = input;
+    let mut union_find = UnionFind::new(points.len());
+    loop {
+        let edge = edges.pop().unwrap();
+        if union_find.union(edge.1, edge.2) && union_find.get_size(edge.1) == points.len() {
+            return points[edge.1].0 * points[edge.2].0;
+        }
+    }
+}
+
+pub fn parse(input: &str) -> Input {
     let points = input
         .lines()
         .map(|line| {
-            let (x, yz) = line.split_once(',').unwrap();
-            let (y, z) = yz.split_once(',').unwrap();
-            let x = x.parse::<usize>().unwrap();
-            let y = y.parse::<usize>().unwrap();
-            let z = z.parse::<usize>().unwrap();
+            let line = line.as_bytes();
+            let (x, yz) = line.split_once(|&c| c == b',').unwrap();
+            let (y, z) = yz.split_once(|&c| c == b',').unwrap();
+            let x = x.as_num::<isize>();
+            let y = y.as_num::<isize>();
+            let z = z.as_num::<isize>();
             (x, y, z)
         })
         .collect::<Vec<_>>();
-    let mut edges = Vec::with_capacity(((points.len()) * (points.len() - 1)) >> 1);
+    let mut edges = BinaryHeap::with_capacity(((points.len()) * (points.len() - 1)) >> 1);
     for i in 0..points.len() {
         for j in (i + 1)..points.len() {
             let a = points[i];
             let b = points[j];
-            let distance_sqr = (a.0.abs_diff(b.0)).pow(2)
-                + (a.1.abs_diff(b.1)).pow(2)
-                + (a.2.abs_diff(b.2)).pow(2);
-            edges.push((distance_sqr, i, j));
+            let distance_sqr = (a.0 - b.0).pow(2) + (a.1 - b.1).pow(2) + (a.2 - b.2).pow(2);
+            edges.push((-distance_sqr, i, j));
         }
     }
-    edges.sort_unstable_by_key(|edge| edge.0);
     (points, edges)
-}
-
-pub fn innerp1(input: Input, steps: usize) -> impl std::fmt::Display + use<> {
-    let (points, edges) = input;
-    let limit = steps.min(edges.len());
-    let mut union_find = UnionFind::new(points.len());
-    for edge in edges.iter().take(limit) {
-        union_find.union(edge.1, edge.2);
-    }
-    let component_sizes = union_find.component_sizes();
-    let mut component_sizes = component_sizes.values().collect::<Vec<_>>();
-    component_sizes.sort_unstable();
-    component_sizes
-        .iter()
-        .rev()
-        .take(3)
-        .map(|&&c| c)
-        .product::<usize>()
-}
-
-pub fn innerp2(input: Input) -> impl std::fmt::Display + use<> {
-    let (points, edges) = input;
-    let mut union_find = UnionFind::new(points.len());
-    let mut i = 0;
-    loop {
-        let edge = edges[i];
-        if union_find.union(edge.1, edge.2) && union_find.get_size(edge.1) == points.len() {
-            return points[edge.1].0 * points[edge.2].0;
-        }
-        i += 1;
-    }
 }
 
 #[cfg(test)]
