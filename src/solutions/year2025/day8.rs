@@ -4,7 +4,7 @@ use std::collections::BinaryHeap;
 pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
     unsafe {
         let mut points = [(0, 0, 0); 1000];
-        input.lines().take(1000).enumerate().for_each(|(i, line)| {
+        input.lines().enumerate().for_each(|(i, line)| {
             let line = line.as_bytes();
             let mut idx = 0;
             let mut x = 0;
@@ -26,25 +26,32 @@ pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
             }
             *points.get_unchecked_mut(i) = (x, y, z);
         });
+
         let mut edges = BinaryHeap::with_capacity(1000);
         let a = points.get_unchecked(0);
-        edges.extend((1..points.len()).map(|j| {
-            let b = points.get_unchecked(j);
-            let distance_sqr = (a.0 - b.0).pow(2) + (a.1 - b.1).pow(2) + (a.2 - b.2).pow(2);
-            (distance_sqr, 0, j)
+        edges.extend((1..1000).map(|j| {
+            let b = *points.get_unchecked(j);
+            let dx = a.0 - b.0;
+            let dy = a.1 - b.1;
+            let dz = a.2 - b.2;
+            let dist_sqr = dx * dx + dy * dy + dz * dz;
+            (dist_sqr, 0, j)
         }));
         let a = points.get_unchecked(1);
         let b = points.get_unchecked(2);
         let distance_sqr = (a.0 - b.0).pow(2) + (a.1 - b.1).pow(2) + (a.2 - b.2).pow(2);
         edges.push((distance_sqr, 1, 2));
-        for i in 1..points.len() {
+        for i in 1..1000 {
             let a = points.get_unchecked(i);
-            for j in (i + 1)..points.len() {
+            for j in (i + 1)..1000 {
                 let b = points.get_unchecked(j);
-                let distance_sqr = (a.0 - b.0).pow(2) + (a.1 - b.1).pow(2) + (a.2 - b.2).pow(2);
+                let dx = a.0 - b.0;
+                let dy = a.1 - b.1;
+                let dz = a.2 - b.2;
+                let dist_sqr = dx * dx + dy * dy + dz * dz;
                 let mut max = edges.peek_mut().unwrap_unchecked();
-                if distance_sqr < max.0 {
-                    *max = (distance_sqr, i, j);
+                if dist_sqr < max.0 {
+                    *max = (dist_sqr, i, j);
                 }
             }
         }
@@ -54,7 +61,6 @@ pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
             *p = i;
         }
 
-        #[inline(always)]
         pub fn find(mut x: usize, parent: &mut [usize; 1000]) -> usize {
             unsafe {
                 while *parent.get_unchecked(x) != x {
@@ -65,12 +71,11 @@ pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
             x
         }
 
-        #[inline(always)]
         pub fn union(
             x: usize,
             y: usize,
             parent: &mut [usize; 1000],
-            size: &mut [u8; 1000],
+            size: &mut [u32; 1000],
         ) -> bool {
             let root_x = find(x, parent);
             let root_y = find(y, parent);
@@ -89,15 +94,14 @@ pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
             true
         }
 
-        for _ in 0..1000 {
-            let edge = edges.pop().unwrap_unchecked();
+        for edge in edges.iter() {
             union(edge.1, edge.2, &mut parent, &mut size);
         }
 
         let mut max1 = 0;
         let mut max2 = 0;
         let mut max3 = 0;
-        for i in 0..points.len() {
+        for i in 0..1000 {
             // only look at roots
             if *parent.get_unchecked(i) == i {
                 let cmp_sz = *size.get_unchecked(i);
