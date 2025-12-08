@@ -3,6 +3,7 @@
 #![feature(unchecked_shifts)]
 #![feature(iter_map_windows)]
 #![feature(iter_next_chunk)]
+#![feature(binary_heap_into_iter_sorted)]
 #![feature(slice_split_once)]
 #![feature(portable_simd)]
 #![feature(if_let_guard)]

@@ -1,4 +1,5 @@
 #![feature(iter_array_chunks)]
+#![feature(binary_heap_into_iter_sorted)]
 #![feature(ascii_char)]
 #![feature(unchecked_shifts)]
 #![feature(iter_map_windows)]
