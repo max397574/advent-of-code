@@ -1,10 +1,15 @@
 use crate::utils::UnionFind;
 
+type Input = (Vec<(usize, usize, usize)>, Vec<(usize, usize, usize)>);
+
 pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
-    inner(input, 1000, true)
+    innerp1(parse(input), 1000)
+}
+pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
+    innerp2(parse(input))
 }
 
-pub fn inner(input: &str, steps: usize, p1: bool) -> impl std::fmt::Display + use<> {
+pub fn parse(input: &str) -> (Vec<(usize, usize, usize)>, Vec<(usize, usize, usize)>) {
     let points = input
         .lines()
         .map(|line| {
@@ -16,50 +21,50 @@ pub fn inner(input: &str, steps: usize, p1: bool) -> impl std::fmt::Display + us
             (x, y, z)
         })
         .collect::<Vec<_>>();
-    let mut edges = Vec::with_capacity((points.len() - 1) * (points.len() - 1));
+    let mut edges = Vec::with_capacity(((points.len()) * (points.len() - 1)) >> 1);
     for i in 0..points.len() {
         for j in (i + 1)..points.len() {
-            if i != j {
-                let a = points[i];
-                let b = points[j];
-                let distance_sqr = (a.0.abs_diff(b.0)).pow(2)
-                    + (a.1.abs_diff(b.1)).pow(2)
-                    + (a.2.abs_diff(b.2)).pow(2);
-                edges.push((distance_sqr, i, j, a.0, b.0));
-            }
+            let a = points[i];
+            let b = points[j];
+            let distance_sqr = (a.0.abs_diff(b.0)).pow(2)
+                + (a.1.abs_diff(b.1)).pow(2)
+                + (a.2.abs_diff(b.2)).pow(2);
+            edges.push((distance_sqr, i, j));
         }
     }
     edges.sort_unstable_by_key(|edge| edge.0);
-    if p1 {
-        let limit = steps.min(edges.len());
-        let mut union_find = UnionFind::new(points.len());
-        for edge in edges.iter().take(limit) {
-            union_find.union(edge.1, edge.2);
-        }
-        let component_sizes = union_find.component_sizes();
-        let mut component_sizes = component_sizes.values().collect::<Vec<_>>();
-        component_sizes.sort_unstable();
-        component_sizes
-            .iter()
-            .rev()
-            .take(3)
-            .map(|&&c| c)
-            .product::<usize>()
-    } else {
-        let mut union_find = UnionFind::new(points.len());
-        let mut i = 0;
-        loop {
-            let edge = edges[i];
-            if union_find.union(edge.1, edge.2) && union_find.get_size(edge.1) == points.len() {
-                return edge.3 * edge.4;
-            }
-            i += 1;
-        }
-    }
+    (points, edges)
 }
 
-pub fn part2(input: &str) -> impl std::fmt::Display + use<> {
-    inner(input, 1000, false)
+pub fn innerp1(input: Input, steps: usize) -> impl std::fmt::Display + use<> {
+    let (points, edges) = input;
+    let limit = steps.min(edges.len());
+    let mut union_find = UnionFind::new(points.len());
+    for edge in edges.iter().take(limit) {
+        union_find.union(edge.1, edge.2);
+    }
+    let component_sizes = union_find.component_sizes();
+    let mut component_sizes = component_sizes.values().collect::<Vec<_>>();
+    component_sizes.sort_unstable();
+    component_sizes
+        .iter()
+        .rev()
+        .take(3)
+        .map(|&&c| c)
+        .product::<usize>()
+}
+
+pub fn innerp2(input: Input) -> impl std::fmt::Display + use<> {
+    let (points, edges) = input;
+    let mut union_find = UnionFind::new(points.len());
+    let mut i = 0;
+    loop {
+        let edge = edges[i];
+        if union_find.union(edge.1, edge.2) && union_find.get_size(edge.1) == points.len() {
+            return points[edge.1].0 * points[edge.2].0;
+        }
+        i += 1;
+    }
 }
 
 #[cfg(test)]
@@ -88,11 +93,11 @@ mod tests {
 
     #[test]
     fn part_1() {
-        assert_eq!(inner(INPUT, 10, true).to_string(), String::from("40"))
+        assert_eq!(innerp1(parse(INPUT), 10).to_string(), String::from("40"))
     }
 
     #[test]
     fn part_2() {
-        assert_eq!(inner(INPUT, 0, false).to_string(), String::from("25272"))
+        assert_eq!(innerp2(parse(INPUT)).to_string(), String::from("25272"))
     }
 }
