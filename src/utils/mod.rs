@@ -93,16 +93,19 @@ impl UnionFind {
     pub fn new(n: usize) -> Self {
         let mut parent = vec![0; n];
         let size = vec![1; n];
-        for (i, p) in parent.iter_mut().enumerate().take(n) {
+        for (i, p) in parent.iter_mut().enumerate() {
             *p = i;
         }
         Self { parent, size }
     }
 
     pub fn find(&mut self, mut x: usize) -> usize {
-        while self.parent[x] != x {
-            self.parent[x] = self.parent[self.parent[x]];
-            x = self.parent[x];
+        unsafe {
+            while *self.parent.get_unchecked(x) != x {
+                *self.parent.get_unchecked_mut(x) =
+                    *self.parent.get_unchecked(*self.parent.get_unchecked(x));
+                x = *self.parent.get_unchecked(x);
+            }
         }
         x
     }
@@ -114,19 +117,21 @@ impl UnionFind {
         if root_x == root_y {
             return false;
         }
-        if self.size[root_x] < self.size[root_y] {
-            self.parent[root_x] = root_y;
-            self.size[root_y] += self.size[root_x];
-        } else {
-            self.parent[root_y] = root_x;
-            self.size[root_x] += self.size[root_y];
+        unsafe {
+            if *self.size.get_unchecked(root_x) < *self.size.get_unchecked(root_y) {
+                *self.parent.get_unchecked_mut(root_x) = root_y;
+                *self.size.get_unchecked_mut(root_y) += *self.size.get_unchecked(root_x);
+            } else {
+                *self.parent.get_unchecked_mut(root_y) = root_x;
+                *self.size.get_unchecked_mut(root_x) += *self.size.get_unchecked(root_y);
+            }
         }
         true
     }
 
     pub fn get_size(&mut self, x: usize) -> usize {
         let root = self.find(x);
-        self.size[root]
+        unsafe { *self.size.get_unchecked(root) }
     }
 
     /// Returns HashMap of root -> size for all components (roots only).
