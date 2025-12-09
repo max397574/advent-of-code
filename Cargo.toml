@@ -6,8 +6,6 @@ edition = "2024"
 [dependencies]
 atoi = "2.0.0"
 bstr = "1.11.0"
-geo = "0.32.0"
-geo-types = "0.7.18"
 indexmap = "2.7.0"
 num-traits = "0.2.19"
 regex = "1.10.6"
