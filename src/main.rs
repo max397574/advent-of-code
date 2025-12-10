@@ -46,10 +46,10 @@ pub fn main() {
 
     if bench {
         let mut total = Duration::ZERO;
-        const WARMUP_SECONDS: u64 = 1;
-        const SECONDS: u64 = 5;
-        let duration = Duration::from_secs(SECONDS);
-        let warmup_duration = Duration::from_secs(WARMUP_SECONDS);
+        const WARMUP_MS: u64 = 500;
+        const MS: u64 = 2000;
+        let duration = Duration::from_secs(MS);
+        let warmup_duration = Duration::from_millis(WARMUP_MS);
         let first_start = Instant::now();
         while first_start.elapsed() < warmup_duration {
             let _ = solution(&input);
@@ -63,7 +63,7 @@ pub fn main() {
             runs += 1;
         }
         println!(
-            "Average time with warmup runs over {WARMUP_SECONDS} seconds and running over {SECONDS} seconds ({runs} runs): {:?}",
+            "Average time with warmup runs over {WARMUP_MS} seconds and running over {MS} seconds ({runs} runs): {:?}",
             total / runs
         );
         return;
