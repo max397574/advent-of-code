@@ -1,6 +1,7 @@
 use std::collections::VecDeque;
 
 pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
+    let mut queue = VecDeque::with_capacity(1000);
     unsafe {
         input
             .lines()
@@ -16,11 +17,13 @@ pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
                     input = input.add(1);
                 }
                 input = input.add(3);
-                let mut buttons = Vec::with_capacity(10);
+                let mut buttons = [0; 16];
                 let mut mask = 0;
+                let mut button_idx = 0;
                 while *input != b'{' {
                     if *input == b' ' {
-                        buttons.push(mask);
+                        *buttons.get_unchecked_mut(button_idx) = mask;
+                        button_idx += 1;
                         if *input.offset(1) == b'{' {
                             break;
                         }
@@ -34,7 +37,7 @@ pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
                 let mut seen = [0u128; 8];
 
                 let mut result = 0;
-                let mut queue = VecDeque::new();
+                queue.clear();
                 queue.push_back((0, start));
                 while !queue.is_empty() {
                     let next = queue.pop_front().unwrap_unchecked();
@@ -56,7 +59,8 @@ pub fn part1(input: &str) -> impl std::fmt::Display + use<> {
 
                     *seen.get_unchecked_mut(idx) |= bit;
 
-                    for button in &buttons {
+                    for i in 0..button_idx {
+                        let button = *buttons.get_unchecked(i);
                         let new_state = next.1 ^ button;
                         let new = (next.0 + 1, new_state);
 
